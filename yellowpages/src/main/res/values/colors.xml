@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="yp_colorPrimary">#3F51B5</color>
+    <color name="yp_colorPrimaryDark">#303F9F</color>
+    <color name="yp_colorAccent">#FF4081</color>
+
+    <color name="yp_colorBackgroundGray">#eeeeee</color>
+    <color name="yp_font_block">#ed000000</color>
+    <color name="yp_font_block_700">#e3000010</color>
+    <color name="yp_font_block_400">#da000010</color>
+</resources>
