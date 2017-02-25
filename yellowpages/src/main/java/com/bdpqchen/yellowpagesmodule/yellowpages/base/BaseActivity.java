@@ -33,7 +33,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         ButterKnife.inject(this);
         mToolbar = getToolbar();
         initToolbar();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
@@ -43,6 +42,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
             tintManager.setStatusBarTintResource(R.color.yp_colorPrimaryDark);
         }
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         AppActivityManager.getActivityManager().addActivity(this);
 
 
@@ -53,5 +54,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             setSupportActionBar(mToolbar);
         }
     }
+
+
 
 }

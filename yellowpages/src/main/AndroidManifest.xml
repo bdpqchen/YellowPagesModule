@@ -8,6 +8,7 @@
         android:name=".App"
         >
         <activity android:name=".HomeActivity" android:theme="@style/yp_AppTheme"/>
+        <activity android:name=".SearchActivity" android:theme="@style/yp_AppTheme"/>
     </application>
 
 </manifest>

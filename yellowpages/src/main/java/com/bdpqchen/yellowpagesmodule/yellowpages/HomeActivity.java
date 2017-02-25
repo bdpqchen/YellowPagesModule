@@ -1,5 +1,6 @@
 package com.bdpqchen.yellowpagesmodule.yellowpages;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
@@ -7,6 +8,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 
 import com.bdpqchen.yellowpagesmodule.yellowpages.base.BaseActivity;
 import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.FirstFragment;
@@ -59,11 +61,22 @@ public class HomeActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == R.id.action_search) {
+
+            Intent intent = new Intent(this, SearchActivity.class);
+            this.startActivity(intent);
+            this.overridePendingTransition(R.anim.yp_activity_open, R.anim.yp_activity_close);
             Logger.d("clicked the toolbar");
         }
         return super.onOptionsItemSelected(item);
 
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
 
+//        revealFromCoordinates(motionEvent.getRawX(), motionEvent.getRawY());
+
+        return false;
+
+    }
 }
