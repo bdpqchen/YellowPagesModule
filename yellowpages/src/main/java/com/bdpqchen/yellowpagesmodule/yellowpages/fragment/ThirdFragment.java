@@ -10,7 +10,7 @@ import android.widget.ExpandableListView;
 
 import com.bdpqchen.yellowpagesmodule.yellowpages.ExpandableListViewAdapter;
 import com.bdpqchen.yellowpagesmodule.yellowpages.R;
-import com.bdpqchen.yellowpagesmodule.yellowpages.model.Item;
+import com.bdpqchen.yellowpagesmodule.yellowpages.model.SearchResult;
 import com.bdpqchen.yellowpagesmodule.yellowpages.utils.ListUtils;
 
 import java.util.List;
@@ -33,7 +33,7 @@ public class ThirdFragment extends Fragment implements ExpandableListView.OnGrou
             {"贾宝玉", "林黛玉", "薛宝钗", "王熙凤"}
     };
 
-    public List<Item> itemList;
+    public List<SearchResult> searchResultList;
 
     private ExpandableListView mExpandableListView;
 

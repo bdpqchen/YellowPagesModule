@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -15,18 +16,24 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.arlib.floatingsearchview.FloatingSearchView;
 import com.arlib.floatingsearchview.suggestions.SearchSuggestionsAdapter;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.bdpqchen.yellowpagesmodule.yellowpages.adapter.SearchResultsListAdapter;
 import com.bdpqchen.yellowpagesmodule.yellowpages.base.BaseActivity;
+import com.bdpqchen.yellowpagesmodule.yellowpages.data.SearchHelper;
 import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.FirstFragment;
 import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.SecondFragment;
 import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.ThirdFragment;
+import com.bdpqchen.yellowpagesmodule.yellowpages.model.SearchResult;
+import com.bdpqchen.yellowpagesmodule.yellowpages.model.WordSuggestion;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.orhanobut.logger.Logger;
+
+import java.util.List;
 
 
 public class HomeActivity extends BaseActivity {
@@ -34,11 +41,14 @@ public class HomeActivity extends BaseActivity {
     private static final String TAG = "HomeActivity";
     //    @InjectView(R.id.search_results_list)
     private RecyclerView mSearchResultsList;
-//    @InjectView(R.id.parent_view)
+    //    @InjectView(R.id.parent_view)
     private RelativeLayout mParentView;
     //    @InjectView(R.id.toolbar)
     private Toolbar mToolbar;
     private Context mContext;
+
+    private String mLastQuery = "";
+
 
     private FloatingSearchView mSearchView;
     private SearchResultsListAdapter mSearchResultsAdapter;
@@ -99,21 +109,15 @@ public class HomeActivity extends BaseActivity {
 
                     //simulates a query call to a data source
                     //with a new query.
-                    /*DataHelper.findSuggestions(getActivity(), newQuery, 5,
-                            FIND_SUGGESTION_SIMULATED_DELAY, new DataHelper.OnFindSuggestionsListener() {
+                    SearchHelper.findSuggestions(mContext, newQuery, 20, new SearchHelper.OnFindSuggestionsListener() {
 
-                                @Override
-                                public void onResults(List<ColorSuggestion> results) {
+                        @Override
+                        public void onResults(List<WordSuggestion> results) {
+                            mSearchView.swapSuggestions(results);
+                            mSearchView.hideProgress();
+                        }
 
-                                    //this will swap the data and
-                                    //render the collapse/expand animations as necessary
-                                    mSearchView.swapSuggestions(results);
-
-                                    //let the users know that the background
-                                    //process has completed
-                                    mSearchView.hideProgress();
-                                }
-                            });*/
+                    });
                 }
 
                 Logger.d(TAG, "onSearchTextChanged()");
@@ -124,34 +128,43 @@ public class HomeActivity extends BaseActivity {
             @Override
             public void onSuggestionClicked(final SearchSuggestion searchSuggestion) {
 
-                /*ColorSuggestion colorSuggestion = (ColorSuggestion) searchSuggestion;
-                DataHelper.findColors(getActivity(), colorSuggestion.getBody(),
-                        new DataHelper.OnFindColorsListener() {
+                WordSuggestion wordSuggestion = (WordSuggestion) searchSuggestion;
+
+                SearchHelper.findWord(mContext, wordSuggestion.getBody(),
+                        new SearchHelper.OnFindWordListener() {
 
                             @Override
-                            public void onResults(List<ColorWrapper> results) {
+                            public void onResults(List<SearchResult> results) {
                                 mSearchResultsAdapter.swapData(results);
+                                mSearchResultsAdapter.setItemsOnClickListener(new SearchResultsListAdapter.OnItemClickListener() {
+                                    @Override
+                                    public void onClick(SearchResult searchResult) {
+                                        Logger.i("clicked the item, onSuggestionClicked()");
+                                    }
+                                });
                             }
-
                         });
                 mLastQuery = searchSuggestion.getBody();
-                */
                 Logger.d(TAG, "onSuggestionClicked()");
             }
 
             @Override
             public void onSearchAction(String query) {
-                /*mLastQuery = query;
-
-                DataHelper.findColors(getActivity(), query,
-                        new DataHelper.OnFindColorsListener() {
-
+                mLastQuery = query;
+                SearchHelper.findWord(mContext, query,
+                        new SearchHelper.OnFindWordListener() {
                             @Override
-                            public void onResults(List<ColorWrapper> results) {
+                            public void onResults(List<SearchResult> results) {
                                 mSearchResultsAdapter.swapData(results);
+                                mSearchResultsAdapter.setItemsOnClickListener(new SearchResultsListAdapter.OnItemClickListener() {
+                                    @Override
+                                    public void onClick(SearchResult searchResult) {
+                                        Toast.makeText(mContext, "You clicked the item" + searchResult.name, Toast.LENGTH_LONG).show();
+                                        Logger.d("you clicked the item" + searchResult.name);
+                                    }
+                                });
                             }
-
-                        });*/
+                        });
                 Logger.d(TAG, "onSearchAction()");
             }
         });
@@ -161,7 +174,7 @@ public class HomeActivity extends BaseActivity {
             public void onFocus() {
 
                 //show suggestions when search bar gains focus (typically history suggestions)
-//                mSearchView.swapSuggestions(DataHelper.getHistory(getActivity(), 3));
+                mSearchView.swapSuggestions(SearchHelper.getHistory(mContext, 10));
 
                 Logger.d(TAG, "onFocus()");
             }
@@ -221,29 +234,27 @@ public class HomeActivity extends BaseActivity {
             @Override
             public void onBindSuggestion(View suggestionView, ImageView leftIcon,
                                          TextView textView, SearchSuggestion item, int itemPosition) {
-/*
-                ColorSuggestion colorSuggestion = (ColorSuggestion) item;
+                WordSuggestion searchSuggestion = (WordSuggestion) item;
 
-                String textColor = mIsDarkSearchTheme ? "#ffffff" : "#000000";
-                String textLight = mIsDarkSearchTheme ? "#bfbfbf" : "#787878";
+//                String textColor = mIsDarkSearchTheme ? "#ffffff" : "#000000";
+//                String textLight = mIsDarkSearchTheme ? "#bfbfbf" : "#787878";
 
-                if (colorSuggestion.getIsHistory()) {
+                if (searchSuggestion.getIsHistory()) {
                     leftIcon.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
                             R.drawable.ic_history_black_24dp, null));
 
-                    Util.setIconColor(leftIcon, Color.parseColor(textColor));
+//                    Util.setIconColor(leftIcon, Color.parseColor(textColor));
                     leftIcon.setAlpha(.36f);
                 } else {
                     leftIcon.setAlpha(0.0f);
                     leftIcon.setImageDrawable(null);
                 }
 
-                textView.setTextColor(Color.parseColor(textColor));
-                String text = colorSuggestion.getBody()
+                /*textView.setTextColor(Color.parseColor(textColor));
+                String text = searchSuggestion.getBody()
                         .replaceFirst(mSearchView.getQuery(),
                                 "<font color=\"" + textLight + "\">" + mSearchView.getQuery() + "</font>");
-                textView.setText(Html.fromHtml(text));
-*/
+                textView.setText(Html.fromHtml(text));*/
             }
 
         });

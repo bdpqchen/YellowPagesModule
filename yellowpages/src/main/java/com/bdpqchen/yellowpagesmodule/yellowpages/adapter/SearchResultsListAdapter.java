@@ -26,72 +26,71 @@ import android.widget.TextView;
 
 import com.arlib.floatingsearchview.util.Util;
 import com.bdpqchen.yellowpagesmodule.yellowpages.R;
-import com.bdpqchen.yellowpagesmodule.yellowpages.model.Item;
+import com.bdpqchen.yellowpagesmodule.yellowpages.model.SearchResult;
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SearchResultsListAdapter extends RecyclerView.Adapter<SearchResultsListAdapter.ViewHolder> {
 
-    private List<Item> mDataSet = new ArrayList<>();
+
+    private List<SearchResult> mDataSet = new ArrayList<>();
 
     private int mLastAnimatedItemPosition = -1;
 
-    public interface OnItemClickListener{
-        void onClick(Item colorWrapper);
+    public interface OnItemClickListener {
+        void onClick(SearchResult searchResult);
     }
 
     private OnItemClickListener mItemsOnClickListener;
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        public final TextView mColorName;
-        public final TextView mColorValue;
-        public final View mTextContainer;
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView mName;
+        TextView mPhone;
+//        public View mTextContainer;
 
-        public ViewHolder(View view) {
+        ViewHolder(View view) {
             super(view);
-            mColorName = (TextView) view.findViewById(R.id.color_name);
-            mColorValue = (TextView) view.findViewById(R.id.color_value);
-            mTextContainer = view.findViewById(R.id.text_container);
+            mName = (TextView) view.findViewById(R.id.tv_name);
+            mPhone = (TextView) view.findViewById(R.id.tv_phone);
+//            mTextContainer = view.findViewById(R.id.text_container);
         }
     }
 
-    public void swapData(List<Item> mNewDataSet) {
+    public void swapData(List<SearchResult> mNewDataSet) {
         mDataSet = mNewDataSet;
         notifyDataSetChanged();
     }
 
-    public void setItemsOnClickListener(OnItemClickListener onClickListener){
+    public void setItemsOnClickListener(OnItemClickListener onClickListener) {
         this.mItemsOnClickListener = onClickListener;
     }
 
     @Override
-    public SearchResultsListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.yp_search_results_list_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(SearchResultsListAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
 
-        Item colorSuggestion = mDataSet.get(position);
-//        holder.mColorName.setText(colorSuggestion.getName());
-//        holder.mColorValue.setText(colorSuggestion.getHex());
+        SearchResult searchResult = mDataSet.get(position);
+        holder.mName.setText(searchResult.name);
+        holder.mPhone.setText(searchResult.phone);
 
-//        int color = Color.parseColor(colorSuggestion.getHex());
-//        holder.mColorName.setTextColor(color);
-//        holder.mColorValue.setTextColor(color);
-
-        if(mLastAnimatedItemPosition < position){
+        if (mLastAnimatedItemPosition < position) {
             animateItem(holder.itemView);
             mLastAnimatedItemPosition = position;
         }
 
-        if(mItemsOnClickListener != null){
+        if (mItemsOnClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Logger.d("on item clicked");
                     mItemsOnClickListener.onClick(mDataSet.get(position));
                 }
             });
