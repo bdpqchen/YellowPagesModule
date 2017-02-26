@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 
-import com.bdpqchen.yellowpagesmodule.yellowpages.ExpandableListViewAdapter;
+import com.bdpqchen.yellowpagesmodule.yellowpages.adapter.ExpandableListViewAdapter;
 import com.bdpqchen.yellowpagesmodule.yellowpages.R;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.SearchResult;
 import com.bdpqchen.yellowpagesmodule.yellowpages.utils.ListUtils;
@@ -19,7 +19,7 @@ import java.util.List;
  * Created by chen on 17-2-23.
  */
 
-public class ThirdFragment extends Fragment implements ExpandableListView.OnGroupClickListener, ExpandableListView.OnGroupCollapseListener, ExpandableListView.OnGroupExpandListener, ExpandableListView.OnChildClickListener {
+public class CategoryFragment extends Fragment implements ExpandableListView.OnGroupClickListener, ExpandableListView.OnGroupCollapseListener, ExpandableListView.OnGroupExpandListener, ExpandableListView.OnChildClickListener {
 
     public String[] groupStrings = {"西游记", "水浒传", "三国演义", "红楼梦", "西游记", "水浒传", "三国演义", "红楼梦"};
     public String[][] childStrings = {

@@ -7,8 +7,8 @@
         android:supportsRtl="true"
         android:name=".App"
         >
-        <activity android:name=".HomeActivity" android:theme="@style/yp_AppTheme"/>
-        <activity android:name=".SearchActivity" android:theme="@style/yp_AppTheme"/>
+        <activity android:name=".activity.HomeActivity" android:theme="@style/yp_AppTheme"/>
+        <activity android:name=".activity.InitActivity" android:theme="@style/yp_AppTheme"/>
     </application>
 
 </manifest>

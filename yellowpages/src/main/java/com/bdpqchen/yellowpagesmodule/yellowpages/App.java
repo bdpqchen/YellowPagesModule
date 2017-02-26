@@ -3,6 +3,7 @@ package com.bdpqchen.yellowpagesmodule.yellowpages;
 import android.app.Application;
 import android.content.Context;
 
+import com.orhanobut.hawk.Hawk;
 import com.orhanobut.logger.LogLevel;
 import com.orhanobut.logger.Logger;
 
@@ -22,13 +23,14 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         mContext = getApplicationContext();
-        Logger.init("logger").hideThreadInfo().logLevel(LogLevel.FULL);
-
+        initDependencies();
 
 
     }
 
-
-
+    private void initDependencies() {
+        Logger.init("logger").hideThreadInfo().logLevel(LogLevel.FULL);
+        Hawk.init(mContext).build();
+    }
 
 }

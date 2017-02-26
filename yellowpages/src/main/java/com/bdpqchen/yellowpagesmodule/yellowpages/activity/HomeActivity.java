@@ -1,4 +1,4 @@
-package com.bdpqchen.yellowpagesmodule.yellowpages;
+package com.bdpqchen.yellowpagesmodule.yellowpages.activity;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -21,12 +21,13 @@ import android.widget.Toast;
 import com.arlib.floatingsearchview.FloatingSearchView;
 import com.arlib.floatingsearchview.suggestions.SearchSuggestionsAdapter;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
+import com.bdpqchen.yellowpagesmodule.yellowpages.R;
 import com.bdpqchen.yellowpagesmodule.yellowpages.adapter.SearchResultsListAdapter;
 import com.bdpqchen.yellowpagesmodule.yellowpages.base.BaseActivity;
 import com.bdpqchen.yellowpagesmodule.yellowpages.data.SearchHelper;
-import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.FirstFragment;
-import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.SecondFragment;
-import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.ThirdFragment;
+import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.DepartmentFragment;
+import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.CollectedFragment;
+import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.CategoryFragment;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.SearchResult;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.WordSuggestion;
 import com.daimajia.androidanimations.library.Techniques;
@@ -72,14 +73,15 @@ public class HomeActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.mContext = this;
-        FirstFragment firstFragment = new FirstFragment();
-        SecondFragment secondFragment = new SecondFragment();
-        ThirdFragment thirdFragment = new ThirdFragment();
+        DepartmentFragment departmentFragment = new DepartmentFragment();
+
+        CollectedFragment collectedFragment = new CollectedFragment();
+        CategoryFragment categoryFragment = new CategoryFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.fragment_container_department, firstFragment);
-        fragmentTransaction.add(R.id.fragment_container_collected, secondFragment);
-        fragmentTransaction.add(R.id.fragment_container_list, thirdFragment);
+        fragmentTransaction.add(R.id.fragment_container_department, departmentFragment);
+        fragmentTransaction.add(R.id.fragment_container_collected, collectedFragment);
+        fragmentTransaction.add(R.id.fragment_container_list, categoryFragment);
         fragmentTransaction.commit();
         mSearchView = (FloatingSearchView) findViewById(R.id.floating_search_view);
         mParentView = (RelativeLayout) findViewById(R.id.parent_view);
@@ -87,7 +89,6 @@ public class HomeActivity extends BaseActivity {
 
         setupSearchView();
         setupResultsList();
-
     }
 
     private void setupSearchView() {

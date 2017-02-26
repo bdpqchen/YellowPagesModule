@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.bdpqchen.yellowpagesmodule.yellowpages.HomeActivity;
+import com.bdpqchen.yellowpagesmodule.yellowpages.activity.InitActivity;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -36,13 +36,15 @@ public class MainActivity extends AppCompatActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_btn:
-                startActivity(new Intent(this, HomeActivity.class));
-                break;
             case R.id.button:
-                startActivity(new Intent(this, HomeActivity.class));
-
+                startYellowPage();
                 break;
 
         }
+    }
+
+    private void startYellowPage() {
+        startActivity(new Intent(this, InitActivity.class));
+//        startActivity(new Intent(this, HomeActivity.class));
     }
 }

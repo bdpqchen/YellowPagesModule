@@ -14,7 +14,7 @@ import com.bdpqchen.yellowpagesmodule.yellowpages.R;
  * Created by chen on 17-2-23.
  */
 
-public class FirstFragment extends Fragment {
+public class DepartmentFragment extends Fragment {
 
     @Nullable
     @Override

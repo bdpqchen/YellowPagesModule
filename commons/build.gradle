@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'org.greenrobot.greendao'
 //apply plugin: 'com.jakewharton.butterknife'
 
 
@@ -49,6 +50,22 @@ dependencies {
 
     //日志
     compile 'com.orhanobut:logger:1.15'
+
+    //网络
+    compile 'io.reactivex:rxjava:1.1.5'
+    compile 'io.reactivex:rxandroid:1.2.0'
+    compile 'com.squareup.retrofit2:retrofit:2.0.2'
+    compile 'com.squareup.retrofit2:converter-gson:2.0.2'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.0.2'
+    compile 'com.squareup.okhttp3:okhttp:3.0.1'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.0.1'
+
+    //存储
+    compile 'com.orhanobut:hawk:2.0.1'
+    compile 'org.greenrobot:greendao:3.2.0'
+
+
+
 
 
 }
