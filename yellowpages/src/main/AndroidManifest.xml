@@ -11,4 +11,6 @@
         <activity android:name=".activity.InitActivity" android:theme="@style/yp_AppTheme"/>
     </application>
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
 </manifest>

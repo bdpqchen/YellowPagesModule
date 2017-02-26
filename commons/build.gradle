@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'org.greenrobot.greendao'
 //apply plugin: 'com.jakewharton.butterknife'
 
 
@@ -22,6 +21,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+
 }
 
 dependencies {

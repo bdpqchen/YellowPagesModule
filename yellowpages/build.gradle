@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'org.greenrobot.greendao'
 
 android {
     compileSdkVersion 25
@@ -19,6 +20,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    greendao {
+        //版本号，升级时可配置
+        schemaVersion 1
+        daoPackage'com.inst.greendao3_demo.dao'
+        targetGenDir'src/main/java'
+    }
+
     resourcePrefix 'yp'
 
 }
@@ -31,5 +40,8 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.2.0'
     testCompile 'junit:junit:4.12'
     compile project(':commons')
+
+    compile 'org.greenrobot:greendao:3.2.0'
+
 
 }
