@@ -18,11 +18,7 @@
                 }
 
               ]
-            }
-          ]
-        },
-        {
-          "department":[
+            },
             {
               "department_name":"学工部",
               "department_list":[
@@ -59,11 +55,7 @@
                 }
 
               ]
-            }
-          ]
-        },
-        {
-          "department":[
+            },
             {
               "department_name":"精仪学院",
               "department_list":[
@@ -99,11 +91,7 @@
                   "item_phone":"27407731"
                 }
               ]
-            }
-          ]
-        },
-        {
-          "department":[
+            },
             {
               "department_name":"学生宿舍管理中心",
               "department_list":[

@@ -55,7 +55,6 @@ public class InitActivity extends BaseActivity {
         // TODO: 17-2-26 加判断是否存在数据库
         if (PrefUtils.isFirstOpen()) {
 
-            initDatabase();
             showInitDialog();
             getDataList();
 
@@ -64,10 +63,10 @@ public class InitActivity extends BaseActivity {
             startActivity(intent);
         }
 
-
     }
 
     private void showInitDialog() {
+        mProgressDialog.setProgress(0);
         mProgressDialog.setCancelable(false);
         mProgressDialog.setTitle("提示");
         mProgressDialog.setMessage("首次使用，需要导入号码库，请等待...");
@@ -77,26 +76,6 @@ public class InitActivity extends BaseActivity {
         mProgressDialog.show();
 
     }
-
-    private void initDatabase() {
-        long time = System.currentTimeMillis();
-        List<Phone> phoneList = new ArrayList<>();
-
-        for (int i = 0; i < 10000; i++) {
-            Phone phone = new Phone();
-            phone.setCategory(1);
-            phone.setDepartment("部门/学院/其他名称");
-            phone.setIsCollected(0);
-            phone.setName("号码名称");
-            phone.setPhone(String.valueOf(i));
-            phoneList.add(phone);
-        }
-
-        DataManager.insertBatch(phoneList);
-
-        Logger.d(System.currentTimeMillis() - time);
-    }
-
 
     public void getDataList() {
 
@@ -117,7 +96,12 @@ public class InitActivity extends BaseActivity {
             @Override
             public void onNext(DataBean dataBean) {
                 Logger.i("onNext()");
-                initDatabase();
+                Logger.i(String.valueOf(dataBean.getData().size()));
+                Logger.i(dataBean.getData().get(0).getCategory_name());
+                Logger.i(String.valueOf(dataBean.getData().get(0).getCategory_list().size()));
+                Logger.i(String.valueOf(dataBean.getData().get(0).getCategory_list().get(0).getDepartment().size()));
+                Logger.i(dataBean.getData().get(1).getCategory_list().get(0).getDepartment().get(0).getDepartment_list().get(0).getItem_name());
+//                initDatabase(dataBean);
             }
 
         };
@@ -125,7 +109,33 @@ public class InitActivity extends BaseActivity {
         mProgressDialog.incrementProgressBy(10);
     }
 
+    private void initDatabase(DataBean dataBean) {
+        long time = System.currentTimeMillis();
+        List<Phone> phoneList = new ArrayList<>();
 
+        for (int i = 0; i < dataBean.getData().size(); i++) {
+            DataBean.DataBeanList dataBeanLists = dataBean.getData().get(i);
+            for (int j = 0; j < dataBeanLists.getCategory_list().size(); j++){
+
+            }
+            Phone phone = new Phone();
+            phone.setCategory(1);
+            phone.setDepartment("部门/学院/其他名称");
+            phone.setIsCollected(i);
+            phone.setName("号码名称");
+            phone.setPhone("232");
+            phoneList.add(phone);
+//            DataManager.insertPhone(phone);
+        }
+        Logger.i(String.valueOf(phoneList.size()));
+        Logger.i("DataList.size", phoneList.size() + "");
+        Logger.i(String.valueOf(phoneList.get(0).getIsCollected()));
+        Logger.i(String.valueOf(phoneList.get(1).getIsCollected()));
+
+        DataManager.insertBatch(phoneList);
+
+        Logger.d(System.currentTimeMillis() - time);
+    }
 
     private void showInitErrorDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

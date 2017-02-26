@@ -38,4 +38,19 @@ public class DataManager {
 
     }
 
+    public static List<Phone> limitQueryPhone(String name, int limit){
+        initPhoneDao();
+        List<Phone> list = mPhoneDao.queryBuilder()
+                .where(PhoneDao.Properties.Name.like("%" + name + "%"))
+                .limit(limit)
+                .list();
+        return list;
+    }
+
+    public static List<Phone> fullQueryPhone(String name){
+        initPhoneDao();
+        List<Phone> list = mPhoneDao.queryBuilder().where(PhoneDao.Properties.Name.like("$" + name + "%")).list();
+        return list;
+    }
+
 }

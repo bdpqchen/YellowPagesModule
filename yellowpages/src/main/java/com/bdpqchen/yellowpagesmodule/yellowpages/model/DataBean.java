@@ -21,7 +21,7 @@ public class DataBean {
     public static class DataBeanList {
         /**
          * category_name : 校级
-         * category_list : [{"department":[{"department_name":"宣传部","department_list":[{"item_name":"宣传部校报","item_phone":"27403289"},{"item_name":"宣传部广播站","item_phone":"27406475"}]}]},{"department":[{"department_name":"学工部","department_list":[{"item_name":"学工部资助管理中心","item_phone":"27407083"},{"item_name":"学工部本科生教育科","item_phone":"27403407"}]}]}]
+         * category_list : [{"department":[{"department_name":"宣传部","department_list":[{"item_name":"宣传部校报","item_phone":"27403289"},{"item_name":"宣传部广播站","item_phone":"27406475"}]},{"department_name":"学工部","department_list":[{"item_name":"学工部资助管理中心","item_phone":"27407083"},{"item_name":"学工部本科生教育科","item_phone":"27403407"}]}]}]
          */
 
         private String category_name;
