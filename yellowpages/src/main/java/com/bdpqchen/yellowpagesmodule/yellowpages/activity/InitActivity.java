@@ -113,10 +113,10 @@ public class InitActivity extends BaseActivity {
         long time = System.currentTimeMillis();
         List<Phone> phoneList = new ArrayList<>();
 
-        for (int i = 0; i < dataBean.getData().size(); i++) {
-            DataBean.DataBeanList dataBeanLists = dataBean.getData().get(i);
-            for (int j = 0; j < dataBeanLists.getCategory_list().size(); j++){
-                DataBean.DataBeanList.CategoryListBean categoryList = dataBeanLists.getCategory_list().get(j);
+        for (int i = 0; i < dataBean.getCategory_list().size(); i++) {
+            DataBean.CategoryListBean dataBeanLists = dataBean.getCategory_list().get(i);
+            for (int j = 0; j < dataBeanLists.getDepartment_list().size(); j++){
+                DataBean.CategoryListBean.DepartmentListBeanX categoryList = dataBeanLists.getCategory_list().get(j);
                 for (int k = 0; k < categoryList.getDepartment().size(); k++){
                     DataBean.DataBeanList.CategoryListBean.DepartmentBean departmentList = categoryList.getDepartment().get(k);
                     for (int l = 0; l < departmentList.getDepartment_list().size(); l++){

@@ -18,7 +18,7 @@
         },
         {
           "department_name":"宣传部",
-          "department_list":[
+          "unit_list":[
             {
               "item_name":"宣传部校报",
               "item_phone":"string"
@@ -49,7 +49,7 @@
         },
         {
           "department_name":"精仪学院",
-          "department_list":[
+          "unit_list":[
             {
               "item_name":"精仪学院精密仪器工程系四室6",
               "item_phone":"27402367"
@@ -80,7 +80,7 @@
         },
         {
           "department_name":"学生宿舍管理中心",
-          "department_list":[
+          "unit_list":[
             {
               "item_name":"后勤服务集团学生宿舍管理中心七里台小区门卫室",
               "item_phone":"27402367"
