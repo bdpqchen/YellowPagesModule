@@ -10,14 +10,12 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"/>
 
-<!--
 
-    <ProgressBar
+   <!-- <ProgressBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/init_progress_bar"
-        />
--->
-
+        />-->
+css html js, php,
 
 </LinearLayout>

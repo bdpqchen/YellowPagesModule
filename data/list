@@ -28,7 +28,7 @@
                 },
                 {
                   "item_name":"学工部本科生教育科",
-                  "item_phone":"27403407"
+                  "item_phone":"27407083"
                 }
 
               ]
@@ -68,6 +68,41 @@
                   "item_phone":"27401827"
                 }
 
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "category_name":"其他",
+      "category_list":[
+        {
+          "department":[
+            {
+              "department_name":"劳动服务公司",
+              "department_list":[
+                {
+                  "item_name":"劳动服务公司财务室",
+                  "item_phone":"27407731"
+                },
+                {
+                  "item_name":"劳动服务公司财务室",
+                  "item_phone":"27407731"
+                }
+              ]
+            },
+            {
+              "department_name":"学生宿舍管理中心",
+              "department_list":[
+                {
+                  "item_name":"后勤服务集团学生宿舍管理中心七里台小区门卫室（西门）",
+                  "item_phone":"27404748"
+                },
+                {
+                  "item_name":"后勤服务集团学生宿舍管理中心六里台管理站",
+                  "item_phone":"27403745"
+                }
               ]
             }
           ]

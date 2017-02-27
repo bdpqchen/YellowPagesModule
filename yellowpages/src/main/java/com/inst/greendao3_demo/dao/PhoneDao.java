@@ -27,7 +27,7 @@ public class PhoneDao extends AbstractDao<Phone, Long> {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property Name = new Property(1, String.class, "name", false, "name");
         public final static Property Phone = new Property(2, String.class, "phone", false, "phone");
-        public final static Property Category = new Property(3, int.class, "category", false, "category");
+        public final static Property Category = new Property(3, String.class, "category", false, "category");
         public final static Property Department = new Property(4, String.class, "department", false, "department");
         public final static Property IsCollected = new Property(5, int.class, "isCollected", false, "isCollected");
     }
@@ -48,7 +48,7 @@ public class PhoneDao extends AbstractDao<Phone, Long> {
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "\"name\" TEXT," + // 1: name
                 "\"phone\" TEXT," + // 2: phone
-                "\"category\" INTEGER NOT NULL ," + // 3: category
+                "\"category\" TEXT," + // 3: category
                 "\"department\" TEXT," + // 4: department
                 "\"isCollected\" INTEGER NOT NULL );"); // 5: isCollected
     }
@@ -77,7 +77,11 @@ public class PhoneDao extends AbstractDao<Phone, Long> {
         if (phone != null) {
             stmt.bindString(3, phone);
         }
-        stmt.bindLong(4, entity.getCategory());
+ 
+        String category = entity.getCategory();
+        if (category != null) {
+            stmt.bindString(4, category);
+        }
  
         String department = entity.getDepartment();
         if (department != null) {
@@ -104,7 +108,11 @@ public class PhoneDao extends AbstractDao<Phone, Long> {
         if (phone != null) {
             stmt.bindString(3, phone);
         }
-        stmt.bindLong(4, entity.getCategory());
+ 
+        String category = entity.getCategory();
+        if (category != null) {
+            stmt.bindString(4, category);
+        }
  
         String department = entity.getDepartment();
         if (department != null) {
@@ -124,7 +132,7 @@ public class PhoneDao extends AbstractDao<Phone, Long> {
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // name
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // phone
-            cursor.getInt(offset + 3), // category
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // category
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // department
             cursor.getInt(offset + 5) // isCollected
         );
@@ -136,7 +144,7 @@ public class PhoneDao extends AbstractDao<Phone, Long> {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setName(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setPhone(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setCategory(cursor.getInt(offset + 3));
+        entity.setCategory(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setDepartment(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setIsCollected(cursor.getInt(offset + 5));
      }

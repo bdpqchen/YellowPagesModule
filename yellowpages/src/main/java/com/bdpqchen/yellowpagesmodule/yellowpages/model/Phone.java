@@ -22,7 +22,7 @@ public class Phone  {
     private String phone;
 
     @Property(nameInDb = "category")
-    private int category;
+    private String category;
 
     @Property(nameInDb = "department")
     private String department;
@@ -30,8 +30,8 @@ public class Phone  {
     @Property(nameInDb = "isCollected")
     private int isCollected;
 
-    @Generated(hash = 1358239552)
-    public Phone(Long id, String name, String phone, int category,
+    @Generated(hash = 151169786)
+    public Phone(Long id, String name, String phone, String category,
             String department, int isCollected) {
         this.id = id;
         this.name = name;
@@ -69,11 +69,11 @@ public class Phone  {
         this.phone = phone;
     }
 
-    public int getCategory() {
+    public String getCategory() {
         return this.category;
     }
 
-    public void setCategory(int category) {
+    public void setCategory(String category) {
         this.category = category;
     }
 
@@ -92,7 +92,6 @@ public class Phone  {
     public void setIsCollected(int isCollected) {
         this.isCollected = isCollected;
     }
-
 
 
 

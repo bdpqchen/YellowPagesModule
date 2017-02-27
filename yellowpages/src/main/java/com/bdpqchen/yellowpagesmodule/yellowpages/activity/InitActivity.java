@@ -97,11 +97,11 @@ public class InitActivity extends BaseActivity {
             public void onNext(DataBean dataBean) {
                 Logger.i("onNext()");
                 Logger.i(String.valueOf(dataBean.getData().size()));
-                Logger.i(dataBean.getData().get(0).getCategory_name());
+//                Logger.i(dataBean.getData().get(0).getCategory_name());
                 Logger.i(String.valueOf(dataBean.getData().get(0).getCategory_list().size()));
                 Logger.i(String.valueOf(dataBean.getData().get(0).getCategory_list().get(0).getDepartment().size()));
                 Logger.i(dataBean.getData().get(1).getCategory_list().get(0).getDepartment().get(0).getDepartment_list().get(0).getItem_name());
-//                initDatabase(dataBean);
+                initDatabase(dataBean);
             }
 
         };
@@ -116,25 +116,42 @@ public class InitActivity extends BaseActivity {
         for (int i = 0; i < dataBean.getData().size(); i++) {
             DataBean.DataBeanList dataBeanLists = dataBean.getData().get(i);
             for (int j = 0; j < dataBeanLists.getCategory_list().size(); j++){
-
+                DataBean.DataBeanList.CategoryListBean categoryList = dataBeanLists.getCategory_list().get(j);
+                for (int k = 0; k < categoryList.getDepartment().size(); k++){
+                    DataBean.DataBeanList.CategoryListBean.DepartmentBean departmentList = categoryList.getDepartment().get(k);
+                    for (int l = 0; l < departmentList.getDepartment_list().size(); l++){
+                        DataBean.DataBeanList.CategoryListBean.DepartmentBean.DepartmentListBean list = departmentList.getDepartment_list().get(l);
+                        Phone phone = new Phone();
+                        phone.setCategory(dataBeanLists.getCategory_name());
+                        phone.setPhone(list.getItem_phone());
+                        phone.setName(list.getItem_name());
+                        phone.setIsCollected(0);
+                        phone.setDepartment(departmentList.getDepartment_name());
+                        phoneList.add(phone);
+                    }
+                }
             }
+/*
             Phone phone = new Phone();
-            phone.setCategory(1);
+//            phone.setCategory(1);
             phone.setDepartment("部门/学院/其他名称");
             phone.setIsCollected(i);
             phone.setName("号码名称");
             phone.setPhone("232");
             phoneList.add(phone);
-//            DataManager.insertPhone(phone);
+*/
         }
+//        DataManager.insertPhone(phone);
+
+        DataManager.insertBatch(phoneList);
         Logger.i(String.valueOf(phoneList.size()));
         Logger.i("DataList.size", phoneList.size() + "");
         Logger.i(String.valueOf(phoneList.get(0).getIsCollected()));
         Logger.i(String.valueOf(phoneList.get(1).getIsCollected()));
-
-        DataManager.insertBatch(phoneList);
-
         Logger.d(System.currentTimeMillis() - time);
+
+
+
     }
 
     private void showInitErrorDialog() {
