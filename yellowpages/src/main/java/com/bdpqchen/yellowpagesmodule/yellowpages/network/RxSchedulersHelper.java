@@ -17,6 +17,7 @@ public class RxSchedulersHelper {
             public Observable<T> call(Observable<T> tObservable) {
                 return tObservable
                         .subscribeOn(Schedulers.io())
+                        .unsubscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread());
             }
         };

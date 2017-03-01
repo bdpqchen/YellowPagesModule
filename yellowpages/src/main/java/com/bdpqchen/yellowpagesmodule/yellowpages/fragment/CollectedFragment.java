@@ -2,16 +2,31 @@ package com.bdpqchen.yellowpagesmodule.yellowpages.fragment;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 
-import com.bdpqchen.yellowpagesmodule.yellowpages.adapter.ExpandableListViewAdapter;
 import com.bdpqchen.yellowpagesmodule.yellowpages.R;
+import com.bdpqchen.yellowpagesmodule.yellowpages.adapter.ListViewCollectedAdapter;
+import com.bdpqchen.yellowpagesmodule.yellowpages.data.DataManager;
+import com.bdpqchen.yellowpagesmodule.yellowpages.data.DatabaseClient;
+import com.bdpqchen.yellowpagesmodule.yellowpages.model.Phone;
+import com.bdpqchen.yellowpagesmodule.yellowpages.network.RxSchedulersHelper;
 import com.bdpqchen.yellowpagesmodule.yellowpages.utils.ListUtils;
+import com.orhanobut.logger.Logger;
+
+import org.greenrobot.greendao.database.Database;
+
+import java.util.List;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
 
 
 /**
@@ -21,6 +36,8 @@ import com.bdpqchen.yellowpagesmodule.yellowpages.utils.ListUtils;
 public class CollectedFragment extends Fragment implements ExpandableListView.OnGroupClickListener, ExpandableListView.OnGroupCollapseListener, ExpandableListView.OnGroupExpandListener, ExpandableListView.OnChildClickListener {
 
     public String[] groupStrings = {"我的收藏"};
+
+    public String[][] childStrings1;
 
     public String[][] childStrings = {
             {"唐三藏", "孙悟空", "猪八戒", "沙和尚"}
@@ -38,10 +55,9 @@ public class CollectedFragment extends Fragment implements ExpandableListView.On
         mExpandableListView.setOnGroupCollapseListener(this);
         mExpandableListView.setOnGroupExpandListener(this);
         mExpandableListView.setOnChildClickListener(this);
-        final ExpandableListViewAdapter adapter = new ExpandableListViewAdapter(getContext());
+        final ListViewCollectedAdapter adapter = new ListViewCollectedAdapter(getContext());
         mExpandableListView.setAdapter(adapter);
         ListUtils.getInstance().setListViewHeightBasedOnChildren(mExpandableListView);
-
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -49,14 +65,45 @@ public class CollectedFragment extends Fragment implements ExpandableListView.On
                 ListUtils.getInstance().setListViewHeightBasedOnChildren(mExpandableListView);
 
             }
-        }, 5000);
-        getCollectedData();
+        }, 3000);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                getCollectedData();
+                getDepartmentByCategory();
+                DataManager.getDepartmentsByCategory(0);
+            }
+        }).start();
         return view;
     }
 
-    private void getCollectedData() {
-
+    private void getDepartmentByCategory() {
+        List<Phone> phoneList = DataManager.getDepartmentsByCategory(0);
+        Logger.i(String.valueOf(phoneList.size()));
+        Log.i("phonelist.size", "phonelist.name");
+        Logger.i(phoneList.get(0).getDepartment());
     }
+
+    public void getCollectedData(){
+        Subscriber subscriber = new Subscriber<List<Phone>>() {
+            @Override
+            public void onCompleted() {}
+
+            @Override
+            public void onError(Throwable e) {
+                Log.i("getCollectedDataList", "onError()");
+            }
+
+            @Override
+            public void onNext(List<Phone> phones) {
+                Log.i("getCollectedDataList", "onNext()");
+                Log.i("phones.size", String.valueOf(phones.size()));
+
+            }
+        };
+        DatabaseClient.getInstance().getCollectedData(subscriber);
+    }
+
 
     @Override
     public void onGroupCollapse(int groupPosition) {

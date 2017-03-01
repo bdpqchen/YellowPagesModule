@@ -5,28 +5,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.ExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bdpqchen.yellowpagesmodule.yellowpages.R;
 
-
 /**
- * Created by chen on 17-2-23.
+ * Created by bdpqchen on 17-3-1.
  */
 
-public class ExpandableListViewAdapter extends BaseExpandableListAdapter implements ExpandableListAdapter{
-
+public class ListViewCollectedAdapter extends BaseExpandableListAdapter {
     private static String[] mGroupArray;
     private static String[][] mChildArray;
     private Context mContext;
 
-    public ExpandableListViewAdapter(Context context){
+    public ListViewCollectedAdapter(Context context){
         mContext = context;
     }
 
-    public ExpandableListViewAdapter(String[] groupStrings, String[][] childStrings, Context context) {
+    public ListViewCollectedAdapter(String[] groupStrings, String[][] childStrings, Context context) {
         mChildArray = childStrings;
         mGroupArray = groupStrings;
         mContext = context;
@@ -87,17 +84,17 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter impleme
 
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-        GroupViewHolder groupViewHolder;
+        ListViewCollectedAdapter.GroupViewHolder groupViewHolder;
         if (convertView == null){
             convertView = LayoutInflater.from(mContext).inflate(R.layout.yp_item_elv_group, parent, false);
-            groupViewHolder = new GroupViewHolder();
+            groupViewHolder = new ListViewCollectedAdapter.GroupViewHolder();
             groupViewHolder.tvGroupName = (TextView) convertView.findViewById(R.id.tv_group_name);
             groupViewHolder.tvGroupLength = (TextView) convertView.findViewById(R.id.tv_group_length);
             groupViewHolder.ivDropDown = (ImageView) convertView.findViewById(R.id.iv_drop_down);
             groupViewHolder.ivDropRight = (ImageView) convertView.findViewById(R.id.iv_drop_right);
             convertView.setTag(groupViewHolder);
         }else{
-            groupViewHolder = (GroupViewHolder) convertView.getTag();
+            groupViewHolder = (ListViewCollectedAdapter.GroupViewHolder) convertView.getTag();
         }
         if (isExpanded){
             groupViewHolder.ivDropRight.setVisibility(View.GONE);
@@ -113,14 +110,14 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter impleme
 
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        ChildViewHolder childViewHolder;
+        ListViewCollectedAdapter.ChildViewHolder childViewHolder;
         if(convertView == null){
             convertView = LayoutInflater.from(mContext).inflate(R.layout.yp_item_elv_child, parent, false);
-            childViewHolder = new ChildViewHolder();
+            childViewHolder = new ListViewCollectedAdapter.ChildViewHolder();
             childViewHolder.tvChildTitle = (TextView) convertView.findViewById(R.id.tv_child_title);
             convertView.setTag(childViewHolder);
         }else{
-            childViewHolder = (ChildViewHolder) convertView.getTag();
+            childViewHolder = (ListViewCollectedAdapter.ChildViewHolder) convertView.getTag();
         }
         childViewHolder.tvChildTitle.setText(mChildArray[groupPosition][childPosition]);
         return convertView;

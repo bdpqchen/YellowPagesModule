@@ -85,38 +85,30 @@ public class HomeActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.mContext = this;
-        if (PrefUtils.isFirstOpen()){
-            DepartmentFragment departmentFragment = new DepartmentFragment();
-            CollectedFragment collectedFragment = new CollectedFragment();
-            CategoryFragment categoryFragment = new CategoryFragment();
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.add(R.id.fragment_container_department, departmentFragment);
-            fragmentTransaction.add(R.id.fragment_container_collected, collectedFragment);
-            fragmentTransaction.add(R.id.fragment_container_list, categoryFragment);
-            fragmentTransaction.commit();
-            mSearchView = (FloatingSearchView) findViewById(R.id.floating_search_view);
-            mParentView = (RelativeLayout) findViewById(R.id.parent_view);
-            mSearchResultsList = (RecyclerView) findViewById(R.id.search_results_list);
-            setupSearchView();
-            setupResultsList();
+        mSearchView = (FloatingSearchView) findViewById(R.id.floating_search_view);
+        mParentView = (RelativeLayout) findViewById(R.id.parent_view);
+        mSearchResultsList = (RecyclerView) findViewById(R.id.search_results_list);
+        setupSearchView();
+        setupResultsList();
+        if (!PrefUtils.isFirstOpen()){
+            setListViewShow();
         }else {
             mProgressDialog = new ProgressDialog(this);
             showInitDialog();
             getDataList();
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (!isInited) {
-                        isInited = true;
-                        finish();
-                        startActivity(getIntent());
-                    } else {
-
-                    }
-                }
-            }, 2000);
         }
+    }
+
+    private void setListViewShow() {
+        DepartmentFragment departmentFragment = new DepartmentFragment();
+        CollectedFragment collectedFragment = new CollectedFragment();
+        CategoryFragment categoryFragment = new CategoryFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.fragment_container_department, departmentFragment);
+        fragmentTransaction.add(R.id.fragment_container_collected, collectedFragment);
+        fragmentTransaction.add(R.id.fragment_container_list, categoryFragment);
+        fragmentTransaction.commit();
     }
 
     private void showInitDialog() {
@@ -178,7 +170,7 @@ public class HomeActivity extends BaseActivity {
                             DataBean.CategoryListBean.DepartmentListBean.UnitListBean list = departmentList.getUnit_list().get(k);
                             Logger.d(k + "===l");
                             Phone phone = new Phone();
-                            phone.setCategory(categoryList.getCategory_name());
+                            phone.setCategory(i);
                             phone.setPhone(list.getItem_phone());
                             phone.setName(list.getItem_name());
                             phone.setIsCollected(0);
@@ -194,6 +186,9 @@ public class HomeActivity extends BaseActivity {
                 Logger.i(String.valueOf(phoneList.get(0).getIsCollected()));
                 Logger.i(String.valueOf(phoneList.get(1).getIsCollected()));
                 Logger.d(System.currentTimeMillis() - time);
+                setListViewShow();
+                mProgressDialog.dismiss();
+
             }
         }).start();
 

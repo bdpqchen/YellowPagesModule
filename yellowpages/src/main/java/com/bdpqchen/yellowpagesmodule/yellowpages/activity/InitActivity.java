@@ -124,7 +124,7 @@ public class InitActivity extends BaseActivity {
                             DataBean.CategoryListBean.DepartmentListBean.UnitListBean list = departmentList.getUnit_list().get(k);
                             Logger.d(k + "===l");
                             Phone phone = new Phone();
-                            phone.setCategory(categoryList.getCategory_name());
+//                            phone.setCategory(categoryList.getCategory_name());
                             phone.setPhone(list.getItem_phone());
                             phone.setName(list.getItem_name());
                             phone.setIsCollected(0);

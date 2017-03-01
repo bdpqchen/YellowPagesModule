@@ -21,8 +21,14 @@ public class Phone  {
     @Property(nameInDb = "phone")
     private String phone;
 
+    /*
+    * String category--->int 0, 1, 3...
+    * 1--->校级
+    * 2--->院级
+    * 3--->其他
+    * */
     @Property(nameInDb = "category")
-    private String category;
+    private int category;
 
     @Property(nameInDb = "department")
     private String department;
@@ -30,8 +36,8 @@ public class Phone  {
     @Property(nameInDb = "isCollected")
     private int isCollected;
 
-    @Generated(hash = 151169786)
-    public Phone(Long id, String name, String phone, String category,
+    @Generated(hash = 1358239552)
+    public Phone(Long id, String name, String phone, int category,
             String department, int isCollected) {
         this.id = id;
         this.name = name;
@@ -69,11 +75,11 @@ public class Phone  {
         this.phone = phone;
     }
 
-    public String getCategory() {
+    public int getCategory() {
         return this.category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(int category) {
         this.category = category;
     }
 
@@ -92,7 +98,5 @@ public class Phone  {
     public void setIsCollected(int isCollected) {
         this.isCollected = isCollected;
     }
-
-
 
 }

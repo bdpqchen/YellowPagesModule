@@ -1,4 +1,4 @@
-package com.bdpqchen.yellowpagesmodule.yellowpages.data;
+package com.bdpqchen.yellowpagesmodule.yellowpages.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

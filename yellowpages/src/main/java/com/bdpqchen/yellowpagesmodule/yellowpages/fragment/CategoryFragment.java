@@ -1,6 +1,7 @@
 package com.bdpqchen.yellowpagesmodule.yellowpages.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -48,8 +49,19 @@ public class CategoryFragment extends Fragment implements ExpandableListView.OnG
         mExpandableListView.setOnGroupCollapseListener(this);
         mExpandableListView.setOnGroupExpandListener(this);
         mExpandableListView.setOnChildClickListener(this);
-        mExpandableListView.setAdapter(new ExpandableListViewAdapter(groupStrings, childStrings, getContext()));
+        final ExpandableListViewAdapter adapter = new ExpandableListViewAdapter(getContext());
+        mExpandableListView.setAdapter(adapter);
         ListUtils.getInstance().setListViewHeightBasedOnChildren(mExpandableListView);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                adapter.addAllData(groupStrings, childStrings);
+                ListUtils.getInstance().setListViewHeightBasedOnChildren(mExpandableListView);
+
+            }
+        }, 3000);
+
         return view;
     }
 

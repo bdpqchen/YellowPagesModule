@@ -3,7 +3,7 @@ package com.bdpqchen.yellowpagesmodule.yellowpages;
 import android.app.Application;
 import android.content.Context;
 
-import com.bdpqchen.yellowpagesmodule.yellowpages.data.GreenDaoManager;
+import com.bdpqchen.yellowpagesmodule.yellowpages.database.GreenDaoManager;
 import com.inst.greendao3_demo.dao.DaoSession;
 import com.orhanobut.hawk.Hawk;
 import com.orhanobut.logger.LogLevel;
