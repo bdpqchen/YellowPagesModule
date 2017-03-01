@@ -9,6 +9,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bdpqchen.yellowpagesmodule.yellowpages.R;
+import com.bdpqchen.yellowpagesmodule.yellowpages.model.Phone;
+
+import java.util.List;
 
 /**
  * Created by bdpqchen on 17-3-1.
@@ -16,25 +19,19 @@ import com.bdpqchen.yellowpagesmodule.yellowpages.R;
 
 public class ListViewCollectedAdapter extends BaseExpandableListAdapter {
     private static String[] mGroupArray;
-    private static String[][] mChildArray;
+    private static List<Phone> mChildList;
     private Context mContext;
 
     public ListViewCollectedAdapter(Context context){
         mContext = context;
     }
 
-    public ListViewCollectedAdapter(String[] groupStrings, String[][] childStrings, Context context) {
-        mChildArray = childStrings;
-        mGroupArray = groupStrings;
-        mContext = context;
-    }
-
-    public void addAllData(String[] groups, String[][] children){
+    public void addAllData(String[] groups, List<Phone> phoneList){
         if( groups != null){
             mGroupArray = groups;
         }
-        if (children != null){
-            mChildArray = children;
+        if (phoneList != null){
+            mChildList = phoneList;
         }
         notifyDataSetChanged();
     }
@@ -50,8 +47,8 @@ public class ListViewCollectedAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        if (mChildArray != null){
-            return mChildArray[groupPosition].length;
+        if (mChildList != null){
+            return mChildList.size();
         }else{
             return 0;
         }
@@ -64,7 +61,7 @@ public class ListViewCollectedAdapter extends BaseExpandableListAdapter {
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        return mChildArray[groupPosition][childPosition];
+        return mChildList.get(childPosition);
     }
 
     @Override
@@ -104,27 +101,33 @@ public class ListViewCollectedAdapter extends BaseExpandableListAdapter {
             groupViewHolder.ivDropDown.setVisibility(View.GONE);
         }
         groupViewHolder.tvGroupName.setText(mGroupArray[groupPosition]);
-        groupViewHolder.tvGroupLength.setText(mChildArray[groupPosition].length + "");
+        groupViewHolder.tvGroupLength.setText(mChildList.size() + "");
         return convertView;
     }
 
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        ListViewCollectedAdapter.ChildViewHolder childViewHolder;
-        if(convertView == null){
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.yp_item_elv_child, parent, false);
-            childViewHolder = new ListViewCollectedAdapter.ChildViewHolder();
-            childViewHolder.tvChildTitle = (TextView) convertView.findViewById(R.id.tv_child_title);
-            convertView.setTag(childViewHolder);
-        }else{
-            childViewHolder = (ListViewCollectedAdapter.ChildViewHolder) convertView.getTag();
+        if (mChildList.size() != 0) {
+
+            ListViewCollectedAdapter.ChildViewHolder childViewHolder;
+            if (convertView == null) {
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.yp_item_elv_child, parent, false);
+                childViewHolder = new ListViewCollectedAdapter.ChildViewHolder();
+                childViewHolder.tvChildTitle = (TextView) convertView.findViewById(R.id.tv_child_title);
+                convertView.setTag(childViewHolder);
+            } else {
+                childViewHolder = (ListViewCollectedAdapter.ChildViewHolder) convertView.getTag();
+            }
+            childViewHolder.tvChildTitle.setText(mChildList.get(childPosition).getName());
         }
-        childViewHolder.tvChildTitle.setText(mChildArray[groupPosition][childPosition]);
         return convertView;
     }
 
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
+        if (mChildList.size() == 0){
+            return false;
+        }
         return true;
     }
 

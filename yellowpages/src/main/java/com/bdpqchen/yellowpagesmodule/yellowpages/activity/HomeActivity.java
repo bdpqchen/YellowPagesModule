@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,9 +30,9 @@ import com.bdpqchen.yellowpagesmodule.yellowpages.adapter.SearchResultsListAdapt
 import com.bdpqchen.yellowpagesmodule.yellowpages.base.BaseActivity;
 import com.bdpqchen.yellowpagesmodule.yellowpages.data.DataManager;
 import com.bdpqchen.yellowpagesmodule.yellowpages.data.SearchHelper;
-import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.DepartmentFragment;
-import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.CollectedFragment;
 import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.CategoryFragment;
+import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.CollectedFragment;
+import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.DepartmentFragment;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.DataBean;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.Phone;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.SearchResult;
@@ -45,6 +46,7 @@ import com.orhanobut.logger.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.InjectView;
 import rx.Subscriber;
 
 
@@ -58,14 +60,15 @@ public class HomeActivity extends BaseActivity {
     //    @InjectView(R.id.toolbar)
     private Toolbar mToolbar;
     private Context mContext;
-
-    private String mLastQuery = "";
-    private boolean isInited  = false;
-
+    private static ProgressBar mProgressBar;
     private FloatingSearchView mSearchView;
     private SearchResultsListAdapter mSearchResultsAdapter;
-
     private ProgressDialog mProgressDialog;
+
+    private String mLastQuery = "";
+    private boolean isInited = false;
+    private static int loadFragmentTimes = 0;
+
 
     @Override
     public int getLayout() {
@@ -88,24 +91,37 @@ public class HomeActivity extends BaseActivity {
         mSearchView = (FloatingSearchView) findViewById(R.id.floating_search_view);
         mParentView = (RelativeLayout) findViewById(R.id.parent_view);
         mSearchResultsList = (RecyclerView) findViewById(R.id.search_results_list);
+        mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        DepartmentFragment departmentFragment = new DepartmentFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.fragment_container_department, departmentFragment);
+        fragmentTransaction.commit();
         setupSearchView();
         setupResultsList();
-        if (!PrefUtils.isFirstOpen()){
+        if (!PrefUtils.isFirstOpen()) {
             setListViewShow();
-        }else {
+        } else {
             mProgressDialog = new ProgressDialog(this);
             showInitDialog();
             getDataList();
         }
     }
 
+    public static void setProgressBarDismiss(){
+        loadFragmentTimes++;
+        if(loadFragmentTimes >= 2){
+            mProgressBar.setVisibility(View.GONE);
+        }
+    }
+
     private void setListViewShow() {
-        DepartmentFragment departmentFragment = new DepartmentFragment();
+
         CollectedFragment collectedFragment = new CollectedFragment();
         CategoryFragment categoryFragment = new CategoryFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.fragment_container_department, departmentFragment);
+//        fragmentTransaction.add(R.id.fragment_container_department, departmentFragment);
         fragmentTransaction.add(R.id.fragment_container_collected, collectedFragment);
         fragmentTransaction.add(R.id.fragment_container_list, categoryFragment);
         fragmentTransaction.commit();
@@ -162,10 +178,10 @@ public class HomeActivity extends BaseActivity {
                     mProgressDialog.incrementProgressBy(10);
                     DataBean.CategoryListBean categoryList = dataBean.getCategory_list().get(i);
                     Logger.d(i + "====i");
-                    for (int j = 0; j < categoryList.getDepartment_list().size(); j++){     //第i分类里的部门j
+                    for (int j = 0; j < categoryList.getDepartment_list().size(); j++) {     //第i分类里的部门j
                         Logger.d(j + "===j");
                         DataBean.CategoryListBean.DepartmentListBean departmentList = categoryList.getDepartment_list().get(j);
-                        for (int k = 0; k < departmentList.getUnit_list().size(); k++){     //第k部门里的单位
+                        for (int k = 0; k < departmentList.getUnit_list().size(); k++) {     //第k部门里的单位
                             Logger.d(k + "===k");
                             DataBean.CategoryListBean.DepartmentListBean.UnitListBean list = departmentList.getUnit_list().get(k);
                             Logger.d(k + "===l");

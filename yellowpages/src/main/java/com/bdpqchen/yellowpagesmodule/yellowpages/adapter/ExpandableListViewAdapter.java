@@ -26,11 +26,11 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter impleme
         mContext = context;
     }
 
-    public ExpandableListViewAdapter(String[] groupStrings, String[][] childStrings, Context context) {
+   /* public ExpandableListViewAdapter(String[] groupStrings, String[][] childStrings, Context context) {
         mChildArray = childStrings;
         mGroupArray = groupStrings;
         mContext = context;
-    }
+    }*/
 
     public void addAllData(String[] groups, String[][] children){
         if( groups != null){

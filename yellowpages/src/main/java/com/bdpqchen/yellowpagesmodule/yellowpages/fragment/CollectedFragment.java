@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 
 import com.bdpqchen.yellowpagesmodule.yellowpages.R;
+import com.bdpqchen.yellowpagesmodule.yellowpages.activity.HomeActivity;
 import com.bdpqchen.yellowpagesmodule.yellowpages.adapter.ListViewCollectedAdapter;
 import com.bdpqchen.yellowpagesmodule.yellowpages.data.DataManager;
 import com.bdpqchen.yellowpagesmodule.yellowpages.data.DatabaseClient;
@@ -39,12 +40,12 @@ public class CollectedFragment extends Fragment implements ExpandableListView.On
 
     public String[][] childStrings1;
 
-    public String[][] childStrings = {
+   /* public String[][] childStrings = {
             {"唐三藏", "孙悟空", "猪八戒", "沙和尚"}
-    };
+    };*/
 
     private ExpandableListView mExpandableListView;
-
+    private ListViewCollectedAdapter mAdapter;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -55,33 +56,11 @@ public class CollectedFragment extends Fragment implements ExpandableListView.On
         mExpandableListView.setOnGroupCollapseListener(this);
         mExpandableListView.setOnGroupExpandListener(this);
         mExpandableListView.setOnChildClickListener(this);
-        final ListViewCollectedAdapter adapter = new ListViewCollectedAdapter(getContext());
-        mExpandableListView.setAdapter(adapter);
+        mAdapter = new ListViewCollectedAdapter(getContext());
+        mExpandableListView.setAdapter(mAdapter);
         ListUtils.getInstance().setListViewHeightBasedOnChildren(mExpandableListView);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                adapter.addAllData(groupStrings, childStrings);
-                ListUtils.getInstance().setListViewHeightBasedOnChildren(mExpandableListView);
-
-            }
-        }, 3000);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                getCollectedData();
-                getDepartmentByCategory();
-                DataManager.getDepartmentsByCategory(0);
-            }
-        }).start();
+        getCollectedData();
         return view;
-    }
-
-    private void getDepartmentByCategory() {
-        List<Phone> phoneList = DataManager.getDepartmentsByCategory(0);
-        Logger.i(String.valueOf(phoneList.size()));
-        Log.i("phonelist.size", "phonelist.name");
-        Logger.i(phoneList.get(0).getDepartment());
     }
 
     public void getCollectedData(){
@@ -96,26 +75,14 @@ public class CollectedFragment extends Fragment implements ExpandableListView.On
 
             @Override
             public void onNext(List<Phone> phones) {
-                Log.i("getCollectedDataList", "onNext()");
-                Log.i("phones.size", String.valueOf(phones.size()));
-
+                mAdapter.addAllData(groupStrings, phones);
+                ListUtils.getInstance().setListViewHeightBasedOnChildren(mExpandableListView);
+                HomeActivity.setProgressBarDismiss();
             }
         };
         DatabaseClient.getInstance().getCollectedData(subscriber);
     }
 
-
-    @Override
-    public void onGroupCollapse(int groupPosition) {
-        ListUtils.setCollapseListViewHeightBasedOnChildren(mExpandableListView, groupPosition);
-        ListUtils.getInstance().setListViewHeightBasedOnChildren(mExpandableListView);
-    }
-
-    @Override
-    public void onGroupExpand(int groupPosition) {
-        ListUtils.setExpandedListViewHeightBasedOnChildren(mExpandableListView, groupPosition);
-        ListUtils.getInstance().setListViewHeightBasedOnChildren(mExpandableListView);
-    }
 
     @Override
     public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
@@ -125,5 +92,21 @@ public class CollectedFragment extends Fragment implements ExpandableListView.On
     @Override
     public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
         return false;
+    }
+
+    @Override
+    public void onGroupCollapse(int groupPosition) {
+        if (mAdapter.getChildrenCount(0) != 0) {
+            ListUtils.setCollapseListViewHeightBasedOnChildren(mExpandableListView, groupPosition);
+            ListUtils.getInstance().setListViewHeightBasedOnChildren(mExpandableListView);
+        }
+    }
+
+    @Override
+    public void onGroupExpand(int groupPosition) {
+        if (mAdapter.getChildrenCount(0) != 0) {
+            ListUtils.setExpandedListViewHeightBasedOnChildren(mExpandableListView, groupPosition);
+            ListUtils.getInstance().setListViewHeightBasedOnChildren(mExpandableListView);
+        }
     }
 }

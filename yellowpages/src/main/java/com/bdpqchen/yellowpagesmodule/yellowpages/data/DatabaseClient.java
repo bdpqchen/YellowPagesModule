@@ -36,4 +36,17 @@ public class DatabaseClient {
                 .subscribe(subscriber);
     }
 
+    public void getCategoryDataList(Subscriber subscriber) {
+        Observable.create(new Observable.OnSubscribe<String[][]>() {
+            @Override
+            public void call(Subscriber<? super String[][]> subscriber) {
+                String[][] list = DataManager.getDepartmentsByCategory();
+                subscriber.onNext(list);
+                subscriber.onCompleted();
+            }
+        }).compose(RxSchedulersHelper.<String[][]> io_main())
+                .subscribe(subscriber);
+    }
+
+
 }
