@@ -18,25 +18,46 @@ import com.bdpqchen.yellowpagesmodule.yellowpages.R;
 
 public class ExpandableListViewAdapter extends BaseExpandableListAdapter implements ExpandableListAdapter{
 
-    private String[] mGroupArray;
-    private String[][] mChildArray;
+    private static String[] mGroupArray = null;
+    private static String[][] mChildArray = null;
     private Context mContext;
 
-    public ExpandableListViewAdapter(String[] group, String[][] child, Context context){
-        mGroupArray = group;
-        mChildArray = child;
+    public ExpandableListViewAdapter(Context context){
         mContext = context;
+    }
 
+    public ExpandableListViewAdapter(String[] groupStrings, String[][] childStrings, Context context) {
+        mChildArray = childStrings;
+        mGroupArray = groupStrings;
+        mContext = context;
+    }
+
+    public void addAllData(String[] groups, String[][] children){
+        if( groups != null){
+            mGroupArray = groups;
+        }
+        if (children != null){
+            mChildArray = children;
+        }
+        notifyDataSetChanged();
     }
 
     @Override
     public int getGroupCount() {
-        return mGroupArray.length;
+        if (mGroupArray != null){
+            return mGroupArray.length;
+        }else{
+            return 0;
+        }
     }
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        return mChildArray[groupPosition].length;
+        if (mChildArray != null){
+            return mChildArray[groupPosition].length;
+        }else{
+            return 0;
+        }
     }
 
     @Override

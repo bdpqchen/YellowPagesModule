@@ -82,7 +82,6 @@ public class InitActivity extends BaseActivity {
         Subscriber subscriber = new Subscriber<DataBean>() {
             @Override
             public void onCompleted() {
-//                DataManager.deleteAll();
                 mProgressDialog.incrementProgressBy(50);
             }
 
@@ -96,11 +95,9 @@ public class InitActivity extends BaseActivity {
             @Override
             public void onNext(DataBean dataBean) {
                 Logger.i("onNext()");
-                Logger.i(String.valueOf(dataBean.getData().size()));
-//                Logger.i(dataBean.getData().get(0).getCategory_name());
-                Logger.i(String.valueOf(dataBean.getData().get(0).getCategory_list().size()));
-                Logger.i(String.valueOf(dataBean.getData().get(0).getCategory_list().get(0).getDepartment().size()));
-                Logger.i(dataBean.getData().get(1).getCategory_list().get(0).getDepartment().get(0).getDepartment_list().get(0).getItem_name());
+                Logger.i(String.valueOf(dataBean.getCategory_list().size()));
+                Logger.i(String.valueOf(dataBean.getCategory_list().get(0).getDepartment_list().size()));
+                Logger.i(String.valueOf(dataBean.getCategory_list().get(0).getDepartment_list().get(0).getUnit_list().size()));
                 initDatabase(dataBean);
             }
 
@@ -109,48 +106,42 @@ public class InitActivity extends BaseActivity {
         mProgressDialog.incrementProgressBy(10);
     }
 
-    private void initDatabase(DataBean dataBean) {
-        long time = System.currentTimeMillis();
-        List<Phone> phoneList = new ArrayList<>();
-
-        for (int i = 0; i < dataBean.getCategory_list().size(); i++) {
-            DataBean.CategoryListBean dataBeanLists = dataBean.getCategory_list().get(i);
-            for (int j = 0; j < dataBeanLists.getDepartment_list().size(); j++){
-                DataBean.CategoryListBean.DepartmentListBeanX categoryList = dataBeanLists.getCategory_list().get(j);
-                for (int k = 0; k < categoryList.getDepartment().size(); k++){
-                    DataBean.DataBeanList.CategoryListBean.DepartmentBean departmentList = categoryList.getDepartment().get(k);
-                    for (int l = 0; l < departmentList.getDepartment_list().size(); l++){
-                        DataBean.DataBeanList.CategoryListBean.DepartmentBean.DepartmentListBean list = departmentList.getDepartment_list().get(l);
-                        Phone phone = new Phone();
-                        phone.setCategory(dataBeanLists.getCategory_name());
-                        phone.setPhone(list.getItem_phone());
-                        phone.setName(list.getItem_name());
-                        phone.setIsCollected(0);
-                        phone.setDepartment(departmentList.getDepartment_name());
-                        phoneList.add(phone);
+    private void initDatabase(final DataBean dataBean) {
+        final long time = System.currentTimeMillis();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<Phone> phoneList = new ArrayList<>();
+                for (int i = 0; i < dataBean.getCategory_list().size(); i++) { //3个分类
+                    mProgressDialog.incrementProgressBy(10);
+                    DataBean.CategoryListBean categoryList = dataBean.getCategory_list().get(i);
+                    Logger.d(i + "====i");
+                    for (int j = 0; j < categoryList.getDepartment_list().size(); j++){     //第i分类里的部门j
+                        Logger.d(j + "===j");
+                        DataBean.CategoryListBean.DepartmentListBean departmentList = categoryList.getDepartment_list().get(j);
+                        for (int k = 0; k < departmentList.getUnit_list().size(); k++){     //第k部门里的单位
+                            Logger.d(k + "===k");
+                            DataBean.CategoryListBean.DepartmentListBean.UnitListBean list = departmentList.getUnit_list().get(k);
+                            Logger.d(k + "===l");
+                            Phone phone = new Phone();
+                            phone.setCategory(categoryList.getCategory_name());
+                            phone.setPhone(list.getItem_phone());
+                            phone.setName(list.getItem_name());
+                            phone.setIsCollected(0);
+                            phone.setDepartment(departmentList.getDepartment_name());
+                            phoneList.add(phone);
+                        }
                     }
                 }
+                DataManager.insertBatch(phoneList);
+                mProgressDialog.incrementProgressBy(10);
+                Logger.i(String.valueOf(phoneList.size()));
+                Logger.i("DataList.size", phoneList.size() + "");
+                Logger.i(String.valueOf(phoneList.get(0).getIsCollected()));
+                Logger.i(String.valueOf(phoneList.get(1).getIsCollected()));
+                Logger.d(System.currentTimeMillis() - time);
             }
-/*
-            Phone phone = new Phone();
-//            phone.setCategory(1);
-            phone.setDepartment("部门/学院/其他名称");
-            phone.setIsCollected(i);
-            phone.setName("号码名称");
-            phone.setPhone("232");
-            phoneList.add(phone);
-*/
-        }
-//        DataManager.insertPhone(phone);
-
-        DataManager.insertBatch(phoneList);
-        Logger.i(String.valueOf(phoneList.size()));
-        Logger.i("DataList.size", phoneList.size() + "");
-        Logger.i(String.valueOf(phoneList.get(0).getIsCollected()));
-        Logger.i(String.valueOf(phoneList.get(1).getIsCollected()));
-        Logger.d(System.currentTimeMillis() - time);
-
-
+        }).start();
 
     }
 

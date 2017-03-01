@@ -21,7 +21,7 @@ import java.util.List;
 
 public class CategoryFragment extends Fragment implements ExpandableListView.OnGroupClickListener, ExpandableListView.OnGroupCollapseListener, ExpandableListView.OnGroupExpandListener, ExpandableListView.OnChildClickListener {
 
-    public String[] groupStrings = {"西游记", "水浒传", "三国演义", "红楼梦", "西游记", "水浒传", "三国演义", "红楼梦"};
+    public String[] groupStrings = {"西游记11", "水浒传", "三国演义", "红楼梦", "西游记", "水浒传", "三国演义", "红楼梦"};
     public String[][] childStrings = {
             {"唐三藏", "孙悟空", "猪八戒", "沙和尚"},
             {"宋江", "林冲", "李逵", "鲁智深"},

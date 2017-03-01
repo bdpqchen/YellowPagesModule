@@ -1,6 +1,7 @@
 package com.bdpqchen.yellowpagesmodule.yellowpages.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -19,14 +20,10 @@ import com.bdpqchen.yellowpagesmodule.yellowpages.utils.ListUtils;
 
 public class CollectedFragment extends Fragment implements ExpandableListView.OnGroupClickListener, ExpandableListView.OnGroupCollapseListener, ExpandableListView.OnGroupExpandListener, ExpandableListView.OnChildClickListener {
 
-    public String[] groupStrings1 = {"西游记111", "水浒传111", "三国演义111", "红楼梦111", "三国演义222", "红楼梦222"};
-    public String[][] childStrings1 = {
-            {"唐三藏", "孙悟空", "猪八戒", "沙和尚"},
-            {"宋江", "林冲", "李逵", "鲁智深"},
-            {"曹操", "刘备", "孙权", "诸葛亮", "周瑜", "曹操", "刘备", "孙权", "诸葛亮", "曹操", "刘备", "孙权", "诸葛亮", "曹操", "刘备", "孙权", "诸葛亮", "曹操", "刘备", "孙权", "诸葛亮", "曹操", "刘备", "孙权", "诸葛亮", "曹操", "刘备", "孙权", "诸葛亮", "曹操", "刘备", "孙权", "诸葛亮", "曹操", "刘备", "孙权", "诸葛亮", "曹操", "刘备", "孙权", "诸葛亮", "曹操", "刘备", "孙权", "诸葛亮", "曹操", "刘备", "孙权", "诸葛亮", "曹操", "刘备", "孙权", "诸葛亮", "曹操", "刘备", "孙权", "诸葛亮", "曹操", "刘备", "孙权", "诸葛亮"},
-            {"贾宝玉", "林黛玉", "薛宝钗", "王熙凤"},
-            {"贾宝玉", "林黛玉", "薛宝钗", "王熙凤"},
-            {"贾宝玉", "林黛玉", "薛宝钗", "王熙凤"}
+    public String[] groupStrings = {"我的收藏"};
+
+    public String[][] childStrings = {
+            {"唐三藏", "孙悟空", "猪八戒", "沙和尚"}
     };
 
     private ExpandableListView mExpandableListView;
@@ -41,9 +38,24 @@ public class CollectedFragment extends Fragment implements ExpandableListView.On
         mExpandableListView.setOnGroupCollapseListener(this);
         mExpandableListView.setOnGroupExpandListener(this);
         mExpandableListView.setOnChildClickListener(this);
-        mExpandableListView.setAdapter(new ExpandableListViewAdapter(groupStrings1, childStrings1, getContext()));
+        final ExpandableListViewAdapter adapter = new ExpandableListViewAdapter(getContext());
+        mExpandableListView.setAdapter(adapter);
         ListUtils.getInstance().setListViewHeightBasedOnChildren(mExpandableListView);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                adapter.addAllData(groupStrings, childStrings);
+                ListUtils.getInstance().setListViewHeightBasedOnChildren(mExpandableListView);
+
+            }
+        }, 5000);
+        getCollectedData();
         return view;
+    }
+
+    private void getCollectedData() {
+
     }
 
     @Override

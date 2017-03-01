@@ -1,12 +1,15 @@
 package com.bdpqchen.yellowpagesmodule.yellowpages.activity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -24,17 +27,25 @@ import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.bdpqchen.yellowpagesmodule.yellowpages.R;
 import com.bdpqchen.yellowpagesmodule.yellowpages.adapter.SearchResultsListAdapter;
 import com.bdpqchen.yellowpagesmodule.yellowpages.base.BaseActivity;
+import com.bdpqchen.yellowpagesmodule.yellowpages.data.DataManager;
 import com.bdpqchen.yellowpagesmodule.yellowpages.data.SearchHelper;
 import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.DepartmentFragment;
 import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.CollectedFragment;
 import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.CategoryFragment;
+import com.bdpqchen.yellowpagesmodule.yellowpages.model.DataBean;
+import com.bdpqchen.yellowpagesmodule.yellowpages.model.Phone;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.SearchResult;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.WordSuggestion;
+import com.bdpqchen.yellowpagesmodule.yellowpages.network.NetworkClient;
+import com.bdpqchen.yellowpagesmodule.yellowpages.utils.PrefUtils;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.orhanobut.logger.Logger;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import rx.Subscriber;
 
 
 public class HomeActivity extends BaseActivity {
@@ -49,11 +60,12 @@ public class HomeActivity extends BaseActivity {
     private Context mContext;
 
     private String mLastQuery = "";
-
+    private boolean isInited  = false;
 
     private FloatingSearchView mSearchView;
     private SearchResultsListAdapter mSearchResultsAdapter;
 
+    private ProgressDialog mProgressDialog;
 
     @Override
     public int getLayout() {
@@ -73,43 +85,149 @@ public class HomeActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.mContext = this;
-        DepartmentFragment departmentFragment = new DepartmentFragment();
+        if (PrefUtils.isFirstOpen()){
+            DepartmentFragment departmentFragment = new DepartmentFragment();
+            CollectedFragment collectedFragment = new CollectedFragment();
+            CategoryFragment categoryFragment = new CategoryFragment();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.add(R.id.fragment_container_department, departmentFragment);
+            fragmentTransaction.add(R.id.fragment_container_collected, collectedFragment);
+            fragmentTransaction.add(R.id.fragment_container_list, categoryFragment);
+            fragmentTransaction.commit();
+            mSearchView = (FloatingSearchView) findViewById(R.id.floating_search_view);
+            mParentView = (RelativeLayout) findViewById(R.id.parent_view);
+            mSearchResultsList = (RecyclerView) findViewById(R.id.search_results_list);
+            setupSearchView();
+            setupResultsList();
+        }else {
+            mProgressDialog = new ProgressDialog(this);
+            showInitDialog();
+            getDataList();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (!isInited) {
+                        isInited = true;
+                        finish();
+                        startActivity(getIntent());
+                    } else {
 
-        CollectedFragment collectedFragment = new CollectedFragment();
-        CategoryFragment categoryFragment = new CategoryFragment();
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.fragment_container_department, departmentFragment);
-        fragmentTransaction.add(R.id.fragment_container_collected, collectedFragment);
-        fragmentTransaction.add(R.id.fragment_container_list, categoryFragment);
-        fragmentTransaction.commit();
-        mSearchView = (FloatingSearchView) findViewById(R.id.floating_search_view);
-        mParentView = (RelativeLayout) findViewById(R.id.parent_view);
-        mSearchResultsList = (RecyclerView) findViewById(R.id.search_results_list);
-
-        setupSearchView();
-        setupResultsList();
+                    }
+                }
+            }, 2000);
+        }
     }
 
-    private void setupSearchView() {
+    private void showInitDialog() {
+        mProgressDialog.setProgress(0);
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.setTitle("提示");
+        mProgressDialog.setMessage("首次使用，需要导入号码库，请等待...");
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        mProgressDialog.setMax(100);
+        mProgressDialog.setCanceledOnTouchOutside(false);
+        mProgressDialog.show();
 
-        mSearchView.setOnQueryChangeListener(new FloatingSearchView.OnQueryChangeListener() {
+    }
+
+    public void getDataList() {
+
+        Subscriber subscriber = new Subscriber<DataBean>() {
+            @Override
+            public void onCompleted() {
+                mProgressDialog.incrementProgressBy(50);
+            }
 
             @Override
-            public void onSearchTextChanged(String oldQuery, final String newQuery) {
+            public void onError(Throwable e) {
+                mProgressDialog.dismiss();
+                mProgressDialog.incrementProgressBy(0);
+                showInitErrorDialog();
+            }
 
+            @Override
+            public void onNext(DataBean dataBean) {
+                Logger.i("onNext()");
+                Logger.i(String.valueOf(dataBean.getCategory_list().size()));
+                Logger.i(String.valueOf(dataBean.getCategory_list().get(0).getDepartment_list().size()));
+                Logger.i(String.valueOf(dataBean.getCategory_list().get(0).getDepartment_list().get(0).getUnit_list().size()));
+                initDatabase(dataBean);
+            }
+
+        };
+        NetworkClient.getInstance().getDataList(subscriber);
+        mProgressDialog.incrementProgressBy(10);
+    }
+
+    private void initDatabase(final DataBean dataBean) {
+        final long time = System.currentTimeMillis();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<Phone> phoneList = new ArrayList<>();
+                for (int i = 0; i < dataBean.getCategory_list().size(); i++) { //3个分类
+                    mProgressDialog.incrementProgressBy(10);
+                    DataBean.CategoryListBean categoryList = dataBean.getCategory_list().get(i);
+                    Logger.d(i + "====i");
+                    for (int j = 0; j < categoryList.getDepartment_list().size(); j++){     //第i分类里的部门j
+                        Logger.d(j + "===j");
+                        DataBean.CategoryListBean.DepartmentListBean departmentList = categoryList.getDepartment_list().get(j);
+                        for (int k = 0; k < departmentList.getUnit_list().size(); k++){     //第k部门里的单位
+                            Logger.d(k + "===k");
+                            DataBean.CategoryListBean.DepartmentListBean.UnitListBean list = departmentList.getUnit_list().get(k);
+                            Logger.d(k + "===l");
+                            Phone phone = new Phone();
+                            phone.setCategory(categoryList.getCategory_name());
+                            phone.setPhone(list.getItem_phone());
+                            phone.setName(list.getItem_name());
+                            phone.setIsCollected(0);
+                            phone.setDepartment(departmentList.getDepartment_name());
+                            phoneList.add(phone);
+                        }
+                    }
+                }
+                DataManager.insertBatch(phoneList);
+                mProgressDialog.incrementProgressBy(10);
+                Logger.i(String.valueOf(phoneList.size()));
+                Logger.i("DataList.size", phoneList.size() + "");
+                Logger.i(String.valueOf(phoneList.get(0).getIsCollected()));
+                Logger.i(String.valueOf(phoneList.get(1).getIsCollected()));
+                Logger.d(System.currentTimeMillis() - time);
+            }
+        }).start();
+
+    }
+
+    private void showInitErrorDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("出错提醒")
+                .setCancelable(false)
+                .setMessage("\t导入失败，请检查网络是否可用")
+                .setNegativeButton("重新导入", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        showInitDialog();
+                        getDataList();
+                    }
+                })
+                .setPositiveButton("返回", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                }).show();
+    }
+
+
+    private void setupSearchView() {
+        mSearchView.setOnQueryChangeListener(new FloatingSearchView.OnQueryChangeListener() {
+            @Override
+            public void onSearchTextChanged(String oldQuery, final String newQuery) {
                 if (!oldQuery.equals("") && newQuery.equals("")) {
                     mSearchView.clearSuggestions();
                 } else {
-
-                    //this shows the top left circular progress
-                    //you can call it where ever you want, but
-                    //it makes sense to do it when loading something in
-                    //the background.
                     mSearchView.showProgress();
-
-                    //simulates a query call to a data source
-                    //with a new query.
                     SearchHelper.findSuggestions(mContext, newQuery, 20, new SearchHelper.OnFindSuggestionsListener() {
 
                         @Override
@@ -120,7 +238,6 @@ public class HomeActivity extends BaseActivity {
 
                     });
                 }
-
                 Logger.d(TAG, "onSearchTextChanged()");
             }
         });
@@ -128,12 +245,9 @@ public class HomeActivity extends BaseActivity {
         mSearchView.setOnSearchListener(new FloatingSearchView.OnSearchListener() {
             @Override
             public void onSuggestionClicked(final SearchSuggestion searchSuggestion) {
-
                 WordSuggestion wordSuggestion = (WordSuggestion) searchSuggestion;
-
                 SearchHelper.findWord(mContext, wordSuggestion.getBody(),
                         new SearchHelper.OnFindWordListener() {
-
                             @Override
                             public void onResults(List<SearchResult> results) {
                                 mSearchResultsAdapter.swapData(results);
@@ -173,28 +287,16 @@ public class HomeActivity extends BaseActivity {
         mSearchView.setOnFocusChangeListener(new FloatingSearchView.OnFocusChangeListener() {
             @Override
             public void onFocus() {
-
-                //show suggestions when search bar gains focus (typically history suggestions)
                 mSearchView.swapSuggestions(SearchHelper.getHistory(mContext, 10));
-
                 Logger.d(TAG, "onFocus()");
             }
 
             @Override
             public void onFocusCleared() {
-
-                //set the title of the bar so that when focus is returned a new query begins
-//                mSearchView.setSearchBarTitle(mLastQuery);
-
-                //you can also set setSearchText(...) to make keep the query there when not focused and when focus returns
-                //mSearchView.setSearchText(searchSuggestion.getBody());
-
                 Logger.d(TAG, "onFocusCleared()");
             }
         });
 
-        //handle menu clicks the same way as you would
-        //in a regular activity
         mSearchView.setOnMenuItemClickListener(new FloatingSearchView.OnMenuItemClickListener() {
             @Override
             public void onActionMenuItemSelected(MenuItem item) {
@@ -236,26 +338,14 @@ public class HomeActivity extends BaseActivity {
             public void onBindSuggestion(View suggestionView, ImageView leftIcon,
                                          TextView textView, SearchSuggestion item, int itemPosition) {
                 WordSuggestion searchSuggestion = (WordSuggestion) item;
-
-//                String textColor = mIsDarkSearchTheme ? "#ffffff" : "#000000";
-//                String textLight = mIsDarkSearchTheme ? "#bfbfbf" : "#787878";
-
                 if (searchSuggestion.getIsHistory()) {
                     leftIcon.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
                             R.drawable.ic_history_black_24dp, null));
-
-//                    Util.setIconColor(leftIcon, Color.parseColor(textColor));
                     leftIcon.setAlpha(.36f);
                 } else {
                     leftIcon.setAlpha(0.0f);
                     leftIcon.setImageDrawable(null);
                 }
-
-                /*textView.setTextColor(Color.parseColor(textColor));
-                String text = searchSuggestion.getBody()
-                        .replaceFirst(mSearchView.getQuery(),
-                                "<font color=\"" + textLight + "\">" + mSearchView.getQuery() + "</font>");
-                textView.setText(Html.fromHtml(text));*/
             }
 
         });

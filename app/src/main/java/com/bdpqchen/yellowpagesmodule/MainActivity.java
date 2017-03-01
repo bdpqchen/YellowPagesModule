@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.bdpqchen.yellowpagesmodule.yellowpages.activity.HomeActivity;
 import com.bdpqchen.yellowpagesmodule.yellowpages.activity.InitActivity;
 
 import butterknife.ButterKnife;
@@ -44,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startYellowPage() {
-        startActivity(new Intent(this, InitActivity.class));
-//        startActivity(new Intent(this, HomeActivity.class));
+//        startActivity(new Intent(this, InitActivity.class));
+        startActivity(new Intent(this, HomeActivity.class));
     }
 }
