@@ -1,10 +1,13 @@
 package com.bdpqchen.yellowpagesmodule.yellowpages.data;
 
+import android.support.annotation.Nullable;
+
 import com.bdpqchen.yellowpagesmodule.yellowpages.database.GreenDaoManager;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.Phone;
 import com.inst.greendao3_demo.dao.PhoneDao;
 import com.orhanobut.logger.Logger;
 
+import org.greenrobot.greendao.query.QueryBuilder;
 import org.greenrobot.greendao.query.WhereCondition;
 
 import java.util.ArrayList;
@@ -53,21 +56,14 @@ public class DataManager {
 
     public static List<Phone> getCollectedDataList() {
 
-        return getPhoneDao().queryBuilder().where(PhoneDao.Properties.IsCollected.eq(1)).orderAsc(PhoneDao.Properties.Name).list();
+        return getPhoneDao().queryBuilder().where(PhoneDao.Properties.IsCollected.eq(0)).orderAsc(PhoneDao.Properties.Name).list();
     }
-
-    /*@Deprecated
-    public static List<Phone> getDataListByCategory(int type){
-        return getPhoneDao().queryBuilder().where(PhoneDao.Properties.Category.eq(type)) .orderAsc(PhoneDao.Properties.Name).list();
-    }*/
-
 
     /* 按照类型分组查询
     * @param type 表示对应的分类，
     * 1--->校级
     * 2--->院级
     * 3--->其他*/
-
     public static String[][] getDepartmentsByCategory() {
         String groupBy = "1 GROUP BY department";
         int type = 0;
@@ -106,11 +102,32 @@ public class DataManager {
                 .list();
     }
 
+    public static void updateCollectState(String name, String phone) {
+        boolean isExistItem = false;
+        List<Phone> result = getPhoneDao().queryBuilder()
+                .where(PhoneDao.Properties.Name.eq(name)).build().list();
+        if (null == result || result.size() == 0) {
+            result = getPhoneDao().queryBuilder()
+                    .where(PhoneDao.Properties.Phone.eq(phone)).list();
+            if (result != null && result.size() > 0){
+                isExistItem = true;
+            }
+        } else {
+            isExistItem = true;
+        }
+        if (isExistItem){
+            for (int i = 0; i < result.size(); i++) {
+                if (result.get(i).getIsCollected() == 0) {
+                    result.get(i).setIsCollected(1);
+                } else {
+                    result.get(i).setIsCollected(0);
+                }
+            }
+            getPhoneDao().updateInTx(result);
+        }
 
-//    public static List<Phone> getCategoryDataList() {
-//        return getPhoneDao().queryBuilder()
-//                .where(PhoneDao.Properties.)
-//    }
+    }
+
 
 }
 

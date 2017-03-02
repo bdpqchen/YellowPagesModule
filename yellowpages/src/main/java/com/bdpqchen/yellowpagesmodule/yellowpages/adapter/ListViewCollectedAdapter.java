@@ -1,6 +1,12 @@
 package com.bdpqchen.yellowpagesmodule.yellowpages.adapter;
 
+import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.graphics.Paint;
+import android.os.Handler;
+import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +15,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bdpqchen.yellowpagesmodule.yellowpages.R;
+import com.bdpqchen.yellowpagesmodule.yellowpages.activity.HomeActivity;
+import com.bdpqchen.yellowpagesmodule.yellowpages.data.DataManager;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.Phone;
+import com.bdpqchen.yellowpagesmodule.yellowpages.utils.ToastUtils;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 
 import java.util.List;
 
@@ -106,19 +117,63 @@ public class ListViewCollectedAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+    public View getChildView(int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         if (mChildList.size() != 0) {
-
-            ListViewCollectedAdapter.ChildViewHolder childViewHolder;
+            final Phone phone = mChildList.get(childPosition);
+            final ListViewCollectedAdapter.ChildViewHolder childViewHolder;
             if (convertView == null) {
-                convertView = LayoutInflater.from(mContext).inflate(R.layout.yp_item_elv_child_category, parent, false);
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.yp_item_elv_child_collected, parent, false);
                 childViewHolder = new ListViewCollectedAdapter.ChildViewHolder();
-                childViewHolder.tvChildTitle = (TextView) convertView.findViewById(R.id.tv_child_title);
+                childViewHolder.tvChildTitle = (TextView) convertView.findViewById(R.id.tv_item_collected_name);
+                childViewHolder.tvChildPhone = (TextView) convertView.findViewById(R.id.tv_item_collected_phone);
+                childViewHolder.ivCallPhone = (ImageView) convertView.findViewById(R.id.iv_item_children_icon_phone);
+                childViewHolder.ivCollected = (ImageView) convertView.findViewById(R.id.iv_item_children_icon_collected);
+                childViewHolder.ivUncollected = (ImageView) convertView.findViewById(R.id.iv_item_children_icon_uncollected);
                 convertView.setTag(childViewHolder);
             } else {
                 childViewHolder = (ListViewCollectedAdapter.ChildViewHolder) convertView.getTag();
             }
-            childViewHolder.tvChildTitle.setText(mChildList.get(childPosition).getName());
+            childViewHolder.tvChildTitle.setText(phone.getName());
+            childViewHolder.tvChildPhone.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
+            childViewHolder.tvChildPhone.setText(phone.getPhone());
+            childViewHolder.tvChildPhone.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ClipboardManager cmb = (ClipboardManager)mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+                    cmb.setPrimaryClip(ClipData.newPlainText(null, phone.getPhone()));
+                    ToastUtils.show((Activity) mContext, "已复制到剪切板");
+                }
+            });
+            childViewHolder.ivCollected.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    YoYo.with(Techniques.ZoomOut).duration(400).playOn(childViewHolder.ivCollected);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            childViewHolder.ivCollected.setVisibility(View.GONE);
+                            childViewHolder.ivUncollected.setVisibility(View.VISIBLE);
+                        }
+                    }, 300);
+                    DataManager.updateCollectState(phone.getName(), phone.getPhone());
+                    ToastUtils.show((Activity) mContext, "收藏已取消");
+                }
+            });
+            childViewHolder.ivUncollected.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    childViewHolder.ivCollected.setVisibility(View.VISIBLE);
+                    YoYo.with(Techniques.ZoomIn).duration(400).playOn(childViewHolder.ivCollected);
+                    childViewHolder.ivUncollected.setVisibility(View.GONE);
+                    DataManager.updateCollectState(phone.getName(), phone.getPhone());
+                }
+            });
+            childViewHolder.ivCallPhone.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
         }
         return convertView;
     }
@@ -137,7 +192,9 @@ public class ListViewCollectedAdapter extends BaseExpandableListAdapter {
     }
 
     private static class ChildViewHolder{
-        TextView tvChildTitle;
+        TextView tvChildTitle, tvChildPhone;
+        ImageView ivCallPhone, ivCollected, ivUncollected;
+
     }
 
 }
