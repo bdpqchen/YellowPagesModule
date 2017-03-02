@@ -1,8 +1,6 @@
 package com.bdpqchen.yellowpagesmodule.yellowpages.fragment;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -14,20 +12,13 @@ import android.widget.ExpandableListView;
 import com.bdpqchen.yellowpagesmodule.yellowpages.R;
 import com.bdpqchen.yellowpagesmodule.yellowpages.activity.HomeActivity;
 import com.bdpqchen.yellowpagesmodule.yellowpages.adapter.ListViewCollectedAdapter;
-import com.bdpqchen.yellowpagesmodule.yellowpages.data.DataManager;
 import com.bdpqchen.yellowpagesmodule.yellowpages.data.DatabaseClient;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.Phone;
-import com.bdpqchen.yellowpagesmodule.yellowpages.network.RxSchedulersHelper;
 import com.bdpqchen.yellowpagesmodule.yellowpages.utils.ListUtils;
-import com.orhanobut.logger.Logger;
-
-import org.greenrobot.greendao.database.Database;
 
 import java.util.List;
 
-import rx.Observable;
 import rx.Subscriber;
-import rx.Subscription;
 
 
 /**
@@ -40,17 +31,13 @@ public class CollectedFragment extends Fragment implements ExpandableListView.On
 
     public String[][] childStrings1;
 
-   /* public String[][] childStrings = {
-            {"唐三藏", "孙悟空", "猪八戒", "沙和尚"}
-    };*/
-
     private ExpandableListView mExpandableListView;
     private ListViewCollectedAdapter mAdapter;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.yp_fragment_second, container, false);
+        View view = inflater.inflate(R.layout.yp_fragment_expandable_list_view, container, false);
         mExpandableListView = (ExpandableListView) view.findViewById(R.id.expand_list_view);
         mExpandableListView.setOnGroupClickListener(this);
         mExpandableListView.setOnGroupCollapseListener(this);

@@ -26,12 +26,6 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter impleme
         mContext = context;
     }
 
-   /* public ExpandableListViewAdapter(String[] groupStrings, String[][] childStrings, Context context) {
-        mChildArray = childStrings;
-        mGroupArray = groupStrings;
-        mContext = context;
-    }*/
-
     public void addAllData(String[] groups, String[][] children){
         if( groups != null){
             mGroupArray = groups;
@@ -115,7 +109,7 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter impleme
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         ChildViewHolder childViewHolder;
         if(convertView == null){
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.yp_item_elv_child, parent, false);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.yp_item_elv_child_category, parent, false);
             childViewHolder = new ChildViewHolder();
             childViewHolder.tvChildTitle = (TextView) convertView.findViewById(R.id.tv_child_title);
             convertView.setTag(childViewHolder);

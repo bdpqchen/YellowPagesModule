@@ -4,7 +4,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="yellow_pages_main_padding_left">15dp</dimen>
     <dimen name="yellow_pages_department_font_size">16sp</dimen>
-    <dimen name="yellow_pages_department_icon_size">25dp</dimen>
+    <dimen name="yellow_pages_department_icon_size">35dp</dimen>
     <dimen name="department_item_margin_bottom">20dp</dimen>
     <dimen name="department_icon_margin_left">20dp</dimen>
 </resources>

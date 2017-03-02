@@ -5,16 +5,17 @@
     android:columnCount="8"
     android:rowCount="4"
     android:padding="@dimen/yellow_pages_main_padding_left"
+    android:id="@+id/grad_layout_department"
     >
 
     <TextView
         android:text="常用部门"
         android:textSize="20sp"
-        android:textColor="@color/font_block_700"
+        android:textColor="@color/yp_font_black_700"
         android:layout_columnSpan="8"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="15dp"
         />
 
     <!--row1-->
@@ -24,15 +25,25 @@
         android:src="@drawable/icon_yellow_pages_1895"
         android:layout_columnSpan="1"
         android:scaleType="centerCrop"
+        android:background="@drawable/yp_bg_department_click"
+        android:clickable="true"
+        android:layout_gravity="center_horizontal"
+        android:padding="5dp"
+        android:id="@+id/department_iv_1"
         />
-    <TextView android:layout_height="wrap_content"
+    <TextView android:layout_height="@dimen/yp_yellow_pages_department_tv_size"
         android:layout_width="wrap_content"
-        android:textColor="@color/font_block_700"
+        android:textColor="@color/yp_font_black_700"
         android:textSize="@dimen/yellow_pages_department_font_size"
         android:text="1895服务大厅"
         android:paddingLeft="10dp"
         android:layout_columnSpan="3"
+        android:background="@drawable/yp_bg_department_click"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:id="@+id/department_tv_1"
         />
+
 
     <ImageView
         android:layout_height="@dimen/yellow_pages_department_icon_size"
@@ -41,15 +52,25 @@
         android:layout_columnSpan="1"
         android:scaleType="centerCrop"
         android:layout_marginLeft="@dimen/department_icon_margin_left"
+        android:background="@drawable/yp_bg_department_click"
+        android:clickable="true"
+        android:layout_gravity="center_horizontal"
+        android:padding="5dp"
+        android:id="@+id/department_iv_2"
+
         />
-    <TextView android:layout_height="wrap_content"
+    <TextView android:layout_height="@dimen/yp_yellow_pages_department_tv_size"
         android:layout_width="wrap_content"
-        android:textColor="@color/font_block_700"
+        android:textColor="@color/yp_font_black_700"
         android:textSize="@dimen/yellow_pages_department_font_size"
         android:text="图书馆"
         android:paddingLeft="10dp"
         android:layout_columnSpan="3"
         android:layout_marginBottom="@dimen/department_item_margin_bottom"
+        android:background="@drawable/yp_bg_department_click"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:id="@+id/department_tv_2"
         />
 
     <!--row2-->
@@ -59,14 +80,23 @@
         android:src="@drawable/icon_yellow_pages_repair"
         android:layout_columnSpan="1"
         android:scaleType="centerCrop"
+        android:background="@drawable/yp_bg_department_click"
+        android:clickable="true"
+        android:layout_gravity="center_horizontal"
+        android:padding="5dp"
+        android:id="@+id/department_iv_3"
         />
-    <TextView android:layout_height="wrap_content"
+    <TextView android:layout_height="@dimen/yp_yellow_pages_department_tv_size"
         android:layout_width="wrap_content"
-        android:textColor="@color/font_block_700"
+        android:textColor="@color/yp_font_black_700"
         android:textSize="@dimen/yellow_pages_department_font_size"
         android:text="维修服务中心"
         android:paddingLeft="10dp"
         android:layout_columnSpan="3"
+        android:background="@drawable/yp_bg_department_click"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:id="@+id/department_tv_3"
         />
 
     <ImageView
@@ -76,15 +106,25 @@
         android:layout_columnSpan="1"
         android:scaleType="centerCrop"
         android:layout_marginLeft="@dimen/department_icon_margin_left"
+        android:background="@drawable/yp_bg_department_click"
+        android:clickable="true"
+        android:layout_gravity="center_horizontal"
+        android:padding="5dp"
+        android:id="@+id/department_iv_4"
+
         />
-    <TextView android:layout_height="wrap_content"
+    <TextView android:layout_height="@dimen/yp_yellow_pages_department_tv_size"
         android:layout_width="wrap_content"
-        android:textColor="@color/font_block_700"
+        android:textColor="@color/yp_font_black_700"
         android:textSize="@dimen/yellow_pages_department_font_size"
         android:text="智能自行车"
         android:paddingLeft="10dp"
         android:layout_columnSpan="3"
         android:layout_marginBottom="@dimen/department_item_margin_bottom"
+        android:background="@drawable/yp_bg_department_click"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:id="@+id/department_tv_4"
         />
 
     <!--row3-->
@@ -94,14 +134,23 @@
         android:src="@drawable/icon_yellow_pages_building"
         android:layout_columnSpan="1"
         android:scaleType="centerCrop"
+        android:background="@drawable/yp_bg_department_click"
+        android:clickable="true"
+        android:layout_gravity="center_horizontal"
+        android:padding="5dp"
+        android:id="@+id/department_iv_5"
         />
-    <TextView android:layout_height="wrap_content"
+    <TextView android:layout_height="@dimen/yp_yellow_pages_department_tv_size"
         android:layout_width="wrap_content"
-        android:textColor="@color/font_block_700"
+        android:textColor="@color/yp_font_black_700"
         android:textSize="@dimen/yellow_pages_department_font_size"
         android:text="学生宿舍管理中心"
         android:paddingLeft="10dp"
         android:layout_columnSpan="3"
+        android:background="@drawable/yp_bg_department_click"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:id="@+id/department_tv_5"
         />
 
     <ImageView
@@ -111,16 +160,24 @@
         android:layout_columnSpan="1"
         android:scaleType="centerCrop"
         android:layout_marginLeft="@dimen/department_icon_margin_left"
+        android:background="@drawable/yp_bg_department_click"
+        android:clickable="true"
+        android:layout_gravity="center_horizontal"
+        android:padding="5dp"
+        android:id="@+id/department_iv_6"
+
         />
-    <TextView android:layout_height="wrap_content"
+    <TextView android:layout_height="@dimen/yp_yellow_pages_department_tv_size"
         android:layout_width="wrap_content"
-        android:textColor="@color/font_block_700"
+        android:textColor="@color/yp_font_black_700"
         android:textSize="@dimen/yellow_pages_department_font_size"
         android:text="校医院"
         android:paddingLeft="10dp"
         android:layout_columnSpan="3"
+        android:background="@drawable/yp_bg_department_click"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:id="@+id/department_tv_6"
         />
-
-
 
 </GridLayout>

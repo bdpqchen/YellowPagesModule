@@ -111,7 +111,7 @@ public class ListViewCollectedAdapter extends BaseExpandableListAdapter {
 
             ListViewCollectedAdapter.ChildViewHolder childViewHolder;
             if (convertView == null) {
-                convertView = LayoutInflater.from(mContext).inflate(R.layout.yp_item_elv_child, parent, false);
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.yp_item_elv_child_category, parent, false);
                 childViewHolder = new ListViewCollectedAdapter.ChildViewHolder();
                 childViewHolder.tvChildTitle = (TextView) convertView.findViewById(R.id.tv_child_title);
                 convertView.setTag(childViewHolder);

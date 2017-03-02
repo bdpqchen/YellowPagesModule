@@ -46,7 +46,6 @@ import com.orhanobut.logger.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.InjectView;
 import rx.Subscriber;
 
 
@@ -121,14 +120,14 @@ public class HomeActivity extends BaseActivity {
         CategoryFragment categoryFragment = new CategoryFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//        fragmentTransaction.add(R.id.fragment_container_department, departmentFragment);
         fragmentTransaction.add(R.id.fragment_container_collected, collectedFragment);
         fragmentTransaction.add(R.id.fragment_container_list, categoryFragment);
         fragmentTransaction.commit();
     }
 
     private void showInitDialog() {
-        mProgressDialog.setProgress(0);
+//        mProgressDialog.setProgress(0);
+        mProgressBar.incrementProgressBy(-10);
         mProgressDialog.setCancelable(false);
         mProgressDialog.setTitle("提示");
         mProgressDialog.setMessage("首次使用，需要导入号码库，请等待...");

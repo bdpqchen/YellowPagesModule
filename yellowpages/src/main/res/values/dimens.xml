@@ -7,5 +7,6 @@
     <dimen name="yp_yellow_pages_department_icon_size">25dp</dimen>
     <dimen name="yp_department_item_margin_bottom">20dp</dimen>
     <dimen name="yp_department_icon_margin_left">20dp</dimen>
-    <dimen name="search_view_inset">5dp</dimen>
+    <dimen name="yp_search_view_inset">5dp</dimen>
+    <dimen name="yp_yellow_pages_department_tv_size">35dp</dimen>
 </resources>
