@@ -30,7 +30,7 @@ public class DatabaseClient {
             public void call(Subscriber<? super List<Phone>> subscriber) {
                 List<Phone> list = DataManager.getCollectedDataList();
                 subscriber.onNext(list);
-                subscriber.onCompleted();
+//                subscriber.onCompleted();
             }
         }).compose(RxSchedulersHelper.<List<Phone>>io_main())
                 .subscribe(subscriber);
@@ -42,7 +42,7 @@ public class DatabaseClient {
             public void call(Subscriber<? super String[][]> subscriber) {
                 String[][] list = DataManager.getDepartmentsByCategory();
                 subscriber.onNext(list);
-                subscriber.onCompleted();
+//                subscriber.onCompleted();
             }
         }).compose(RxSchedulersHelper.<String[][]> io_main())
                 .subscribe(subscriber);
@@ -54,8 +54,10 @@ public class DatabaseClient {
             @Override
             public void call(Subscriber<? super List<Phone>> subscriber) {
                 List<Phone> phoneList = DataManager.getUnitListByDepartment(toolbarName);
+                subscriber.onNext(phoneList);
+
             }
-        }).compose(RxSchedulersHelper.io_main())
+        }).compose(RxSchedulersHelper.<List<Phone>> io_main())
                 .subscribe(subscriber);
     }
 }

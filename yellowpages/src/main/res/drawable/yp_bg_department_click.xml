@@ -9,7 +9,4 @@
 
         android:drawable="@color/yp_color_bg_gray"/>
 
-    <item android:drawable="@color/yp_color_bg_light"/>
-
-
 </selector>

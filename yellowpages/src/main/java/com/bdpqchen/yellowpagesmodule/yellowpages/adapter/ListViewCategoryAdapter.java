@@ -6,7 +6,6 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.graphics.Paint;
 import android.os.Handler;
-import android.telephony.PhoneStateListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +15,7 @@ import android.widget.TextView;
 
 import com.bdpqchen.yellowpagesmodule.yellowpages.R;
 import com.bdpqchen.yellowpagesmodule.yellowpages.data.DataManager;
+import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.CollectedFragmentCallBack;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.Phone;
 import com.bdpqchen.yellowpagesmodule.yellowpages.utils.TextFormatUtils;
 import com.bdpqchen.yellowpagesmodule.yellowpages.utils.ToastUtils;
@@ -34,14 +34,18 @@ public class ListViewCategoryAdapter extends BaseAdapter {
 
     private static List<Phone> phoneList;
     private List<Phone> mDataSet;
+    CollectedFragmentCallBack mFragmentCallBack;
 
-    public ListViewCategoryAdapter(Context context, List<Phone>phones){
+    public ListViewCategoryAdapter(Context context, List<Phone>phones, CollectedFragmentCallBack callBack){
         this.mContext = context;
         phoneList = phones;
+        mFragmentCallBack = callBack;
     }
 
-    public static void updateDataSet(List<Phone> phones){
+    public void updateDataSet(List<Phone> phones){
         phoneList = phones;
+        notifyDataSetChanged();
+
     }
 
     @Override
@@ -64,23 +68,28 @@ public class ListViewCategoryAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View view;
         final NormalViewHolder holder;
         if (phoneList.size() != 0){
             if (convertView == null){
-                view = LayoutInflater.from(mContext).inflate(R.layout.yp_item_elv_child_collected, parent);
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.yp_item_elv_child_collected, parent, false);
                 holder = new NormalViewHolder();
-                holder.ivCollected = (ImageView) view.findViewById(R.id.iv_item_children_icon_collected);
-                holder.ivUncollected = (ImageView) view.findViewById(R.id.iv_item_children_icon_uncollected);
-                holder.ivPhone = (ImageView) view.findViewById(R.id.iv_item_children_icon_phone);
-                holder.tvPhone = (TextView) view.findViewById(R.id.tv_item_collected_phone);
-                holder.tvTitle = (TextView) view.findViewById(R.id.tv_item_collected_name);
-                view.setTag(holder);
+                holder.ivCollected = (ImageView) convertView.findViewById(R.id.iv_item_children_icon_collected);
+                holder.ivUncollected = (ImageView) convertView.findViewById(R.id.iv_item_children_icon_uncollected);
+                holder.ivPhone = (ImageView) convertView.findViewById(R.id.iv_item_children_icon_phone);
+                holder.tvPhone = (TextView) convertView.findViewById(R.id.tv_item_collected_phone);
+                holder.tvTitle = (TextView) convertView.findViewById(R.id.tv_item_collected_name);
+                convertView.setTag(holder);
             }else {
-                view = convertView;
-                holder = (NormalViewHolder) view.getTag();
+                holder = (NormalViewHolder) convertView.getTag();
             }
             final Phone phone = phoneList.get(position);
+            if (phone.getIsCollected() == 0){
+                holder.ivUncollected.setVisibility(View.VISIBLE);
+                holder.ivCollected.setVisibility(View.INVISIBLE);
+            }else{
+                holder.ivUncollected.setVisibility(View.INVISIBLE);
+                holder.ivCollected.setVisibility(View.VISIBLE);
+            }
             holder.tvTitle.setText(phone.getName());
             holder.tvPhone.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
             holder.tvPhone.setText(phone.getPhone());
@@ -134,7 +143,7 @@ public class ListViewCategoryAdapter extends BaseAdapter {
     private class NormalViewHolder{
         TextView tvTitle, tvPhone;
         ImageView ivPhone, ivUncollected, ivCollected;
-        public NormalViewHolder(){
+        NormalViewHolder(){
 
         }
 

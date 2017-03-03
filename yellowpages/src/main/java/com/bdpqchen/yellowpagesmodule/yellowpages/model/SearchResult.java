@@ -8,7 +8,7 @@ public class SearchResult {
 
     public String phone;
     public String name;
-    public boolean isStow;
+    public int    isCollected;
 
 
 

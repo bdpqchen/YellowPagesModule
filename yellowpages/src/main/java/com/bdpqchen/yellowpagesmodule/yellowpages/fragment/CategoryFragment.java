@@ -88,10 +88,10 @@ public class CategoryFragment extends Fragment implements ExpandableListView.OnG
                 ListUtils.getInstance().setListViewHeightBasedOnChildren(mExpandableListView);
                 HomeActivity.setProgressBarDismiss();
                 String[][] phoneList = strings;
-                Logger.i(String.valueOf(phoneList.length));
-                Log.i("phonelist.size", "phonelist.name");
-                Logger.i(phoneList[0][0]);
-                Logger.i(phoneList[1][1]);
+//                Logger.i(String.valueOf(phoneList.length));
+//                Log.i("phonelist.size", "phonelist.name");
+//                Logger.i(phoneList[0][0]);
+//                Logger.i(phoneList[1][1]);
             }
 
         };

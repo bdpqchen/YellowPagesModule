@@ -1,8 +1,10 @@
 package com.bdpqchen.yellowpagesmodule.yellowpages.activity;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -39,6 +41,7 @@ import com.bdpqchen.yellowpagesmodule.yellowpages.model.SearchResult;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.WordSuggestion;
 import com.bdpqchen.yellowpagesmodule.yellowpages.network.NetworkClient;
 import com.bdpqchen.yellowpagesmodule.yellowpages.utils.PrefUtils;
+import com.bdpqchen.yellowpagesmodule.yellowpages.utils.ToastUtils;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.orhanobut.logger.Logger;
@@ -231,6 +234,7 @@ public class HomeActivity extends BaseActivity {
 
 
     private void setupSearchView() {
+
         mSearchView.setOnQueryChangeListener(new FloatingSearchView.OnQueryChangeListener() {
             @Override
             public void onSearchTextChanged(String oldQuery, final String newQuery) {
@@ -238,7 +242,7 @@ public class HomeActivity extends BaseActivity {
                     mSearchView.clearSuggestions();
                 } else {
                     mSearchView.showProgress();
-                    SearchHelper.findSuggestions(mContext, newQuery, 20, new SearchHelper.OnFindSuggestionsListener() {
+                    SearchHelper.findSuggestions(newQuery, 5, new SearchHelper.OnFindSuggestionsListener() {
 
                         @Override
                         public void onResults(List<WordSuggestion> results) {
@@ -248,7 +252,8 @@ public class HomeActivity extends BaseActivity {
 
                     });
                 }
-                Logger.d(TAG, "onSearchTextChanged()");
+                Logger.d("onSearchTextChanged()");
+                mLastQuery = newQuery;
             }
         });
 
@@ -256,27 +261,33 @@ public class HomeActivity extends BaseActivity {
             @Override
             public void onSuggestionClicked(final SearchSuggestion searchSuggestion) {
                 WordSuggestion wordSuggestion = (WordSuggestion) searchSuggestion;
-                SearchHelper.findWord(mContext, wordSuggestion.getBody(),
+                Logger.t(TAG).d(mLastQuery);
+                String t = mLastQuery;
+                mLastQuery = wordSuggestion.getBody();
+
+                SearchHelper.findWord(wordSuggestion.getBody(), t,
                         new SearchHelper.OnFindWordListener() {
                             @Override
                             public void onResults(List<SearchResult> results) {
+                                mSearchView.clearQuery();
+
                                 mSearchResultsAdapter.swapData(results);
                                 mSearchResultsAdapter.setItemsOnClickListener(new SearchResultsListAdapter.OnItemClickListener() {
                                     @Override
                                     public void onClick(SearchResult searchResult) {
                                         Logger.i("clicked the item, onSuggestionClicked()");
+
                                     }
                                 });
                             }
                         });
-                mLastQuery = searchSuggestion.getBody();
-                Logger.d(TAG, "onSuggestionClicked()");
-            }
 
+                Logger.d("onSuggestionClicked()");
+            }
             @Override
             public void onSearchAction(String query) {
                 mLastQuery = query;
-                SearchHelper.findWord(mContext, query,
+                SearchHelper.findWord(query, mLastQuery,
                         new SearchHelper.OnFindWordListener() {
                             @Override
                             public void onResults(List<SearchResult> results) {
@@ -290,20 +301,23 @@ public class HomeActivity extends BaseActivity {
                                 });
                             }
                         });
-                Logger.d(TAG, "onSearchAction()");
+                Logger.d("onSearchAction()");
             }
         });
 
         mSearchView.setOnFocusChangeListener(new FloatingSearchView.OnFocusChangeListener() {
             @Override
             public void onFocus() {
-                mSearchView.swapSuggestions(SearchHelper.getHistory(mContext, 10));
-                Logger.d(TAG, "onFocus()");
+                mSearchView.swapSuggestions(SearchHelper.getHistory(10));
+                Logger.d("onFocus()");
             }
 
             @Override
             public void onFocusCleared() {
-                Logger.d(TAG, "onFocusCleared()");
+                if (mLastQuery.equals(DataManager.TOO_MUCH_DATA_NAME)){
+                    mSearchView.clearQuery();
+                }
+                Logger.d("onFocusCleared()");
             }
         });
 
@@ -311,26 +325,10 @@ public class HomeActivity extends BaseActivity {
             @Override
             public void onActionMenuItemSelected(MenuItem item) {
 
-/*                if (item.getItemId() == R.id.action_change_colors) {
-
-                    mIsDarkSearchTheme = true;
-
-                    //demonstrate setting colors for items
-                    mSearchView.setBackgroundColor(Color.parseColor("#787878"));
-                    mSearchView.setViewTextColor(Color.parseColor("#e9e9e9"));
-                    mSearchView.setHintTextColor(Color.parseColor("#e9e9e9"));
-                    mSearchView.setActionMenuOverflowColor(Color.parseColor("#e9e9e9"));
-                    mSearchView.setMenuItemIconColor(Color.parseColor("#e9e9e9"));
-                    mSearchView.setLeftActionIconColor(Color.parseColor("#e9e9e9"));
-                    mSearchView.setClearBtnColor(Color.parseColor("#e9e9e9"));
-                    mSearchView.setDividerColor(Color.parseColor("#BEBEBE"));
-                    mSearchView.setLeftActionIconColor(Color.parseColor("#e9e9e9"));
-                } else {
-
-                    //just print action
-                    Toast.makeText(getActivity().getApplicationContext(), item.getTitle(),
-                            Toast.LENGTH_SHORT).show();
-                }*/
+                if (item.getItemId() == R.id.yp_action_clear_history) {
+                    DataManager.clearHistory();
+                    ToastUtils.show((Activity) mContext, "已清空搜索记录");
+                }
 
             }
         });
@@ -339,7 +337,7 @@ public class HomeActivity extends BaseActivity {
             @Override
             public void onHomeClicked() {
 
-                Logger.d(TAG, "onHomeClicked()");
+                Logger.d("onHomeClicked()");
             }
         });
 
@@ -391,27 +389,14 @@ public class HomeActivity extends BaseActivity {
             mSearchResultsList.setVisibility(View.VISIBLE);
             mParentView.setVisibility(View.VISIBLE);
 
-//            YoYo.with(Techniques.ZoomInRight)
             YoYo.with(Techniques.SlideInRight)
                     .duration(duration).playOn(findViewById(R.id.floating_search_view));
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     mSearchView.setSearchFocused(true);
-
                 }
             }, duration);
-/*
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mSearchView.setSearchFocused(false);
-                    mSearchView.setVisibility(View.GONE);
-                    mSearchResultsList.setVisibility(View.GONE);
-                    mParentView.setVisibility(View.GONE);
-//                    YoYo.with(Techniques.SlideOutLeft).duration(200).playOn((findViewById(R.id.floating_search_view)));
-                }
-            }, 4000);*/
 
             Logger.d("clicked the toolbar");
         }

@@ -15,7 +15,6 @@
         android:layout_alignParentLeft="true"
         android:layout_marginBottom="5dp"
         android:paddingLeft="10dp"
-        android:text="名称名称名称发生的范德萨犯发发阿发发生法是"
         android:textSize="@dimen/yp_item_children_text_size" />
 
     <ImageView
@@ -25,7 +24,9 @@
         android:layout_alignParentRight="true"
         android:layout_below="@id/tv_item_collected_name"
         android:layout_marginRight="25dp"
-        android:src="@drawable/icon_yellow_pages_phone" />
+        android:src="@drawable/icon_yellow_pages_phone"
+        android:background="@drawable/yp_bg_department_click"
+        />
 
     <TextView
         android:id="@+id/tv_item_collected_phone"
@@ -39,6 +40,7 @@
         android:layout_alignParentLeft="true"
         android:gravity="center_vertical"
         android:clickable="true"
+        android:background="@drawable/yp_bg_department_click"
         />
 
     <ImageView

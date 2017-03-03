@@ -22,6 +22,7 @@ import com.bdpqchen.yellowpagesmodule.yellowpages.adapter.ExpandableListViewColl
 import com.bdpqchen.yellowpagesmodule.yellowpages.data.DatabaseClient;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.Phone;
 import com.bdpqchen.yellowpagesmodule.yellowpages.utils.ListUtils;
+import com.bdpqchen.yellowpagesmodule.yellowpages.utils.RingUpUtils;
 import com.bdpqchen.yellowpagesmodule.yellowpages.utils.ToastUtils;
 
 import java.util.List;
@@ -35,7 +36,7 @@ import rx.Subscriber;
 
 public class CollectedFragment extends Fragment implements ExpandableListView.OnGroupClickListener, ExpandableListView.OnGroupCollapseListener, ExpandableListView.OnGroupExpandListener, ExpandableListView.OnChildClickListener, CollectedFragmentCallBack{
 
-    private static final int REQUEST_CODE_CALL_PHONE = 11;
+    public static final int REQUEST_CODE_CALL_PHONE = 11;
     public String[] groupStrings = {"我的收藏"};
 
     public String[][] childStrings1;
@@ -72,39 +73,18 @@ public class CollectedFragment extends Fragment implements ExpandableListView.On
         switch (requestCode){
             case REQUEST_CODE_CALL_PHONE:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                    callThePhone(callPhoneNum);
+                    RingUpUtils.ringUp(mContext, callPhoneNum);
                 }else{
                     ToastUtils.show(getActivity(), "请在权限管理中开启微北洋拨打电话权限");
                 }
                 break;
         }
-
     }
 
     @Override
     public void callPhone(String phoneNum) {
         this.callPhoneNum = phoneNum;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-            int checkCallPhonePermission = ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.CALL_PHONE);
-            if (checkCallPhonePermission != PackageManager.PERMISSION_GRANTED){
-                //When using the Support library, you have to use the correct method calls.
-                //http://stackoverflow.com/questions/32714787/android-m-permissions-onrequestpermissionsresult-not-being-called
-                requestPermissions(new String[]{android.Manifest.permission.CALL_PHONE}, REQUEST_CODE_CALL_PHONE);
-            }else{
-                callThePhone(phoneNum);
-            }
-        }else{
-            callThePhone(phoneNum);
-        }
-    }
-
-
-
-    public void callThePhone(String phoneNum){
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_DIAL);
-        intent.setData(Uri.parse("tel:" + phoneNum));
-        getContext().startActivity(intent);
+        RingUpUtils.permissionCheck(mContext, phoneNum, REQUEST_CODE_CALL_PHONE);
     }
 
     public void getCollectedData(){
