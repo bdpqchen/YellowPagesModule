@@ -9,6 +9,7 @@
         >
         <activity android:name=".activity.HomeActivity" android:theme="@style/yp_AppTheme"/>
         <activity android:name=".activity.InitActivity" android:theme="@style/yp_AppTheme"/>
+        <activity android:name=".activity.DepartmentActivity" android:theme="@style/yp_AppTheme"/>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET"/>

@@ -1,5 +1,7 @@
 package com.bdpqchen.yellowpagesmodule.yellowpages.fragment;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,10 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 
+import com.bdpqchen.yellowpagesmodule.yellowpages.activity.DepartmentActivity;
 import com.bdpqchen.yellowpagesmodule.yellowpages.activity.HomeActivity;
 import com.bdpqchen.yellowpagesmodule.yellowpages.adapter.ExpandableListViewAdapter;
 import com.bdpqchen.yellowpagesmodule.yellowpages.R;
 import com.bdpqchen.yellowpagesmodule.yellowpages.data.DatabaseClient;
+import com.bdpqchen.yellowpagesmodule.yellowpages.model.Phone;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.SearchResult;
 import com.bdpqchen.yellowpagesmodule.yellowpages.utils.ListUtils;
 import com.orhanobut.logger.Logger;
@@ -28,27 +32,19 @@ import rx.Subscriber;
 public class CategoryFragment extends Fragment implements ExpandableListView.OnGroupClickListener, ExpandableListView.OnGroupCollapseListener, ExpandableListView.OnGroupExpandListener, ExpandableListView.OnChildClickListener {
 
     public String[] groupStrings = {"校级部门", "院级部门", "其他" };
-    /*public String[][] childStrings = {
-            {"唐三藏", "孙悟空", "猪八戒", "沙和尚"},
-            {"宋江", "林冲", "李逵", "鲁智深"},
-            {"曹操", "刘备", "孙权", "诸葛亮", "周瑜"},
-            {"贾宝玉", "林黛玉", "薛宝钗", "王熙凤"},
-            {"唐三藏", "孙悟空", "猪八戒", "沙和尚"},
-            {"宋江", "林冲", "李逵", "鲁智深"},
-            {"曹操", "刘备", "孙权", "诸葛亮", "周瑜"},
-            {"贾宝玉", "林黛玉", "薛宝钗", "王熙凤"}
-    };*/
 
     public List<SearchResult> searchResultList;
 
     private ExpandableListView mExpandableListView;
     private ExpandableListViewAdapter mAdapter;
+    private Context mContext;
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+        mContext = getContext();
         View view = inflater.inflate(R.layout.yp_fragment_expandable_list_view, container, false);
         mExpandableListView = (ExpandableListView) view.findViewById(R.id.expand_list_view);
         mExpandableListView.setOnGroupClickListener(this);
@@ -60,6 +56,18 @@ public class CategoryFragment extends Fragment implements ExpandableListView.OnG
         ListUtils.getInstance().setListViewHeightBasedOnChildren(mExpandableListView);
 
         getCategoryData();
+        mExpandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                String department = (String) mAdapter.getChild(groupPosition, childPosition);
+
+                Intent intent = new Intent(mContext, DepartmentActivity.class);
+                intent.putExtra("toolbar_title", department);
+                Logger.i("send intent, " + department);
+                startActivity(intent);
+                return false;
+            }
+        });
 
         return view;
     }
@@ -71,7 +79,7 @@ public class CategoryFragment extends Fragment implements ExpandableListView.OnG
 
             @Override
             public void onError(Throwable e) {
-                Logger.i("getCategorydata-----onError()");
+                Logger.i("get Category data-----onError()");
             }
 
             @Override

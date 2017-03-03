@@ -93,11 +93,9 @@ public class DataManager {
         return results;
     }
 
-
-    public static List<Phone> getUnitListByDepartment(int type, String q) {
+    public static List<Phone> getUnitListByDepartment(String department) {
         return getPhoneDao().queryBuilder()
-                .where(PhoneDao.Properties.Category.eq(type))
-                .where(PhoneDao.Properties.Department.eq(q))
+                .where(PhoneDao.Properties.Department.eq(department))
                 .build()
                 .list();
     }

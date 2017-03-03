@@ -49,4 +49,13 @@ public class DatabaseClient {
     }
 
 
+    public void getUnitListByDepartment(Subscriber subscriber, final String toolbarName) {
+        Observable.create(new Observable.OnSubscribe<List<Phone>>() {
+            @Override
+            public void call(Subscriber<? super List<Phone>> subscriber) {
+                List<Phone> phoneList = DataManager.getUnitListByDepartment(toolbarName);
+            }
+        }).compose(RxSchedulersHelper.io_main())
+                .subscribe(subscriber);
+    }
 }
