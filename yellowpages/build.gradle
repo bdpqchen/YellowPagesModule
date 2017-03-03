@@ -40,6 +40,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.2.0'
     testCompile 'junit:junit:4.12'
     compile project(':commons')
+    compile 'com.github.kayvannj:PermissionUtils:1.0.3'
 
     compile 'org.greenrobot:greendao:3.2.0'
 

@@ -4,8 +4,12 @@ import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Paint;
+import android.os.Build;
 import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,12 +21,15 @@ import android.widget.TextView;
 import com.bdpqchen.yellowpagesmodule.yellowpages.R;
 import com.bdpqchen.yellowpagesmodule.yellowpages.activity.HomeActivity;
 import com.bdpqchen.yellowpagesmodule.yellowpages.data.DataManager;
+import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.CollectedFragment;
+import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.CollectedFragmentCallBack;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.Phone;
 import com.bdpqchen.yellowpagesmodule.yellowpages.utils.ToastUtils;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 
 import java.util.List;
+import java.util.jar.Manifest;
 
 /**
  * Created by bdpqchen on 17-3-1.
@@ -32,9 +39,11 @@ public class ListViewCollectedAdapter extends BaseExpandableListAdapter {
     private static String[] mGroupArray;
     private static List<Phone> mChildList;
     private Context mContext;
+    private CollectedFragmentCallBack mFragmentCallBack;
 
-    public ListViewCollectedAdapter(Context context){
+    public ListViewCollectedAdapter(Context context, CollectedFragmentCallBack callBack){
         mContext = context;
+        mFragmentCallBack = callBack;
     }
 
     public void addAllData(String[] groups, List<Phone> phoneList){
@@ -171,11 +180,18 @@ public class ListViewCollectedAdapter extends BaseExpandableListAdapter {
             childViewHolder.ivCallPhone.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    String phoneNum = getPhoneNum(phone.getPhone());
+                    mFragmentCallBack.callPhone(phoneNum);
                 }
             });
         }
         return convertView;
+    }
+
+
+
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
+
     }
 
     @Override
@@ -195,6 +211,15 @@ public class ListViewCollectedAdapter extends BaseExpandableListAdapter {
         TextView tvChildTitle, tvChildPhone;
         ImageView ivCallPhone, ivCollected, ivUncollected;
 
+    }
+
+    public  static String getPhoneNum(String str) {
+        String dest = "";
+        if (str != null) {
+            dest = str.replaceAll("[^0-9]","");
+
+        }
+        return dest;
     }
 
 }

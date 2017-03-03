@@ -98,7 +98,7 @@ public class HomeActivity extends BaseActivity {
         fragmentTransaction.commit();
         setupSearchView();
         setupResultsList();
-        if (PrefUtils.isFirstOpen()) {
+        if (!PrefUtils.isFirstOpen()) {
             setListViewShow();
         } else {
             mProgressDialog = new ProgressDialog(this);
@@ -203,7 +203,7 @@ public class HomeActivity extends BaseActivity {
                 Logger.d(System.currentTimeMillis() - time);
                 setListViewShow();
                 mProgressDialog.dismiss();
-
+                PrefUtils.setIsFirstOpen(false);
             }
         }).start();
 
