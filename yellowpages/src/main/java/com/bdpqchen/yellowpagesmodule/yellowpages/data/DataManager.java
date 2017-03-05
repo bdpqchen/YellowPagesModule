@@ -72,7 +72,7 @@ public class DataManager {
 
     public static List<Phone> getCollectedDataList() {
 
-        return getPhoneDao().queryBuilder().where(PhoneDao.Properties.IsCollected.eq(0)).orderAsc(PhoneDao.Properties.Name).list();
+        return getPhoneDao().queryBuilder().where(PhoneDao.Properties.IsCollected.eq(1)).orderAsc(PhoneDao.Properties.Name).list();
     }
 
     /* 按照类型分组查询

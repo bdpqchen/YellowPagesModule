@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -15,10 +17,12 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -29,11 +33,13 @@ import com.arlib.floatingsearchview.suggestions.SearchSuggestionsAdapter;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.bdpqchen.yellowpagesmodule.yellowpages.R;
 import com.bdpqchen.yellowpagesmodule.yellowpages.adapter.SearchResultsListAdapter;
+import com.bdpqchen.yellowpagesmodule.yellowpages.adapter.SearchResultsListViewAdapter;
 import com.bdpqchen.yellowpagesmodule.yellowpages.base.BaseActivity;
 import com.bdpqchen.yellowpagesmodule.yellowpages.data.DataManager;
 import com.bdpqchen.yellowpagesmodule.yellowpages.data.SearchHelper;
 import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.CategoryFragment;
 import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.CollectedFragment;
+import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.CollectedFragmentCallBack;
 import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.DepartmentFragment;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.DataBean;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.Phone;
@@ -41,6 +47,7 @@ import com.bdpqchen.yellowpagesmodule.yellowpages.model.SearchResult;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.WordSuggestion;
 import com.bdpqchen.yellowpagesmodule.yellowpages.network.NetworkClient;
 import com.bdpqchen.yellowpagesmodule.yellowpages.utils.PrefUtils;
+import com.bdpqchen.yellowpagesmodule.yellowpages.utils.RingUpUtils;
 import com.bdpqchen.yellowpagesmodule.yellowpages.utils.ToastUtils;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
@@ -52,11 +59,12 @@ import java.util.List;
 import rx.Subscriber;
 
 
-public class HomeActivity extends BaseActivity {
+public class HomeActivity extends BaseActivity implements CollectedFragmentCallBack{
 
+    private static final int REQUEST_CODE_CALL_PHONE = 33;
     private static final String TAG = "HomeActivity";
     //    @InjectView(R.id.search_results_list)
-    private RecyclerView mSearchResultsList;
+    private ListView mSearchResultsList;
     //    @InjectView(R.id.parent_view)
     private RelativeLayout mParentView;
     //    @InjectView(R.id.toolbar)
@@ -64,12 +72,14 @@ public class HomeActivity extends BaseActivity {
     private Context mContext;
     private static ProgressBar mProgressBar;
     private FloatingSearchView mSearchView;
-    private SearchResultsListAdapter mSearchResultsAdapter;
-    private ProgressDialog mProgressDialog;
+    private SearchResultsListViewAdapter mSearchResultsAdapter;
 
+    private ProgressDialog mProgressDialog;
     private String mLastQuery = "";
     private boolean isInited = false;
     private static int loadFragmentTimes = 0;
+    private CollectedFragmentCallBack mRingUpCallBack;
+    private String callPhoneNum= "";
 
 
     @Override
@@ -90,9 +100,10 @@ public class HomeActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.mContext = this;
+        this.mRingUpCallBack = this;
         mSearchView = (FloatingSearchView) findViewById(R.id.floating_search_view);
         mParentView = (RelativeLayout) findViewById(R.id.parent_view);
-        mSearchResultsList = (RecyclerView) findViewById(R.id.search_results_list);
+        mSearchResultsList = (ListView) findViewById(R.id.search_results_list);
         mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
         DepartmentFragment departmentFragment = new DepartmentFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -270,9 +281,8 @@ public class HomeActivity extends BaseActivity {
                             @Override
                             public void onResults(List<SearchResult> results) {
                                 mSearchView.clearQuery();
-
                                 mSearchResultsAdapter.swapData(results);
-                                mSearchResultsAdapter.setItemsOnClickListener(new SearchResultsListAdapter.OnItemClickListener() {
+                                mSearchResultsAdapter.setItemsOnClickListener(new SearchResultsListViewAdapter.OnItemClickListener() {
                                     @Override
                                     public void onClick(SearchResult searchResult) {
                                         Logger.i("clicked the item, onSuggestionClicked()");
@@ -292,7 +302,7 @@ public class HomeActivity extends BaseActivity {
                             @Override
                             public void onResults(List<SearchResult> results) {
                                 mSearchResultsAdapter.swapData(results);
-                                mSearchResultsAdapter.setItemsOnClickListener(new SearchResultsListAdapter.OnItemClickListener() {
+                                mSearchResultsAdapter.setItemsOnClickListener(new SearchResultsListViewAdapter.OnItemClickListener() {
                                     @Override
                                     public void onClick(SearchResult searchResult) {
                                         Toast.makeText(mContext, "You clicked the item" + searchResult.name, Toast.LENGTH_LONG).show();
@@ -368,9 +378,8 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void setupResultsList() {
-        mSearchResultsAdapter = new SearchResultsListAdapter();
+        mSearchResultsAdapter = new SearchResultsListViewAdapter(this, null, mRingUpCallBack);
         mSearchResultsList.setAdapter(mSearchResultsAdapter);
-        mSearchResultsList.setLayoutManager(new LinearLayoutManager(mContext));
     }
 
 
@@ -404,4 +413,43 @@ public class HomeActivity extends BaseActivity {
 
     }
 
+    @Override
+    public void callPhone(String phoneNum) {
+        this.callPhoneNum = phoneNum;
+        RingUpUtils.permissionCheck(mContext, phoneNum, REQUEST_CODE_CALL_PHONE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode){
+            case REQUEST_CODE_CALL_PHONE:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    RingUpUtils.ringUp(mContext, callPhoneNum);
+                }else{
+                    ToastUtils.show(this, "请在权限管理中开启微北洋拨打电话权限");
+                }
+                break;
+        }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        Logger.i("received the key down");
+        if (keyCode == KeyEvent.KEYCODE_BACK){
+            Logger.i("keycode back is triggered ");
+            if (mSearchView.getVisibility() == View.GONE){
+                Logger.i("finished view");
+                finish();
+            }else{
+                mSearchView.setVisibility(View.GONE);
+                mSearchResultsList.setVisibility(View.GONE);
+                mParentView.setVisibility(View.GONE);
+                Logger.i("set search view gone");
+            }
+        }
+
+        return super.onKeyDown(keyCode, event);
+
+    }
 }

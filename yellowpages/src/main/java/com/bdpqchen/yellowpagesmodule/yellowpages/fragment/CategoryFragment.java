@@ -98,14 +98,6 @@ public class CategoryFragment extends Fragment implements ExpandableListView.OnG
         DatabaseClient.getInstance().getCategoryDataList(subscriber);
     }
 
-    /*
-        @Override
-        public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-
-            return false;
-        }
-
-    */
     @Override
     public void onGroupCollapse(int groupPosition) {
         ListUtils.setCollapseListViewHeightBasedOnChildren(mExpandableListView, groupPosition);
@@ -117,13 +109,6 @@ public class CategoryFragment extends Fragment implements ExpandableListView.OnG
         ListUtils.setExpandedListViewHeightBasedOnChildren(mExpandableListView, groupPosition);
         ListUtils.getInstance().setListViewHeightBasedOnChildren(mExpandableListView);
     }
-
-/*
-    @Override
-    public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-        return false;
-    }
-*/
 
     @Override
     public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
