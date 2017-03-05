@@ -346,7 +346,7 @@ public class HomeActivity extends BaseActivity implements CollectedFragmentCallB
         mSearchView.setOnHomeActionClickListener(new FloatingSearchView.OnHomeActionClickListener() {
             @Override
             public void onHomeClicked() {
-
+                updateViewVisibility(View.GONE);
                 Logger.d("onHomeClicked()");
             }
         });
@@ -394,10 +394,7 @@ public class HomeActivity extends BaseActivity implements CollectedFragmentCallB
         int i = item.getItemId();
         if (i == R.id.action_search) {
             int duration = 200;
-            mSearchView.setVisibility(View.VISIBLE);
-            mSearchResultsList.setVisibility(View.VISIBLE);
-            mParentView.setVisibility(View.VISIBLE);
-
+            updateViewVisibility(View.VISIBLE);
             YoYo.with(Techniques.SlideInRight)
                     .duration(duration).playOn(findViewById(R.id.floating_search_view));
             new Handler().postDelayed(new Runnable() {
@@ -408,9 +405,10 @@ public class HomeActivity extends BaseActivity implements CollectedFragmentCallB
             }, duration);
 
             Logger.d("clicked the toolbar");
+        }else if (i == android.R.id.home){
+            finish();
         }
         return super.onOptionsItemSelected(item);
-
     }
 
     @Override
@@ -442,14 +440,26 @@ public class HomeActivity extends BaseActivity implements CollectedFragmentCallB
                 Logger.i("finished view");
                 finish();
             }else{
-                mSearchView.setVisibility(View.GONE);
-                mSearchResultsList.setVisibility(View.GONE);
-                mParentView.setVisibility(View.GONE);
+                updateViewVisibility(View.GONE);
                 Logger.i("set search view gone");
             }
         }
 
-        return super.onKeyDown(keyCode, event);
-
+        return false;
     }
+
+    private void updateViewVisibility(int type){
+
+        if (type == View.GONE){
+            mSearchView.setVisibility(View.GONE);
+            mSearchResultsList.setVisibility(View.GONE);
+            mParentView.setVisibility(View.GONE);
+        }else if (type == View.VISIBLE){
+            mSearchView.setVisibility(View.VISIBLE);
+            mSearchResultsList.setVisibility(View.VISIBLE);
+            mParentView.setVisibility(View.VISIBLE);
+        }
+    }
+
+
 }
