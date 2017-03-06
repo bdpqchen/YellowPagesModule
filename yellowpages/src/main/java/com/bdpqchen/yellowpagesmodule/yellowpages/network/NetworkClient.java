@@ -1,6 +1,8 @@
 package com.bdpqchen.yellowpagesmodule.yellowpages.network;
 
 
+import com.bdpqchen.yellowpagesmodule.yellowpages.model.DataBean;
+
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -53,6 +55,12 @@ public class NetworkClient {
                 .compose(RxSchedulersHelper.io_main())
                 .subscribe(subscriber);
 
+    }
+
+    public Subscription getDatabaseVersion(Subscriber subscriber) {
+        return mService.getDbVersion()
+                .compose(RxSchedulersHelper.io_main())
+                .subscribe(subscriber);
     }
 
 }

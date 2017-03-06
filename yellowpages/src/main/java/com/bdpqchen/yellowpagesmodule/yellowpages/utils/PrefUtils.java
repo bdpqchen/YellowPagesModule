@@ -1,5 +1,6 @@
 package com.bdpqchen.yellowpagesmodule.yellowpages.utils;
 
+import com.bdpqchen.yellowpagesmodule.yellowpages.activity.HomeActivity;
 import com.orhanobut.hawk.Hawk;
 
 /**
@@ -11,6 +12,7 @@ public class PrefUtils {
 
     private static final String IS_FIRST_OPEN = "is_first_open_then_init_the_database";
     private static final String DATABASE_VERSION_CODE = "database_version_code";
+    private static final String YP_DATABASE_VERSION_CODE = "yp_database_version_code";
 
     public static boolean isFirstOpen(){
         return Hawk.get(IS_FIRST_OPEN, true);
@@ -19,14 +21,11 @@ public class PrefUtils {
         Hawk.put(IS_FIRST_OPEN, b);
     }
 
-    public static int getDataBaseVersionCode(){
-        return Hawk.get(DATABASE_VERSION_CODE, 1);
+    public static void setDatabaseVersion(int ypDatabaseVersionCode) {
+        Hawk.put(YP_DATABASE_VERSION_CODE, ypDatabaseVersionCode);
     }
-
-    public static void setVersionCode(int v){
-        Hawk.put(DATABASE_VERSION_CODE, v);
+    public static int getDatabaseVersion(){
+        return Hawk.get(DATABASE_VERSION_CODE, HomeActivity.mDatabaseVersionCode);
     }
-
-
 
 }

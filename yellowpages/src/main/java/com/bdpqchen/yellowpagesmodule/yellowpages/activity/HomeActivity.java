@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -14,8 +13,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -32,7 +29,6 @@ import com.arlib.floatingsearchview.FloatingSearchView;
 import com.arlib.floatingsearchview.suggestions.SearchSuggestionsAdapter;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.bdpqchen.yellowpagesmodule.yellowpages.R;
-import com.bdpqchen.yellowpagesmodule.yellowpages.adapter.SearchResultsListAdapter;
 import com.bdpqchen.yellowpagesmodule.yellowpages.adapter.SearchResultsListViewAdapter;
 import com.bdpqchen.yellowpagesmodule.yellowpages.base.BaseActivity;
 import com.bdpqchen.yellowpagesmodule.yellowpages.data.DataManager;
@@ -42,6 +38,7 @@ import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.CollectedFragment;
 import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.CollectedFragmentCallBack;
 import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.DepartmentFragment;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.DataBean;
+import com.bdpqchen.yellowpagesmodule.yellowpages.model.DatabaseVersion;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.Phone;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.SearchResult;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.WordSuggestion;
@@ -51,6 +48,7 @@ import com.bdpqchen.yellowpagesmodule.yellowpages.utils.RingUpUtils;
 import com.bdpqchen.yellowpagesmodule.yellowpages.utils.ToastUtils;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.orhanobut.hawk.Hawk;
 import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
@@ -59,8 +57,9 @@ import java.util.List;
 import rx.Subscriber;
 
 
-public class HomeActivity extends BaseActivity implements CollectedFragmentCallBack{
+public class HomeActivity extends BaseActivity implements CollectedFragmentCallBack {
 
+    public static int mDatabaseVersionCode = 1;
     private static final int REQUEST_CODE_CALL_PHONE = 33;
     private static final String TAG = "HomeActivity";
     //    @InjectView(R.id.search_results_list)
@@ -72,15 +71,15 @@ public class HomeActivity extends BaseActivity implements CollectedFragmentCallB
     private Context mContext;
     private static ProgressBar mProgressBar;
     private FloatingSearchView mSearchView;
-    private SearchResultsListViewAdapter mSearchResultsAdapter;
 
+    private SearchResultsListViewAdapter mSearchResultsAdapter;
     private ProgressDialog mProgressDialog;
     private String mLastQuery = "";
-    private boolean isInited = false;
     private static int loadFragmentTimes = 0;
     private CollectedFragmentCallBack mRingUpCallBack;
-    private String callPhoneNum= "";
-
+    private String callPhoneNum = "";
+    private boolean isUpdatingDb = false;
+    private int mTest = 1;
 
     @Override
     public int getLayout() {
@@ -90,9 +89,7 @@ public class HomeActivity extends BaseActivity implements CollectedFragmentCallB
     @Override
     protected Toolbar getToolbar() {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-
         mToolbar.setTitle(getResources().getString(R.string.yp_app_name));
-
         return mToolbar;
     }
 
@@ -119,11 +116,29 @@ public class HomeActivity extends BaseActivity implements CollectedFragmentCallB
             showInitDialog();
             getDataList();
         }
+
+        Logger.i(String.valueOf(mTest));
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mTest++;
+                restartActivity();
+                Logger.i(String.valueOf(mTest));
+            }
+        }, 2000);
+
+//        checkForUpdateDatabase();
     }
 
-    public static void setProgressBarDismiss(){
+    private void restartActivity() {
+//        finish();
+//        startActivity(this, HomeActivity.class);
+
+    }
+
+    public static void setProgressBarDismiss() {
         loadFragmentTimes++;
-        if(loadFragmentTimes >= 2){
+        if (loadFragmentTimes >= 2) {
             mProgressBar.setVisibility(View.GONE);
         }
     }
@@ -139,31 +154,17 @@ public class HomeActivity extends BaseActivity implements CollectedFragmentCallB
         fragmentTransaction.commit();
     }
 
-    private void showInitDialog() {
-//        mProgressDialog.setProgress(0);
-        mProgressBar.incrementProgressBy(-10);
-        mProgressDialog.setCancelable(false);
-        mProgressDialog.setTitle("提示");
-        mProgressDialog.setMessage("首次使用，需要导入号码库，请等待...");
-        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        mProgressDialog.setMax(100);
-        mProgressDialog.setCanceledOnTouchOutside(false);
-        mProgressDialog.show();
-
-    }
-
     public void getDataList() {
-
         Subscriber subscriber = new Subscriber<DataBean>() {
             @Override
             public void onCompleted() {
-                mProgressDialog.incrementProgressBy(50);
+                updateProgressDialogStatus(50);
             }
 
             @Override
             public void onError(Throwable e) {
-                mProgressDialog.dismiss();
-                mProgressDialog.incrementProgressBy(0);
+                updateProgressDialogStatus(-1);
+                updateProgressDialogStatus(0);
                 showInitErrorDialog();
             }
 
@@ -175,10 +176,9 @@ public class HomeActivity extends BaseActivity implements CollectedFragmentCallB
                 Logger.i(String.valueOf(dataBean.getCategory_list().get(0).getDepartment_list().get(0).getUnit_list().size()));
                 initDatabase(dataBean);
             }
-
         };
         NetworkClient.getInstance().getDataList(subscriber);
-        mProgressDialog.incrementProgressBy(10);
+        updateProgressDialogStatus(10);
     }
 
     private void initDatabase(final DataBean dataBean) {
@@ -188,7 +188,7 @@ public class HomeActivity extends BaseActivity implements CollectedFragmentCallB
             public void run() {
                 List<Phone> phoneList = new ArrayList<>();
                 for (int i = 0; i < dataBean.getCategory_list().size(); i++) { //3个分类
-                    mProgressDialog.incrementProgressBy(10);
+                    updateProgressDialogStatus(10);
                     DataBean.CategoryListBean categoryList = dataBean.getCategory_list().get(i);
                     Logger.d(i + "====i");
                     for (int j = 0; j < categoryList.getDepartment_list().size(); j++) {     //第i分类里的部门j
@@ -208,34 +208,59 @@ public class HomeActivity extends BaseActivity implements CollectedFragmentCallB
                         }
                     }
                 }
-                DataManager.insertBatch(phoneList);
-                mProgressDialog.incrementProgressBy(10);
                 Logger.i(String.valueOf(phoneList.size()));
                 Logger.i("DataList.size", phoneList.size() + "");
                 Logger.i(String.valueOf(phoneList.get(0).getIsCollected()));
                 Logger.i(String.valueOf(phoneList.get(1).getIsCollected()));
                 Logger.d(System.currentTimeMillis() - time);
-                setListViewShow();
-                mProgressDialog.dismiss();
-                PrefUtils.setIsFirstOpen(false);
+                DataManager.insertBatch(phoneList);
+                updateProgressDialogStatus(10);
+                initDbCompletely();
             }
         }).start();
 
     }
 
+    private void initDbCompletely(){
+        PrefUtils.setDatabaseVersion(mDatabaseVersionCode);
+        if (isUpdatingDb) {
+            onRestart();
+//            finish();
+        }else{
+            setListViewShow();
+            updateProgressDialogStatus(-1);
+            PrefUtils.setIsFirstOpen(false);
+        }
+    }
+
+    private void showInitDialog() {
+        String msg = "首次使用，需要导入号码库，请等待...";
+        if (isUpdatingDb){
+            msg = "正在更新号码库，请等待...";
+        }
+        updateProgressDialogStatus(-10);
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.setTitle("提示");
+        mProgressDialog.setMessage(msg);
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        mProgressDialog.setMax(100);
+        mProgressDialog.setCanceledOnTouchOutside(false);
+        mProgressDialog.show();
+    }
+
     private void showInitErrorDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("出错提醒")
+        builder.setTitle("出错啦")
                 .setCancelable(false)
                 .setMessage("\t导入失败，请检查网络是否可用")
-                .setNegativeButton("重新导入", new DialogInterface.OnClickListener() {
+                .setPositiveButton("重新导入", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         showInitDialog();
                         getDataList();
                     }
                 })
-                .setPositiveButton("返回", new DialogInterface.OnClickListener() {
+                .setNegativeButton("返回", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         finish();
@@ -243,6 +268,19 @@ public class HomeActivity extends BaseActivity implements CollectedFragmentCallB
                 }).show();
     }
 
+    private void showUpdateDbDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("更新提醒")
+                .setMessage("\t发现最新版本号码库，请及时更新")
+                .setNegativeButton("下次", null)
+                .setPositiveButton("更新", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        showInitDialog();
+                        getDataList();
+                    }
+                }).show();
+    }
 
     private void setupSearchView() {
 
@@ -294,6 +332,7 @@ public class HomeActivity extends BaseActivity implements CollectedFragmentCallB
 
                 Logger.d("onSuggestionClicked()");
             }
+
             @Override
             public void onSearchAction(String query) {
                 mLastQuery = query;
@@ -324,7 +363,7 @@ public class HomeActivity extends BaseActivity implements CollectedFragmentCallB
 
             @Override
             public void onFocusCleared() {
-                if (mLastQuery.equals(DataManager.TOO_MUCH_DATA_NAME)){
+                if (mLastQuery.equals(DataManager.TOO_MUCH_DATA_NAME)) {
                     mSearchView.clearQuery();
                 }
                 Logger.d("onFocusCleared()");
@@ -382,6 +421,54 @@ public class HomeActivity extends BaseActivity implements CollectedFragmentCallB
         mSearchResultsList.setAdapter(mSearchResultsAdapter);
     }
 
+    @Override
+    public void callPhone(String phoneNum) {
+        this.callPhoneNum = phoneNum;
+        RingUpUtils.permissionCheck(mContext, phoneNum, REQUEST_CODE_CALL_PHONE);
+    }
+
+    private void updateViewVisibility(int type) {
+        mSearchView.setVisibility(type);
+        mSearchResultsList.setVisibility(type);
+        mParentView.setVisibility(type);
+    }
+
+    private void updateProgressDialogStatus(int what){
+        if (null != mProgressDialog){
+            if (what == -1){
+                mProgressDialog.dismiss();
+            }else{
+                mProgressDialog.incrementProgressBy(what);
+            }
+        }
+    }
+
+    private void checkForUpdateDatabase() {
+        final Subscriber subscriber = new Subscriber<DatabaseVersion>() {
+            @Override
+            public void onCompleted() {}
+            @Override
+            public void onError(Throwable e) {
+                Logger.i("自动检查更新数据库的网络请求发生错误");
+            }
+
+            @Override
+            public void onNext(DatabaseVersion databaseVersion) {
+                if (databaseVersion.version_code > PrefUtils.getDatabaseVersion()){
+                    isUpdatingDb = true;
+                    showUpdateDbDialog();
+                    mDatabaseVersionCode = databaseVersion.version_code;
+                }
+
+            }
+        };
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                NetworkClient.getInstance().getDatabaseVersion(subscriber);
+            }
+        }, 2000);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -405,26 +492,20 @@ public class HomeActivity extends BaseActivity implements CollectedFragmentCallB
             }, duration);
 
             Logger.d("clicked the toolbar");
-        }else if (i == android.R.id.home){
+        } else if (i == android.R.id.home) {
             finish();
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public void callPhone(String phoneNum) {
-        this.callPhoneNum = phoneNum;
-        RingUpUtils.permissionCheck(mContext, phoneNum, REQUEST_CODE_CALL_PHONE);
-    }
-
-    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode){
+        switch (requestCode) {
             case REQUEST_CODE_CALL_PHONE:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     RingUpUtils.ringUp(mContext, callPhoneNum);
-                }else{
+                } else {
                     ToastUtils.show(this, "请在权限管理中开启微北洋拨打电话权限");
                 }
                 break;
@@ -434,31 +515,18 @@ public class HomeActivity extends BaseActivity implements CollectedFragmentCallB
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         Logger.i("received the key down");
-        if (keyCode == KeyEvent.KEYCODE_BACK){
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
             Logger.i("keycode back is triggered ");
-            if (mSearchView.getVisibility() == View.GONE){
+            if (mSearchView.getVisibility() == View.GONE) {
                 Logger.i("finished view");
                 finish();
-            }else{
+            } else {
                 updateViewVisibility(View.GONE);
                 Logger.i("set search view gone");
             }
         }
 
         return false;
-    }
-
-    private void updateViewVisibility(int type){
-
-        if (type == View.GONE){
-            mSearchView.setVisibility(View.GONE);
-            mSearchResultsList.setVisibility(View.GONE);
-            mParentView.setVisibility(View.GONE);
-        }else if (type == View.VISIBLE){
-            mSearchView.setVisibility(View.VISIBLE);
-            mSearchResultsList.setVisibility(View.VISIBLE);
-            mParentView.setVisibility(View.VISIBLE);
-        }
     }
 
 
