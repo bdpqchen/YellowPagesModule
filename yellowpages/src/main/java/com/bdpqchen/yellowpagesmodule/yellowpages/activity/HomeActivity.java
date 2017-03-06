@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -117,23 +118,7 @@ public class HomeActivity extends BaseActivity implements CollectedFragmentCallB
             getDataList();
         }
 
-        Logger.i(String.valueOf(mTest));
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mTest++;
-                restartActivity();
-                Logger.i(String.valueOf(mTest));
-            }
-        }, 2000);
-
-//        checkForUpdateDatabase();
-    }
-
-    private void restartActivity() {
-//        finish();
-//        startActivity(this, HomeActivity.class);
-
+        checkForUpdateDatabase();
     }
 
     public static void setProgressBarDismiss() {
@@ -213,7 +198,7 @@ public class HomeActivity extends BaseActivity implements CollectedFragmentCallB
                 Logger.i(String.valueOf(phoneList.get(0).getIsCollected()));
                 Logger.i(String.valueOf(phoneList.get(1).getIsCollected()));
                 Logger.d(System.currentTimeMillis() - time);
-                DataManager.insertBatch(phoneList);
+                DataManager.initPhoneDatabase(phoneList);
                 updateProgressDialogStatus(10);
                 initDbCompletely();
             }

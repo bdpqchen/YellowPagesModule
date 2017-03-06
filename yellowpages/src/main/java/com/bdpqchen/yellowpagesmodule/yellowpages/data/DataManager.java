@@ -1,20 +1,14 @@
 package com.bdpqchen.yellowpagesmodule.yellowpages.data;
 
-import android.os.Handler;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
 
 import com.bdpqchen.yellowpagesmodule.yellowpages.database.GreenDaoManager;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.History;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.Phone;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.SearchResult;
-import com.daimajia.easing.quad.QuadEaseIn;
 import com.inst.greendao3_demo.dao.HistoryDao;
 import com.inst.greendao3_demo.dao.PhoneDao;
 import com.orhanobut.logger.Logger;
-import com.orhanobut.logger.Printer;
 
-import org.greenrobot.greendao.query.QueryBuilder;
 import org.greenrobot.greendao.query.WhereCondition;
 
 import java.util.ArrayList;
@@ -42,6 +36,12 @@ public class DataManager {
             mHistoryDao = GreenDaoManager.getInstance().getDaoSession().getHistoryDao();
         }
         return mHistoryDao;
+    }
+
+    public static void initPhoneDatabase(List<Phone> phoneList){
+        getPhoneDao().deleteAll();
+
+        getPhoneDao().insertInTx(phoneList);
     }
 
     public static void insertPhone(Phone phone) {
