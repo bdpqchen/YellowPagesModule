@@ -23,7 +23,6 @@ public class DatabaseClient {
         return mClient;
     }
 
-
     public void getCollectedData(Subscriber subscriber) {
         Observable.create(new Observable.OnSubscribe<List<Phone>>() {
             @Override

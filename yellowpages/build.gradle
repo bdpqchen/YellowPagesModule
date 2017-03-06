@@ -23,7 +23,7 @@ android {
 
     greendao {
         //版本号，升级时可配置
-        schemaVersion 2
+        schemaVersion 3
         daoPackage'com.inst.greendao3_demo.dao'
         targetGenDir'src/main/java'
     }

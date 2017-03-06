@@ -158,7 +158,7 @@ public class ExpandableListViewCollectedAdapter extends BaseExpandableListAdapte
                             childViewHolder.ivUncollected.setVisibility(View.VISIBLE);
                         }
                     }, 300);
-                    DataManager.updateCollectState(phone.getName(), phone.getPhone());
+                    DataManager.updateCollectState(phone.getName(), phone.getPhone(), false);
                     ToastUtils.show((Activity) mContext, "收藏已取消");
                 }
             });
@@ -168,7 +168,7 @@ public class ExpandableListViewCollectedAdapter extends BaseExpandableListAdapte
                     childViewHolder.ivCollected.setVisibility(View.VISIBLE);
                     YoYo.with(Techniques.ZoomIn).duration(400).playOn(childViewHolder.ivCollected);
                     childViewHolder.ivUncollected.setVisibility(View.GONE);
-                    DataManager.updateCollectState(phone.getName(), phone.getPhone());
+                    DataManager.updateCollectState(phone.getName(), phone.getPhone(), false);
                 }
             });
 

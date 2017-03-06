@@ -1,10 +1,14 @@
 package com.bdpqchen.yellowpagesmodule.yellowpages.data;
 
 
+import android.util.Log;
+
 import com.bdpqchen.yellowpagesmodule.yellowpages.database.GreenDaoManager;
+import com.bdpqchen.yellowpagesmodule.yellowpages.model.Collected;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.History;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.Phone;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.SearchResult;
+import com.inst.greendao3_demo.dao.CollectedDao;
 import com.inst.greendao3_demo.dao.HistoryDao;
 import com.inst.greendao3_demo.dao.PhoneDao;
 import com.orhanobut.logger.Logger;
@@ -22,6 +26,7 @@ public class DataManager {
 
     private static PhoneDao mPhoneDao;
     private static HistoryDao mHistoryDao;
+    private static CollectedDao mCollectedDao;
     public static final String TOO_MUCH_DATA_NAME = "点击查看全部结果";
 
     private static PhoneDao getPhoneDao() {
@@ -38,10 +43,25 @@ public class DataManager {
         return mHistoryDao;
     }
 
+    private static CollectedDao getCollectedDao(){
+        if (mCollectedDao == null){
+            mCollectedDao = GreenDaoManager.getInstance().getDaoSession().getCollectedDao();
+        }
+        return mCollectedDao;
+    }
+
     public static void initPhoneDatabase(List<Phone> phoneList){
         getPhoneDao().deleteAll();
-
         getPhoneDao().insertInTx(phoneList);
+        initCollectedItems();
+    }
+
+    private static void initCollectedItems() {
+        List<Collected> collections = getCollectedItems();
+        if (null != collections && collections.size() != 0){
+            for (int i = 0; i < collections.size(); i++)
+            updateCollectState(collections.get(i).getName(), collections.get(i).getPhone(), true);
+        }
     }
 
     public static void insertPhone(Phone phone) {
@@ -53,26 +73,31 @@ public class DataManager {
         getPhoneDao().insertInTx(phoneList);
     }
 
-    public static void deleteAll() {
+    public static void deleteAllPhone() {
         getPhoneDao().deleteAll();
-    }
-
-    public static List<Phone> limitQueryPhone(String name, int limit) {
-        List<Phone> list = getPhoneDao().queryBuilder()
-                .where(PhoneDao.Properties.Name.like("%" + name + "%"))
-                .limit(limit)
-                .list();
-        return list;
-    }
-
-    public static List<Phone> fullQueryPhone(String name) {
-        List<Phone> list = getPhoneDao().queryBuilder().where(PhoneDao.Properties.Name.like("%" + name + "%")).list();
-        return list;
     }
 
     public static List<Phone> getCollectedDataList() {
 
         return getPhoneDao().queryBuilder().where(PhoneDao.Properties.IsCollected.eq(1)).orderAsc(PhoneDao.Properties.Name).list();
+    }
+
+    private static void saveCollectStatus(String name, String phone) {
+        Collected collect = new Collected();
+        collect.setName(name);
+        collect.setPhone(phone);
+        Collected collection = getCollectedDao().queryBuilder()
+                .whereOr(CollectedDao.Properties.Name.eq(name), CollectedDao.Properties.Phone.eq(phone))
+                .unique();
+        if (collection == null){
+            getCollectedDao().insert(collect);
+        }else{
+            getCollectedDao().delete(collection);
+        }
+    }
+
+    private static List<Collected> getCollectedItems(){
+        return getCollectedDao().loadAll();
     }
 
     /* 按照类型分组查询
@@ -116,31 +141,26 @@ public class DataManager {
                 .list();
     }
 
-    public static void updateCollectState(String name, String phone) {
-        boolean isExistItem = false;
-        List<Phone> result = getPhoneDao().queryBuilder()
-                .where(PhoneDao.Properties.Name.eq(name)).build().list();
-        if (null == result || result.size() == 0) {
-            result = getPhoneDao().queryBuilder()
-                    .where(PhoneDao.Properties.Phone.eq(phone)).list();
-            if (result != null && result.size() > 0){
-                isExistItem = true;
-            }
-        } else {
-            isExistItem = true;
-        }
-        if (isExistItem){
-            for (int i = 0; i < result.size(); i++) {
-                if (result.get(i).getIsCollected() == 0) {
-                    result.get(i).setIsCollected(1);
+    public static void updateCollectState(String name, String phone, boolean isInitData) {
+        List<Phone> results = getPhoneDao().queryBuilder()
+                .whereOr(PhoneDao.Properties.Name.eq(name), PhoneDao.Properties.Phone.eq(phone))
+                .build().list();
+        if (null != results && results.size() != 0){
+            for (int i = 0; i < results.size(); i++) {
+                if (results.get(i).getIsCollected() == 0) {
+                    results.get(i).setIsCollected(1);
                 } else {
-                    result.get(i).setIsCollected(0);
+                    results.get(i).setIsCollected(0);
+                }
+                if (!isInitData){
+                    saveCollectStatus(name, phone);
                 }
             }
-            getPhoneDao().updateInTx(result);
+            getPhoneDao().updateInTx(results);
         }
 
     }
+
 
     //动态搜索， 如果记录数太多只返回limit条
     //判断用户是否想要按号码搜索

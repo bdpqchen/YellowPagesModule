@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -49,7 +50,6 @@ import com.bdpqchen.yellowpagesmodule.yellowpages.utils.RingUpUtils;
 import com.bdpqchen.yellowpagesmodule.yellowpages.utils.ToastUtils;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
-import com.orhanobut.hawk.Hawk;
 import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
@@ -60,7 +60,7 @@ import rx.Subscriber;
 
 public class HomeActivity extends BaseActivity implements CollectedFragmentCallBack {
 
-    public static int mDatabaseVersionCode = 1;
+    public int mDatabaseVersionCode = 1;
     private static final int REQUEST_CODE_CALL_PHONE = 33;
     private static final String TAG = "HomeActivity";
     //    @InjectView(R.id.search_results_list)
@@ -112,13 +112,12 @@ public class HomeActivity extends BaseActivity implements CollectedFragmentCallB
         setupResultsList();
         if (!PrefUtils.isFirstOpen()) {
             setListViewShow();
+            checkForUpdateDatabase();
         } else {
-            mProgressDialog = new ProgressDialog(this);
             showInitDialog();
             getDataList();
         }
 
-        checkForUpdateDatabase();
     }
 
     public static void setProgressBarDismiss() {
@@ -129,7 +128,6 @@ public class HomeActivity extends BaseActivity implements CollectedFragmentCallB
     }
 
     private void setListViewShow() {
-
         CollectedFragment collectedFragment = new CollectedFragment();
         CategoryFragment categoryFragment = new CategoryFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -208,9 +206,11 @@ public class HomeActivity extends BaseActivity implements CollectedFragmentCallB
 
     private void initDbCompletely(){
         PrefUtils.setDatabaseVersion(mDatabaseVersionCode);
+        Log.i("mDatabase version", String.valueOf(mDatabaseVersionCode));
+        Log.i("Pref database version", String.valueOf(PrefUtils.getDatabaseVersion()));
         if (isUpdatingDb) {
-            onRestart();
-//            finish();
+            startActivity(new Intent(this, HomeActivity.class));
+            finish();
         }else{
             setListViewShow();
             updateProgressDialogStatus(-1);
@@ -222,6 +222,9 @@ public class HomeActivity extends BaseActivity implements CollectedFragmentCallB
         String msg = "首次使用，需要导入号码库，请等待...";
         if (isUpdatingDb){
             msg = "正在更新号码库，请等待...";
+        }
+        if (null == mProgressDialog){
+            mProgressDialog = new ProgressDialog(this);
         }
         updateProgressDialogStatus(-10);
         mProgressDialog.setCancelable(false);
@@ -439,6 +442,8 @@ public class HomeActivity extends BaseActivity implements CollectedFragmentCallB
 
             @Override
             public void onNext(DatabaseVersion databaseVersion) {
+                Log.i("pref version", String.valueOf(PrefUtils.getDatabaseVersion()));
+                Log.i("version_code", String.valueOf(databaseVersion.version_code));
                 if (databaseVersion.version_code > PrefUtils.getDatabaseVersion()){
                     isUpdatingDb = true;
                     showUpdateDbDialog();
@@ -499,18 +504,13 @@ public class HomeActivity extends BaseActivity implements CollectedFragmentCallB
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        Logger.i("received the key down");
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            Logger.i("keycode back is triggered ");
             if (mSearchView.getVisibility() == View.GONE) {
-                Logger.i("finished view");
                 finish();
             } else {
                 updateViewVisibility(View.GONE);
-                Logger.i("set search view gone");
             }
         }
-
         return false;
     }
 
