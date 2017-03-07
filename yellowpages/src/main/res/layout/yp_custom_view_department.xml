@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/ll_department"
+    android:fitsSystemWindows="true"
+    android:clipToPadding="true"
+    android:clickable="true"
+    >
+
+    <ImageView
+        android:layout_height="@dimen/yellow_pages_department_icon_size"
+        android:layout_width="@dimen/yellow_pages_department_icon_size"
+        android:src="@drawable/icon_yellow_pages_library"
+        android:layout_columnSpan="1"
+        android:scaleType="centerCrop"
+        android:layout_marginLeft="@dimen/department_icon_margin_left"
+        android:clickable="true"
+        android:layout_gravity="center_horizontal"
+        android:padding="5dp"
+        android:id="@+id/iv_department"
+
+        />
+    <TextView android:layout_height="@dimen/yp_yellow_pages_department_tv_size"
+        android:layout_width="wrap_content"
+        android:textColor="@color/yp_font_black_700"
+        android:textSize="@dimen/yellow_pages_department_font_size"
+        android:text="图书馆"
+        android:paddingLeft="10dp"
+        android:layout_columnSpan="3"
+        android:layout_marginBottom="@dimen/department_item_margin_bottom"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:id="@+id/tv_department"
+        />
+
+</LinearLayout>

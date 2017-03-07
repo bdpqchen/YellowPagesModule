@@ -14,4 +14,16 @@
             tools:targetApi="kitkat">true</item>
     </style>
 
+    <declare-styleable name="DepartmentItemView">
+        <attr name="yp_text" format="string"/>
+        <attr name="yp_text_color" format="color"/>
+        <attr name="yp_text_size" format="dimension"/>
+        <attr name="yp_icon_src" format="reference"/>
+        <attr name="yp_icon_width" format="dimension"/>
+        <attr name="yp_icon_height" format="dimension"/>
+
+    </declare-styleable>
+        
+
+
 </resources>

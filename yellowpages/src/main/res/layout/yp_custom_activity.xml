@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/yp_common_toolbar"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"/>
+
+
+    <com.bdpqchen.yellowpagesmodule.yellowpages.custom.DepartmentItemView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        app:yp_text="text"
+        app:yp_text_size="20sp"
+        app:yp_icon_height="25dp"
+        app:yp_icon_width="25dp"
+        app:yp_icon_src="@drawable/icon_yellow_pages_1895"
+        android:background="@drawable/yp_bg_department_click"
+        android:descendantFocusability="blocksDescendants"
+        android:clickable="true"
+        android:id="@+id/custom_item_view"
+        >
+
+    </com.bdpqchen.yellowpagesmodule.yellowpages.custom.DepartmentItemView>
+
+
+    <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/grad_layout_department"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:columnCount="8"
+        android:orientation="horizontal"
+        android:padding="@dimen/yellow_pages_main_padding_left"
+        android:rowCount="4">
+
+
+    </GridLayout>
+
+</LinearLayout>
