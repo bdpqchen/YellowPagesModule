@@ -15,7 +15,7 @@
         android:layout_columnSpan="1"
         android:scaleType="centerCrop"
         android:layout_marginLeft="@dimen/department_icon_margin_left"
-        android:clickable="true"
+        android:clickable="false"
         android:layout_gravity="center_horizontal"
         android:padding="5dp"
         android:id="@+id/iv_department"
@@ -29,7 +29,7 @@
         android:paddingLeft="10dp"
         android:layout_columnSpan="3"
         android:layout_marginBottom="@dimen/department_item_margin_bottom"
-        android:clickable="true"
+        android:clickable="false"
         android:gravity="center_vertical"
         android:id="@+id/tv_department"
         />

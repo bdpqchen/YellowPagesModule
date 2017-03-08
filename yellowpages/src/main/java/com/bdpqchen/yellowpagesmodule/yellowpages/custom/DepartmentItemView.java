@@ -33,7 +33,7 @@ public class DepartmentItemView extends FrameLayout implements View.OnClickListe
         mIcon  = (ImageView) findViewById(R.id.iv_department);
         mLlDepartment = (LinearLayout) findViewById(R.id.ll_department);
 //        mLlDepartment.setOnClickListener(this);
-        mTitle.setOnClickListener(null);
+//        mTitle.setOnClickListener(null);
 
     }
 
