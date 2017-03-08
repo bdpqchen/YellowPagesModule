@@ -23,6 +23,7 @@ public class DepartmentItemView extends FrameLayout implements View.OnClickListe
     private TextView mTitle;
     private ImageView mIcon;
     private LinearLayout mLlDepartment;
+    public OnClickListener mClickListener;
 
 
     public DepartmentItemView(@NonNull Context context, @Nullable AttributeSet attrs) {
@@ -31,8 +32,8 @@ public class DepartmentItemView extends FrameLayout implements View.OnClickListe
         mTitle = (TextView) findViewById(R.id.tv_department);
         mIcon  = (ImageView) findViewById(R.id.iv_department);
         mLlDepartment = (LinearLayout) findViewById(R.id.ll_department);
-        mLlDepartment.setOnClickListener(this);
-        mTitle.setOnClickListener(this);
+//        mLlDepartment.setOnClickListener(this);
+        mTitle.setOnClickListener(null);
 
     }
 
@@ -44,6 +45,14 @@ public class DepartmentItemView extends FrameLayout implements View.OnClickListe
         mIcon.setImageResource(iconId);
     }
 
+    @Override
+    public void setOnClickListener(@Nullable OnClickListener l) {
+        mClickListener = l;
+        mLlDepartment.setOnClickListener(l);
+        super.setOnClickListener(l);
+    }
+
+
 
     @Override
     public void onClick(View v) {
@@ -54,6 +63,7 @@ public class DepartmentItemView extends FrameLayout implements View.OnClickListe
         }else if (viewId == R.id.ll_department){
             Logger.i("custom view linear layout is clicked");
         }
+
 
     }
 }
