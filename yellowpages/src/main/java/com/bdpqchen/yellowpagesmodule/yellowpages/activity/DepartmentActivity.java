@@ -60,6 +60,7 @@ public class DepartmentActivity extends BaseActivity implements CollectedFragmen
         mFragmentCallBack = this;
         Intent intent = getIntent();
         String toolbarName = intent.getStringExtra(INTENT_TOOLBAR_TITLE);
+        Logger.i(toolbarName);
         mListView = (ListView) findViewById(R.id.lv_unit);
         mListView.addFooterView(new ViewStub(this));
         mAdapter = new ListViewCategoryAdapter(this, phoneList, mFragmentCallBack);

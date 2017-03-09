@@ -1,91 +1,199 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:ypd="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:columnCount="2"
-    android:rowCount="4"
-    android:orientation="horizontal"
-    android:id="@+id/grad_layout_department"
-    android:useDefaultMargins="true"
-    android:layout_gravity="center"
-    android:layout_marginLeft="@dimen/yp_main_department_margin_left"
-    android:layout_marginBottom="10dp"
-    android:layout_marginTop="10dp"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="10dp"
     >
 
-    <com.bdpqchen.yellowpagesmodule.yellowpages.custom.DepartmentItemView
-        android:id="@+id/department1"
-        android:layout_width="@dimen/yp_layout_width_department"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:descendantFocusability="blocksDescendants"
-        ypd:yp_icon_src="@drawable/icon_yellow_pages_1895"
-        ypd:yp_text="1895服务大厅"
-        android:layout_columnSpan="1"
-        android:layout_rowSpan="1"
-        ypd:yp_background="@drawable/yp_bg_department_click"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/yp_department_item_margin_bottom"
+        android:layout_marginBottom="@dimen/yp_department_item_margin_bottom"
+        >
+        <LinearLayout
+            android:id="@+id/department1"
+            android:layout_width="@dimen/yp_layout_width_department"
+            android:layout_height="wrap_content"
+            android:background="@drawable/yp_bg_department_click"
+            android:clickable="true"
+            android:orientation="horizontal">
 
-        />
+            <ImageView
+                android:layout_width="@dimen/yp_department_icon_size"
+                android:layout_height="@dimen/yp_department_icon_size"
+                android:padding="5dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/icon_yellow_pages_1895"
+                />
 
-    <com.bdpqchen.yellowpagesmodule.yellowpages.custom.DepartmentItemView
-        android:id="@+id/department2"
-        android:layout_width="@dimen/yp_layout_width_department"
+            <TextView
+                android:id="@+id/tv_title1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:maxWidth="@dimen/yp_tv_max_width"
+                android:text="1895服务大厅"
+                android:textColor="@color/yp_font_black_700"
+                android:textSize="@dimen/yp_department_font_size" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/department2"
+            android:layout_width="@dimen/yp_layout_width_department"
+            android:layout_height="wrap_content"
+            android:background="@drawable/yp_bg_department_click"
+            android:clickable="true"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/yp_department_icon_size"
+                android:layout_height="@dimen/yp_department_icon_size"
+                android:padding="5dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/icon_yellow_pages_library" />
+
+            <TextView
+                android:id="@+id/tv_title2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:maxWidth="@dimen/yp_tv_max_width"
+                android:text="图书馆"
+                android:textColor="@color/yp_font_black_700"
+                android:textSize="@dimen/yp_department_font_size" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:descendantFocusability="blocksDescendants"
-        ypd:yp_icon_src="@drawable/icon_yellow_pages_library"
-        ypd:yp_text="图书馆"
-        android:layout_columnSpan="1"
-        android:layout_rowSpan="1"
-        ypd:yp_background="@drawable/yp_bg_department_click"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="@dimen/yp_department_item_margin_bottom"
+        >
+        <LinearLayout
+            android:id="@+id/department3"
+            android:layout_width="@dimen/yp_layout_width_department"
+            android:layout_height="wrap_content"
+            android:background="@drawable/yp_bg_department_click"
+            android:clickable="true"
+            android:orientation="horizontal">
 
-        />
+            <ImageView
+                android:layout_width="@dimen/yp_department_icon_size"
+                android:layout_height="@dimen/yp_department_icon_size"
+                android:padding="5dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/icon_yellow_pages_repair" />
 
-    <com.bdpqchen.yellowpagesmodule.yellowpages.custom.DepartmentItemView
-        android:id="@+id/department3"
-        android:layout_width="@dimen/yp_layout_width_department"
+            <TextView
+                android:id="@+id/tv_title3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:maxWidth="@dimen/yp_tv_max_width"
+                android:text="维修服务中心"
+                android:textColor="@color/yp_font_black_700"
+                android:textSize="@dimen/yp_department_font_size" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/department4"
+            android:layout_width="@dimen/yp_layout_width_department"
+            android:layout_height="wrap_content"
+            android:background="@drawable/yp_bg_department_click"
+            android:clickable="true"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/yp_department_icon_size"
+                android:layout_height="@dimen/yp_department_icon_size"
+                android:padding="5dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/icon_yellow_pages_bike" />
+
+            <TextView
+                android:id="@+id/tv_title4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:maxWidth="@dimen/yp_tv_max_width"
+                android:text="智能自行车"
+                android:textColor="@color/yp_font_black_700"
+                android:textSize="@dimen/yp_department_font_size" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:descendantFocusability="blocksDescendants"
-        ypd:yp_icon_src="@drawable/icon_yellow_pages_repair"
-        ypd:yp_text="维修服务中心"
-        android:layout_columnSpan="1"
-        android:layout_rowSpan="1"
-        ypd:yp_background="@drawable/yp_bg_department_click"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="@dimen/yp_department_item_margin_bottom"
+        >
+        <LinearLayout
+            android:id="@+id/department5"
+            android:layout_width="@dimen/yp_layout_width_department"
+            android:layout_height="wrap_content"
+            android:background="@drawable/yp_bg_department_click"
+            android:clickable="true"
+            android:orientation="horizontal">
 
-        />
-    <com.bdpqchen.yellowpagesmodule.yellowpages.custom.DepartmentItemView
-        android:id="@+id/department4"
-        android:layout_width="@dimen/yp_layout_width_department"
-        android:layout_height="wrap_content"
-        android:descendantFocusability="blocksDescendants"
-        ypd:yp_icon_src="@drawable/icon_yellow_pages_bike"
-        ypd:yp_text="智能自行车"
-        android:layout_columnSpan="1"
-        android:layout_rowSpan="1"
-        ypd:yp_background="@drawable/yp_bg_department_click"
-        />
+            <ImageView
+                android:layout_width="@dimen/yp_department_icon_size"
+                android:layout_height="@dimen/yp_department_icon_size"
+                android:padding="5dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/icon_yellow_pages_building" />
 
-    <com.bdpqchen.yellowpagesmodule.yellowpages.custom.DepartmentItemView
-        android:id="@+id/department5"
-        android:layout_width="@dimen/yp_layout_width_department"
-        android:layout_height="wrap_content"
-        android:descendantFocusability="blocksDescendants"
-        ypd:yp_icon_src="@drawable/icon_yellow_pages_building"
-        ypd:yp_text="学生宿舍管理中心"
-        android:layout_columnSpan="1"
-        android:layout_rowSpan="1"
-        ypd:yp_background="@drawable/yp_bg_department_click"
-        />
+            <TextView
+                android:id="@+id/tv_title5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:maxWidth="@dimen/yp_tv_max_width"
+                android:text="学生宿舍管理中心"
+                android:textColor="@color/yp_font_black_700"
+                android:textSize="@dimen/yp_department_font_size" />
 
-    <com.bdpqchen.yellowpagesmodule.yellowpages.custom.DepartmentItemView
-        android:id="@+id/department6"
-        android:layout_width="@dimen/yp_layout_width_department"
-        android:layout_height="wrap_content"
-        android:descendantFocusability="blocksDescendants"
-        ypd:yp_icon_src="@drawable/icon_yellow_pages_hospital"
-        ypd:yp_text="校医院"
-        android:layout_columnSpan="1"
-        android:layout_rowSpan="1"
-        ypd:yp_background="@drawable/yp_bg_department_click"
-        />
+        </LinearLayout>
 
-</GridLayout>
+        <LinearLayout
+            android:id="@+id/department6"
+            android:layout_width="@dimen/yp_layout_width_department"
+            android:layout_height="wrap_content"
+            android:background="@drawable/yp_bg_department_click"
+            android:clickable="true"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/yp_department_icon_size"
+                android:layout_height="@dimen/yp_department_icon_size"
+                android:padding="5dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/icon_yellow_pages_hospital" />
+
+            <TextView
+                android:id="@+id/tv_title6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:maxWidth="@dimen/yp_tv_max_width"
+                android:text="校医院"
+                android:textColor="@color/yp_font_black_700"
+                android:textSize="@dimen/yp_department_font_size" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

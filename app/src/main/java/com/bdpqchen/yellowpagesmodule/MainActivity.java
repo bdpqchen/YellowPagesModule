@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.bdpqchen.yellowpagesmodule.yellowpages.activity.CustomViewActivity;
 import com.bdpqchen.yellowpagesmodule.yellowpages.activity.HomeActivity;
 
 import butterknife.ButterKnife;

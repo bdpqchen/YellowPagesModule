@@ -7,10 +7,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.bdpqchen.yellowpagesmodule.yellowpages.R;
 import com.bdpqchen.yellowpagesmodule.yellowpages.activity.DepartmentActivity;
-import com.bdpqchen.yellowpagesmodule.yellowpages.custom.DepartmentItemView;
 import com.orhanobut.logger.Logger;
 
 
@@ -21,9 +22,11 @@ import static com.bdpqchen.yellowpagesmodule.yellowpages.activity.DepartmentActi
  * Created by chen on 17-2-23.
  */
 
-public class DepartmentFragment extends Fragment implements DepartmentItemView.OnClickListener{
+public class DepartmentFragment extends Fragment implements View.OnClickListener {
 
-    private DepartmentItemView mDepartment1, mDepartment2, mDepartment3, mDepartment4, mDepartment5, mDepartment6;
+    private LinearLayout mDepartment1, mDepartment2, mDepartment3, mDepartment4, mDepartment5, mDepartment6;
+    private TextView mTv1, mTv2, mTv3, mTv4, mTv5, mTv6;
+    private String[] titles = new String[]{"1895综合服务大厅", "图书馆", "维修服务中心", "智能自行车", "学生宿舍管理中心", "天大医院"};
 
     @Nullable
     @Override
@@ -33,65 +36,58 @@ public class DepartmentFragment extends Fragment implements DepartmentItemView.O
 //        ButterKnife.inject(this, view);
         //the ButterKnife can not inject in a library. so, I had to add those fucking codes....
         //https://github.com/JakeWharton/butterknife/issues/100
-        mDepartment1 = (DepartmentItemView) view.findViewById(R.id.department1);
-        mDepartment2 = (DepartmentItemView) view.findViewById(R.id.department2);
-        mDepartment3 = (DepartmentItemView) view.findViewById(R.id.department3);
-        mDepartment4 = (DepartmentItemView) view.findViewById(R.id.department4);
-        mDepartment5 = (DepartmentItemView) view.findViewById(R.id.department5);
-        mDepartment6 = (DepartmentItemView) view.findViewById(R.id.department6);
-//        mDepartment1.setOnClickListener(this);
-        mDepartment1.setDepartmentOnClickListener(this);
+        mTv1 = (TextView) view.findViewById(R.id.tv_title1);
+        mTv2 = (TextView) view.findViewById(R.id.tv_title2);
+        mTv3 = (TextView) view.findViewById(R.id.tv_title3);
+        mTv4 = (TextView) view.findViewById(R.id.tv_title4);
+        mTv5 = (TextView) view.findViewById(R.id.tv_title5);
+        mTv6 = (TextView) view.findViewById(R.id.tv_title6);
 
-                /*
+        mDepartment1 = (LinearLayout) view.findViewById(R.id.department1);
+        mDepartment2 = (LinearLayout) view.findViewById(R.id.department2);
+        mDepartment3 = (LinearLayout) view.findViewById(R.id.department3);
+        mDepartment4 = (LinearLayout) view.findViewById(R.id.department4);
+        mDepartment5 = (LinearLayout) view.findViewById(R.id.department5);
+        mDepartment6 = (LinearLayout) view.findViewById(R.id.department6);
+        mDepartment1.setOnClickListener(this);
         mDepartment2.setOnClickListener(this);
         mDepartment3.setOnClickListener(this);
         mDepartment4.setOnClickListener(this);
         mDepartment5.setOnClickListener(this);
         mDepartment6.setOnClickListener(this);
-*/
-
         return view;
-
     }
 
-    private void startActivityWithTitle(DepartmentItemView departmentItemView){
-        String title = departmentItemView.getText();
+    private void startActivityWithTitle(int i){
+        String title = String.valueOf(titles[i - 1]);
         Intent intent = new Intent(getContext(), DepartmentActivity.class);
         intent.putExtra(INTENT_TOOLBAR_TITLE, title);
+        Logger.i(title);
         startActivity(intent);
     }
 
-   /* @Override
+    @Override
     public void onClick(View v) {
-        Logger.i("onClick()");
         int viewId = v.getId();
         if (viewId == R.id.department1){
-            Logger.i("onClick()-------department1");
-            startActivityWithTitle(mDepartment1);
+            startActivityWithTitle(1);
         }else if (viewId == R.id.department2){
-            startActivityWithTitle(mDepartment2);
+            startActivityWithTitle(2);
         }else if (viewId == R.id.department3){
-            startActivityWithTitle(mDepartment3);
+            startActivityWithTitle(3);
         }else if (viewId == R.id.department4){
-            startActivityWithTitle(mDepartment4);
+            startActivityWithTitle(4);
         }else if (viewId == R.id.department5){
-            startActivityWithTitle(mDepartment5);
+            startActivityWithTitle(5);
         }else if (viewId == R.id.department6){
-            startActivityWithTitle(mDepartment6);
+            startActivityWithTitle(6);
         }
     }
-*/
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
 //        ButterKnife.reset(this);
     }
 
-    @Override
-    public void onClick(DepartmentItemView view) {
-        int id = view.getId();
-        if (id == R.id.department1){
-            Logger.i("department fragment depart1 clicked ");
-        }
-    }
 }
