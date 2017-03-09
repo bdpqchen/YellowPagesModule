@@ -1,45 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    xmlns:ypd="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     android:clipToPadding="true"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
 
-    >
-
-    <include layout="@layout/yp_common_toolbar"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"/>
-
-
-    <com.bdpqchen.yellowpagesmodule.yellowpages.custom.DepartmentItemView
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        app:yp_text="text"
-        app:yp_text_size="20sp"
-        app:yp_icon_height="25dp"
-        app:yp_icon_width="25dp"
-        app:yp_icon_src="@drawable/icon_yellow_pages_1895"
-        android:background="@drawable/yp_bg_department_click"
-        android:descendantFocusability="blocksDescendants"
-        android:clickable="true"
-        android:id="@+id/custom_item_view"
-        >
-
-    </com.bdpqchen.yellowpagesmodule.yellowpages.custom.DepartmentItemView>
-
+    <include
+        layout="@layout/yp_common_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/grad_layout_department"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:columnCount="8"
+        android:columnCount="2"
         android:orientation="horizontal"
-        android:padding="@dimen/yellow_pages_main_padding_left"
-        android:rowCount="4">
+        android:rowCount="4"
+        android:useDefaultMargins="true"
+        >
 
+        <com.bdpqchen.yellowpagesmodule.yellowpages.custom.DepartmentItemView
+            android:id="@+id/department1"
+            android:layout_width="@dimen/yp_layout_width_department"
+            android:layout_height="wrap_content"
+            android:descendantFocusability="blocksDescendants"
+            ypd:yp_icon_src="@drawable/icon_yellow_pages_1895"
+            ypd:yp_text="1895服务大厅"
+            android:layout_columnSpan="1"
+            android:layout_rowSpan="1"
+            ypd:yp_background="@drawable/yp_bg_department_click"
+
+            />
+
+        <com.bdpqchen.yellowpagesmodule.yellowpages.custom.DepartmentItemView
+            android:id="@+id/department2"
+            android:layout_width="@dimen/yp_layout_width_department"
+            android:layout_height="wrap_content"
+            android:descendantFocusability="blocksDescendants"
+            ypd:yp_icon_src="@drawable/icon_yellow_pages_repair"
+            ypd:yp_text="图书馆"
+            android:layout_columnSpan="1"
+            android:layout_rowSpan="1"
+            ypd:yp_background="@drawable/yp_bg_department_click"
+
+            />
+
+        <com.bdpqchen.yellowpagesmodule.yellowpages.custom.DepartmentItemView
+            android:id="@+id/department3"
+            android:layout_width="@dimen/yp_layout_width_department"
+            android:layout_height="wrap_content"
+            android:descendantFocusability="blocksDescendants"
+            ypd:yp_icon_src="@drawable/icon_yellow_pages_1895"
+            ypd:yp_text="维修服务中心"
+            android:layout_columnSpan="1"
+            android:layout_rowSpan="1"
+            ypd:yp_background="@drawable/yp_bg_department_click"
+
+            />
+        <com.bdpqchen.yellowpagesmodule.yellowpages.custom.DepartmentItemView
+            android:id="@+id/department4"
+            android:layout_width="@dimen/yp_layout_width_department"
+            android:layout_height="wrap_content"
+            android:descendantFocusability="blocksDescendants"
+            ypd:yp_icon_src="@drawable/icon_yellow_pages_repair"
+            ypd:yp_text="智能自行车"
+            android:layout_columnSpan="1"
+            android:layout_rowSpan="1"
+            ypd:yp_background="@drawable/yp_bg_department_click"
+            />
+
+        <com.bdpqchen.yellowpagesmodule.yellowpages.custom.DepartmentItemView
+            android:id="@+id/department5"
+            android:layout_width="@dimen/yp_layout_width_department"
+            android:layout_height="wrap_content"
+            android:descendantFocusability="blocksDescendants"
+            ypd:yp_icon_src="@drawable/icon_yellow_pages_repair"
+            ypd:yp_text="学生宿舍管理中心"
+            android:layout_columnSpan="1"
+            android:layout_rowSpan="1"
+            ypd:yp_background="@drawable/yp_bg_department_click"
+            />
+
+        <com.bdpqchen.yellowpagesmodule.yellowpages.custom.DepartmentItemView
+            android:id="@+id/department6"
+            android:layout_width="@dimen/yp_layout_width_department"
+            android:layout_height="wrap_content"
+            android:descendantFocusability="blocksDescendants"
+            ypd:yp_icon_src="@drawable/icon_yellow_pages_repair"
+            ypd:yp_text="校医院"
+            android:layout_columnSpan="1"
+            android:layout_rowSpan="1"
+            ypd:yp_background="@drawable/yp_bg_department_click"
+            />
 
     </GridLayout>
 

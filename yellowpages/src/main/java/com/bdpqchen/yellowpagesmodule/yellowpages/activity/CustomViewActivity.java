@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.GridLayout;
+import android.widget.ImageView;
 
 import com.bdpqchen.yellowpagesmodule.yellowpages.R;
 import com.bdpqchen.yellowpagesmodule.yellowpages.base.BaseActivity;
@@ -18,7 +20,7 @@ public class CustomViewActivity extends BaseActivity{
 
 
     private Toolbar mToolbar;
-
+    private GridLayout mGridLayoutDepartment;
 
     @Override
     public int getLayout() {
@@ -37,8 +39,10 @@ public class CustomViewActivity extends BaseActivity{
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Logger.i("activity is created.");
-        DepartmentItemView departmentItemView = (DepartmentItemView) findViewById(R.id.custom_item_view);
-//        departmentItemView
+        DepartmentItemView departmentItemView = (DepartmentItemView) findViewById(R.id.department1);
+        mGridLayoutDepartment = (GridLayout) findViewById(R.id.grad_layout_department);
+        equalDivision();
+
         departmentItemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -46,6 +50,10 @@ public class CustomViewActivity extends BaseActivity{
             }
         });
 
+
+    }
+
+    private void equalDivision() {
 
     }
 }

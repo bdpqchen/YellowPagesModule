@@ -22,15 +22,15 @@ public class DaoMaster extends AbstractDaoMaster {
     /** Creates underlying database table using DAOs. */
     public static void createAllTables(Database db, boolean ifNotExists) {
         PhoneDao.createTable(db, ifNotExists);
-        HistoryDao.createTable(db, ifNotExists);
         CollectedDao.createTable(db, ifNotExists);
+        HistoryDao.createTable(db, ifNotExists);
     }
 
     /** Drops underlying database table using DAOs. */
     public static void dropAllTables(Database db, boolean ifExists) {
         PhoneDao.dropTable(db, ifExists);
-        HistoryDao.dropTable(db, ifExists);
         CollectedDao.dropTable(db, ifExists);
+        HistoryDao.dropTable(db, ifExists);
     }
 
     /**
@@ -50,8 +50,8 @@ public class DaoMaster extends AbstractDaoMaster {
     public DaoMaster(Database db) {
         super(db, SCHEMA_VERSION);
         registerDaoClass(PhoneDao.class);
-        registerDaoClass(HistoryDao.class);
         registerDaoClass(CollectedDao.class);
+        registerDaoClass(HistoryDao.class);
     }
 
     public DaoSession newSession() {

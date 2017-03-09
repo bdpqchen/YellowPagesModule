@@ -29,7 +29,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        super.setContentView(getLayout());
+        setContentView(getLayout());
         ButterKnife.inject(this);
         mToolbar = getToolbar();
         initToolbar();

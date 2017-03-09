@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bdpqchen.yellowpagesmodule.yellowpages.R;
+import com.bdpqchen.yellowpagesmodule.yellowpages.custom.DepartmentItemView;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -23,8 +24,7 @@ import butterknife.InjectView;
 
 public class DepartmentFragment extends Fragment implements View.OnClickListener {
 
-    private ImageView imageView1, imageView2, imageView3, imageView4, imageView5, imageView6;
-    private TextView textView1, textView2, textView3, textView4, textView5, textView6;
+    private DepartmentItemView mDepartment1, mDepartment2, mDepartment3, mDepartment4, mDepartment5, mDepartment6;
 
     @Nullable
     @Override
@@ -34,31 +34,14 @@ public class DepartmentFragment extends Fragment implements View.OnClickListener
 //        ButterKnife.inject(this, view);
         //the ButterKnife can not inject in a library. so, I had to add those fucking codes....
         //https://github.com/JakeWharton/butterknife/issues/100
+        mDepartment1 = (DepartmentItemView) view.findViewById(R.id.department1);
+        mDepartment2 = (DepartmentItemView) view.findViewById(R.id.department2);
+        mDepartment3 = (DepartmentItemView) view.findViewById(R.id.department3);
+        mDepartment4 = (DepartmentItemView) view.findViewById(R.id.department4);
+        mDepartment5 = (DepartmentItemView) view.findViewById(R.id.department5);
+        mDepartment6 = (DepartmentItemView) view.findViewById(R.id.department6);
 
-        imageView1 = (ImageView) view.findViewById(R.id.department_iv_1);
-        imageView2 = (ImageView) view.findViewById(R.id.department_iv_2);
-        imageView3 = (ImageView) view.findViewById(R.id.department_iv_3);
-        imageView4 = (ImageView) view.findViewById(R.id.department_iv_4);
-        imageView5 = (ImageView) view.findViewById(R.id.department_iv_5);
-        imageView6 = (ImageView) view.findViewById(R.id.department_iv_6);
-        textView1  = (TextView) view.findViewById(R.id.department_tv_1);
-        textView2  = (TextView) view.findViewById(R.id.department_tv_2);
-        textView3  = (TextView) view.findViewById(R.id.department_tv_3);
-        textView4  = (TextView) view.findViewById(R.id.department_tv_4);
-        textView5  = (TextView) view.findViewById(R.id.department_tv_5);
-        textView6  = (TextView) view.findViewById(R.id.department_tv_6);
-        textView1.setOnClickListener(this);
-        textView2.setOnClickListener(this);
-        textView3.setOnClickListener(this);
-        textView4.setOnClickListener(this);
-        textView5.setOnClickListener(this);
-        textView6.setOnClickListener(this);
-        imageView1.setOnClickListener(this);
-        imageView2.setOnClickListener(this);
-        imageView3.setOnClickListener(this);
-        imageView4.setOnClickListener(this);
-        imageView5.setOnClickListener(this);
-        imageView6.setOnClickListener(this);
+
 
         ButterKnife.inject(this, view);
         return view;
@@ -75,19 +58,7 @@ public class DepartmentFragment extends Fragment implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
-        int i = v.getId();
-        if (i == R.id.department_iv_1 || i == R.id.department_tv_1) {
 
-        }else if (i == R.id.department_iv_2 || i == R.id.department_tv_2) {
-
-        }else if (i == R.id.department_iv_3 || i == R.id.department_tv_3) {
-
-        }else if (i == R.id.department_iv_4 || i == R.id.department_tv_4) {
-
-        }else if (i == R.id.department_iv_5 || i == R.id.department_tv_5) {
-
-        }else if (i == R.id.department_iv_6 || i == R.id.department_tv_6) {
-
-        }
     }
+
 }
