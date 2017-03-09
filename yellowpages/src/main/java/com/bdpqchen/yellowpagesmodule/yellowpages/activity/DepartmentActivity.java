@@ -32,6 +32,7 @@ import rx.Subscriber;
 public class DepartmentActivity extends BaseActivity implements CollectedFragmentCallBack {
 
     private static final int REQUEST_CODE_CALL_PHONE = 22;
+    public static final String INTENT_TOOLBAR_TITLE = "toolbar_title";
     private ListView mListView;
     private Toolbar mToolbar;
     private List<Phone> phoneList = null;
@@ -58,12 +59,12 @@ public class DepartmentActivity extends BaseActivity implements CollectedFragmen
         mContext = this;
         mFragmentCallBack = this;
         Intent intent = getIntent();
-        String toolbarName = intent.getStringExtra("toolbar_title");
+        String toolbarName = intent.getStringExtra(INTENT_TOOLBAR_TITLE);
         mListView = (ListView) findViewById(R.id.lv_unit);
         mListView.addFooterView(new ViewStub(this));
         mAdapter = new ListViewCategoryAdapter(this, phoneList, mFragmentCallBack);
         mListView.setAdapter(mAdapter);
-        Logger.i("receive intent" + intent.getStringExtra("toolbar_title"));
+        Logger.i("receive intent" + intent.getStringExtra(INTENT_TOOLBAR_TITLE));
         mToolbar.setTitle(toolbarName);
 
         getDataList(toolbarName);

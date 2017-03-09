@@ -16,7 +16,6 @@ import com.bdpqchen.yellowpagesmodule.yellowpages.activity.HomeActivity;
 import com.bdpqchen.yellowpagesmodule.yellowpages.adapter.ExpandableListViewAdapter;
 import com.bdpqchen.yellowpagesmodule.yellowpages.R;
 import com.bdpqchen.yellowpagesmodule.yellowpages.data.DatabaseClient;
-import com.bdpqchen.yellowpagesmodule.yellowpages.model.Phone;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.SearchResult;
 import com.bdpqchen.yellowpagesmodule.yellowpages.utils.ListUtils;
 import com.orhanobut.logger.Logger;
@@ -24,6 +23,8 @@ import com.orhanobut.logger.Logger;
 import java.util.List;
 
 import rx.Subscriber;
+
+import static com.bdpqchen.yellowpagesmodule.yellowpages.activity.DepartmentActivity.INTENT_TOOLBAR_TITLE;
 
 /**
  * Created by chen on 17-2-23.
@@ -62,7 +63,7 @@ public class CategoryFragment extends Fragment implements ExpandableListView.OnG
                 String department = (String) mAdapter.getChild(groupPosition, childPosition);
 
                 Intent intent = new Intent(mContext, DepartmentActivity.class);
-                intent.putExtra("toolbar_title", department);
+                intent.putExtra(INTENT_TOOLBAR_TITLE, department);
                 Logger.i("send intent, " + department);
                 startActivity(intent);
                 return false;
