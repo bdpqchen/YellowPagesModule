@@ -12,5 +12,6 @@
     <color name="yp_color_bg_gray_1">#fefefe</color>
     <color name="yp_color_bg_light">#ffffff</color>
     <color name="yp_font_blue_400">#498ba1</color>
+    <color name="yp_btn_green_400">#4ab64a</color>
 
 </resources>

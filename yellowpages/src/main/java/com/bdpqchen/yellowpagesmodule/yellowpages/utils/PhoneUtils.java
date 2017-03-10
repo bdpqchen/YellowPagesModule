@@ -11,10 +11,16 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 
+import com.bdpqchen.yellowpagesmodule.yellowpages.activity.FeedbackActivity;
 import com.orhanobut.logger.Logger;
+
+import static com.bdpqchen.yellowpagesmodule.yellowpages.activity.FeedbackActivity.INTENT_FEEDBACK_PHONE_NAME;
+import static com.bdpqchen.yellowpagesmodule.yellowpages.activity.FeedbackActivity.INTENT_FEEDBACK_PHONE_NUM;
 
 
 /**
@@ -30,14 +36,18 @@ public class PhoneUtils {
         context.startActivity(intent);
     }
 
-    public static void permissionCheck(Context context, String phoneNum, int requestCode) {
+    public static void permissionCheck(Context context, String phoneNum, int requestCode, Fragment fragment) {
         Activity activity = (Activity) context;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             int checkCallPhonePermission = ActivityCompat.checkSelfPermission(activity, android.Manifest.permission.CALL_PHONE);
             if (checkCallPhonePermission != PackageManager.PERMISSION_GRANTED){
                 //When using the Support library, you have to use the correct method calls.
                 //http://stackoverflow.com/questions/32714787/android-m-permissions-onrequestpermissionsresult-not-being-called
-                activity.requestPermissions(new String[]{android.Manifest.permission.CALL_PHONE}, requestCode);
+                if (null == fragment){
+                    ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.CALL_PHONE}, requestCode);
+                }else{
+                    fragment.requestPermissions(new String[]{android.Manifest.permission.CALL_PHONE}, requestCode);
+                }
             }else{
                 ringUp(context, phoneNum);
             }
@@ -46,14 +56,18 @@ public class PhoneUtils {
         }
     }
 
-    public static void permissionCheck(Context context, String phoneNum, String phoneName, int requestCode) {
+    public static void permissionCheck(Context context, String phoneNum, String phoneName, int requestCode, Fragment fragment) {
         Activity activity = (Activity) context;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             int checkWritePhonePermission = ActivityCompat.checkSelfPermission(activity, android.Manifest.permission.WRITE_CONTACTS);
             if (checkWritePhonePermission != PackageManager.PERMISSION_GRANTED){
                 //When using the Support library, you have to use the correct method calls.
                 //http://stackoverflow.com/questions/32714787/android-m-permissions-onrequestpermissionsresult-not-being-called
-                activity.requestPermissions(new String[]{android.Manifest.permission.WRITE_CONTACTS}, requestCode);
+                if (null == fragment){
+                    ActivityCompat.requestPermissions(activity, new String[]{android.Manifest.permission.WRITE_CONTACTS}, requestCode);
+                }else{
+                    fragment.requestPermissions(new String[]{android.Manifest.permission.WRITE_CONTACTS}, requestCode);
+                }
             }else{
                 Logger.i("utils to write the phone");
                 insertContact(context, phoneName, phoneNum);
@@ -94,4 +108,12 @@ public class PhoneUtils {
         ToastUtils.show((Activity) mContext, "已复制到剪切板");
     }
 
+    public static void feedbackPhone(Context mContext, String name, String phone) {
+        Intent intent = new Intent(mContext, FeedbackActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(INTENT_FEEDBACK_PHONE_NAME, name);
+        bundle.putString(INTENT_FEEDBACK_PHONE_NUM, phone);
+        intent.putExtras(bundle);
+        mContext.startActivity(intent);
+    }
 }

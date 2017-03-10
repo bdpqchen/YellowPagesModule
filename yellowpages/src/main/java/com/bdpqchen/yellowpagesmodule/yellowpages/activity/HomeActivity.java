@@ -417,14 +417,14 @@ public class HomeActivity extends BaseActivity implements CollectedFragmentCallB
     @Override
     public void callPhone(String phoneNum) {
         this.callPhoneNum = phoneNum;
-        PhoneUtils.permissionCheck(mContext, phoneNum, REQUEST_CODE_CALL_PHONE);
+        PhoneUtils.permissionCheck(mContext, phoneNum, REQUEST_CODE_CALL_PHONE, null);
     }
 
     @Override
     public void saveToContact(String name, String phone) {
         this.mWritePhoneNum = phone;
         this.mWritePhoneName = name;
-        PhoneUtils.permissionCheck(mContext, phone, name, REQUEST_CODE_WRITE_PHONE);
+        PhoneUtils.permissionCheck(mContext, phone, name, REQUEST_CODE_WRITE_PHONE, null);
         Logger.i("home activity is called");
     }
 

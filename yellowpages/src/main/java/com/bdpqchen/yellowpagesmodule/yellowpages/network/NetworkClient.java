@@ -10,6 +10,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 
@@ -61,6 +62,13 @@ public class NetworkClient {
         return mService.getDbVersion()
                 .compose(RxSchedulersHelper.io_main())
                 .subscribe(subscriber);
+    }
+
+    public Subscription submitFeedback(Subscriber subscriber, int mFeedbackType, String mPhone, String mName) {
+        return mService.submit(mFeedbackType + "", mPhone, mName)
+                .compose(RxSchedulersHelper.io_main())
+                .subscribe(subscriber);
+
     }
 
 }

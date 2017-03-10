@@ -147,7 +147,7 @@ public class ExpandableListViewCollectedAdapter extends BaseExpandableListAdapte
                 @Override
                 public void onClick(View v) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                    builder.setItems(new String[]{"复制到剪切板", "保存到通讯录"}, new DialogInterface.OnClickListener() {
+                    builder.setItems(new String[]{"复制到剪切板", "保存到通讯录", "号码/名称错了？"}, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             Logger.i(String.valueOf(which));
@@ -155,6 +155,8 @@ public class ExpandableListViewCollectedAdapter extends BaseExpandableListAdapte
                                 PhoneUtils.copyToClipboard(mContext, phone.getPhone());
                             }else if (which == 1){
                                 mFragmentCallBack.saveToContact(phone.getName(), phone.getPhone());
+                            }else if (which == 2){
+                                PhoneUtils.feedbackPhone(mContext, phone.getName(), phone.getPhone());
                             }
                         }
                     });

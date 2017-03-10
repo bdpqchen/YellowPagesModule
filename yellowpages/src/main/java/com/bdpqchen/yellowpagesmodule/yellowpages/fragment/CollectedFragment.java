@@ -47,12 +47,14 @@ public class CollectedFragment extends Fragment implements ExpandableListView.On
     private Context mContext;
     private String mWritePhoneName = "";
     private String mWritePhoneNum = "";
+    private CollectedFragment mFragment;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.yp_fragment_expandable_list_view, container, false);
+        mFragment = this;
         mContext = getContext();
         mExpandableListView = (ExpandableListView) view.findViewById(R.id.expand_list_view);
         mExpandableListView.setOnGroupClickListener(this);
@@ -91,12 +93,14 @@ public class CollectedFragment extends Fragment implements ExpandableListView.On
     @Override
     public void callPhone(String phoneNum) {
         this.callPhoneNum = phoneNum;
-        PhoneUtils.permissionCheck(mContext, phoneNum, REQUEST_CODE_CALL_PHONE);
+        PhoneUtils.permissionCheck(mContext, phoneNum, REQUEST_CODE_CALL_PHONE, mFragment);
     }
 
     @Override
     public void saveToContact(String name, String phone) {
-
+        this.mWritePhoneName = name;
+        this.mWritePhoneNum = phone;
+        PhoneUtils.permissionCheck(mContext, name, phone, REQUEST_CODE_WRITE_PHONE, mFragment);
     }
 
     public static void getCollectedData(){

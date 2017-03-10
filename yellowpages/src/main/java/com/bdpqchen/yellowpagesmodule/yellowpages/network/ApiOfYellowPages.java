@@ -2,8 +2,10 @@ package com.bdpqchen.yellowpagesmodule.yellowpages.network;
 
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.DataBean;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.DatabaseVersion;
+import com.bdpqchen.yellowpagesmodule.yellowpages.model.Feedback;
 
 import retrofit2.http.GET;
+import retrofit2.http.Query;
 import rx.Observable;
 
 /**
@@ -18,4 +20,8 @@ public interface ApiOfYellowPages {
     @GET("version")
     Observable<DatabaseVersion> getDbVersion();
 
+    @GET("feedback")
+    Observable<Feedback> submit(@Query("type") String type,
+                                @Query("phone") String phone,
+                                @Query("name") String name);
 }

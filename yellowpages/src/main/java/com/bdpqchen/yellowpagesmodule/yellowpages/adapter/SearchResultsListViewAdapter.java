@@ -6,7 +6,9 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Paint;
+import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bdpqchen.yellowpagesmodule.yellowpages.R;
+import com.bdpqchen.yellowpagesmodule.yellowpages.activity.FeedbackActivity;
 import com.bdpqchen.yellowpagesmodule.yellowpages.data.DataManager;
 import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.CollectedFragment;
 import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.CollectedFragmentCallBack;
@@ -29,6 +32,9 @@ import com.daimajia.androidanimations.library.YoYo;
 import com.orhanobut.logger.Logger;
 
 import java.util.List;
+
+import static com.bdpqchen.yellowpagesmodule.yellowpages.activity.FeedbackActivity.INTENT_FEEDBACK_PHONE_NAME;
+import static com.bdpqchen.yellowpagesmodule.yellowpages.activity.FeedbackActivity.INTENT_FEEDBACK_PHONE_NUM;
 
 public class SearchResultsListViewAdapter extends BaseAdapter {
 
@@ -116,14 +122,16 @@ public class SearchResultsListViewAdapter extends BaseAdapter {
                 @Override
                 public void onClick(View v) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                    builder.setItems(new String[]{"复制到剪切板", "保存到通讯录"}, new DialogInterface.OnClickListener() {
+                    builder.setItems(new String[]{"复制到剪切板", "保存到通讯录", "号码/名称错了？"}, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             Logger.i(String.valueOf(which));
                             if (which == 0){
                                 PhoneUtils.copyToClipboard(mContext, results.phone);
                             }else if (which == 1){
-                                mFragmentCallBack.saveToContact(results.phone, results.phone);
+                                mFragmentCallBack.saveToContact(results.name, results.phone);
+                            }else if (which == 2){
+                                PhoneUtils.feedbackPhone(mContext, results.name, results.phone);
                             }
                         }
                     });
