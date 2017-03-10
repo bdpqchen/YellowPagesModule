@@ -1,9 +1,11 @@
 package com.bdpqchen.yellowpagesmodule.yellowpages.adapter;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Paint;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -17,10 +19,12 @@ import com.bdpqchen.yellowpagesmodule.yellowpages.R;
 import com.bdpqchen.yellowpagesmodule.yellowpages.data.DataManager;
 import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.CollectedFragmentCallBack;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.Phone;
+import com.bdpqchen.yellowpagesmodule.yellowpages.utils.PhoneUtils;
 import com.bdpqchen.yellowpagesmodule.yellowpages.utils.TextFormatUtils;
 import com.bdpqchen.yellowpagesmodule.yellowpages.utils.ToastUtils;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
@@ -142,9 +146,19 @@ public class ExpandableListViewCollectedAdapter extends BaseExpandableListAdapte
             childViewHolder.tvChildPhone.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ClipboardManager cmb = (ClipboardManager)mContext.getSystemService(Context.CLIPBOARD_SERVICE);
-                    cmb.setPrimaryClip(ClipData.newPlainText(null, phone.getPhone()));
-                    ToastUtils.show((Activity) mContext, "已复制到剪切板");
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                    builder.setItems(new String[]{"复制到剪切板", "保存到通讯录"}, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Logger.i(String.valueOf(which));
+                            if (which == 0){
+                                PhoneUtils.copyToClipboard(mContext, phone.getPhone());
+                            }else if (which == 1){
+                                mFragmentCallBack.saveToContact(phone.getName(), phone.getPhone());
+                            }
+                        }
+                    });
+                    builder.show();
                 }
             });
             childViewHolder.ivCollected.setOnClickListener(new View.OnClickListener() {

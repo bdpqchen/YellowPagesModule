@@ -7,4 +7,6 @@ package com.bdpqchen.yellowpagesmodule.yellowpages.fragment;
 public interface CollectedFragmentCallBack {
 
     void callPhone(String phoneNum);
+
+    void saveToContact(String name, String phone);
 }

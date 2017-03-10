@@ -25,6 +25,7 @@ import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.CollectedFragment;
 import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.CollectedFragmentCallBack;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.Collected;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.Phone;
+import com.bdpqchen.yellowpagesmodule.yellowpages.utils.PhoneUtils;
 import com.bdpqchen.yellowpagesmodule.yellowpages.utils.TextFormatUtils;
 import com.bdpqchen.yellowpagesmodule.yellowpages.utils.ToastUtils;
 import com.daimajia.androidanimations.library.Techniques;
@@ -110,9 +111,9 @@ public class ListViewCategoryAdapter extends BaseAdapter {
                         public void onClick(DialogInterface dialog, int which) {
                             Logger.i(String.valueOf(which));
                             if (which == 0){
-                                copyToClipboard(phone.getPhone());
+                                PhoneUtils.copyToClipboard(mContext, phone.getPhone());
                             }else if (which == 1){
-                                saveToContact(phone.getName(), phone.getPhone());
+                                mFragmentCallBack.saveToContact(phone.getName(), phone.getPhone());
                             }
                         }
                     });
@@ -158,21 +159,6 @@ public class ListViewCategoryAdapter extends BaseAdapter {
         }
 
         return convertView;
-    }
-
-    private void saveToContact(String name, String phone) {
-        ContentValues values = new ContentValues();
-        // 首先向RawContacts.CONTENT_URI执行一个空值插入，目的是获取系统返回的rawContactId
-        Uri rawContactUri = mContext.getContentResolver().insert(
-                ContactsContract.RawContacts.CONTENT_URI, values);
-        long rawContactId = ContentUris.parseId(rawContactUri);
-
-    }
-
-    private void copyToClipboard(String phoneStr){
-        ClipboardManager cmb = (ClipboardManager)mContext.getSystemService(Context.CLIPBOARD_SERVICE);
-        cmb.setPrimaryClip(ClipData.newPlainText(null, phoneStr));
-        ToastUtils.show((Activity) mContext, "已复制到剪切板");
     }
 
     private class NormalViewHolder{

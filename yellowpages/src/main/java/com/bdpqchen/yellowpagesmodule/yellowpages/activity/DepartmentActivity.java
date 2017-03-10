@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.BoolRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
@@ -17,7 +18,7 @@ import com.bdpqchen.yellowpagesmodule.yellowpages.base.BaseActivity;
 import com.bdpqchen.yellowpagesmodule.yellowpages.data.DatabaseClient;
 import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.CollectedFragmentCallBack;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.Phone;
-import com.bdpqchen.yellowpagesmodule.yellowpages.utils.RingUpUtils;
+import com.bdpqchen.yellowpagesmodule.yellowpages.utils.PhoneUtils;
 import com.bdpqchen.yellowpagesmodule.yellowpages.utils.ToastUtils;
 import com.orhanobut.logger.Logger;
 
@@ -32,6 +33,7 @@ import rx.Subscriber;
 public class DepartmentActivity extends BaseActivity implements CollectedFragmentCallBack {
 
     private static final int REQUEST_CODE_CALL_PHONE = 22;
+    private static final int REQUEST_CODE_WRITE_PHONE = 99;
     public static final String INTENT_TOOLBAR_TITLE = "toolbar_title";
     private ListView mListView;
     private Toolbar mToolbar;
@@ -40,6 +42,9 @@ public class DepartmentActivity extends BaseActivity implements CollectedFragmen
     private Context mContext;
     private String callPhoneNum;
     private ListViewCategoryAdapter mAdapter;
+    private String mWritePhoneName = "";
+    private String mWritePhoneNum = "";
+
     @Override
     public int getLayout() {
         return R.layout.yp_activity_department;
@@ -75,7 +80,14 @@ public class DepartmentActivity extends BaseActivity implements CollectedFragmen
     @Override
     public void callPhone(String phoneNum) {
         this.callPhoneNum = phoneNum;
-        RingUpUtils.permissionCheck(this, phoneNum, REQUEST_CODE_CALL_PHONE);
+        PhoneUtils.permissionCheck(this, phoneNum, REQUEST_CODE_CALL_PHONE);
+    }
+
+    @Override
+    public void saveToContact(String name, String phone) {
+        this.mWritePhoneNum = phone;
+        this.mWritePhoneName = name;
+        PhoneUtils.permissionCheck(mContext, phone, name, REQUEST_CODE_WRITE_PHONE);
     }
 
     @Override
@@ -84,9 +96,17 @@ public class DepartmentActivity extends BaseActivity implements CollectedFragmen
         switch (requestCode){
             case REQUEST_CODE_CALL_PHONE:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                    RingUpUtils.ringUp(mContext, callPhoneNum);
+                    PhoneUtils.ringUp(mContext, callPhoneNum);
                 }else{
                     ToastUtils.show(this, "请在权限管理中开启微北洋拨打电话权限");
+                }
+                break;
+            case REQUEST_CODE_WRITE_PHONE:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    Logger.i("request the permission is successful");
+                    PhoneUtils.insertContact(mContext, mWritePhoneName, mWritePhoneNum);
+                }else{
+                    ToastUtils.show(this, "请在权限管理中开启微北洋添加联系人权限");
                 }
                 break;
         }
@@ -112,7 +132,6 @@ public class DepartmentActivity extends BaseActivity implements CollectedFragmen
             }
         };
         DatabaseClient.getInstance().getUnitListByDepartment(subscriber, toolbarName);
-
     }
 
     @Override
@@ -127,9 +146,5 @@ public class DepartmentActivity extends BaseActivity implements CollectedFragmen
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         return super.onKeyDown(keyCode, event);
-        /*if(keyCode == KeyEvent.KEYCODE_BACK){
-
-        }
-*/
     }
 }

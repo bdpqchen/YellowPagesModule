@@ -1,14 +1,10 @@
 package com.bdpqchen.yellowpagesmodule.yellowpages.fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,9 +18,10 @@ import com.bdpqchen.yellowpagesmodule.yellowpages.adapter.ExpandableListViewColl
 import com.bdpqchen.yellowpagesmodule.yellowpages.data.DatabaseClient;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.Phone;
 import com.bdpqchen.yellowpagesmodule.yellowpages.utils.ListUtils;
-import com.bdpqchen.yellowpagesmodule.yellowpages.utils.RingUpUtils;
+import com.bdpqchen.yellowpagesmodule.yellowpages.utils.PhoneUtils;
 import com.bdpqchen.yellowpagesmodule.yellowpages.utils.ToastUtils;
 
+import java.util.IllegalFormatCodePointException;
 import java.util.List;
 
 import rx.Subscriber;
@@ -37,6 +34,8 @@ import rx.Subscriber;
 public class CollectedFragment extends Fragment implements ExpandableListView.OnGroupClickListener, ExpandableListView.OnGroupCollapseListener, ExpandableListView.OnGroupExpandListener, ExpandableListView.OnChildClickListener, CollectedFragmentCallBack{
 
     public static final int REQUEST_CODE_CALL_PHONE = 11;
+    private static final int REQUEST_CODE_WRITE_PHONE = 79;
+
     public static String[] groupStrings = {"我的收藏"};
 
     public String[][] childStrings1;
@@ -46,6 +45,8 @@ public class CollectedFragment extends Fragment implements ExpandableListView.On
     private static ExpandableListViewCollectedAdapter mAdapter;
     private String callPhoneNum= "";
     private Context mContext;
+    private String mWritePhoneName = "";
+    private String mWritePhoneNum = "";
 
     @Nullable
     @Override
@@ -73,18 +74,29 @@ public class CollectedFragment extends Fragment implements ExpandableListView.On
         switch (requestCode){
             case REQUEST_CODE_CALL_PHONE:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                    RingUpUtils.ringUp(mContext, callPhoneNum);
+                    PhoneUtils.ringUp(mContext, callPhoneNum);
                 }else{
                     ToastUtils.show(getActivity(), "请在权限管理中开启微北洋拨打电话权限");
                 }
                 break;
+            case REQUEST_CODE_WRITE_PHONE:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    PhoneUtils.insertContact(mContext, mWritePhoneName, mWritePhoneNum);
+                }else{
+                    ToastUtils.show(getActivity(), "请在权限管理中开启微北洋新建联系人权限");
+                }
         }
     }
 
     @Override
     public void callPhone(String phoneNum) {
         this.callPhoneNum = phoneNum;
-        RingUpUtils.permissionCheck(mContext, phoneNum, REQUEST_CODE_CALL_PHONE);
+        PhoneUtils.permissionCheck(mContext, phoneNum, REQUEST_CODE_CALL_PHONE);
+    }
+
+    @Override
+    public void saveToContact(String name, String phone) {
+
     }
 
     public static void getCollectedData(){

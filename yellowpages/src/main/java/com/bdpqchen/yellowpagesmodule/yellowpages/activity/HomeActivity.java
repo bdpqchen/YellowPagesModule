@@ -46,13 +46,14 @@ import com.bdpqchen.yellowpagesmodule.yellowpages.model.SearchResult;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.WordSuggestion;
 import com.bdpqchen.yellowpagesmodule.yellowpages.network.NetworkClient;
 import com.bdpqchen.yellowpagesmodule.yellowpages.utils.PrefUtils;
-import com.bdpqchen.yellowpagesmodule.yellowpages.utils.RingUpUtils;
+import com.bdpqchen.yellowpagesmodule.yellowpages.utils.PhoneUtils;
 import com.bdpqchen.yellowpagesmodule.yellowpages.utils.ToastUtils;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
+import java.util.IllegalFormatCodePointException;
 import java.util.List;
 
 import rx.Subscriber;
@@ -60,6 +61,7 @@ import rx.Subscriber;
 
 public class HomeActivity extends BaseActivity implements CollectedFragmentCallBack {
 
+    private static final int REQUEST_CODE_WRITE_PHONE = 98;
     public int mDatabaseVersionCode = 1;
     private static final int REQUEST_CODE_CALL_PHONE = 33;
     private static final String TAG = "HomeActivity";
@@ -81,6 +83,9 @@ public class HomeActivity extends BaseActivity implements CollectedFragmentCallB
     private String callPhoneNum = "";
     private boolean isUpdatingDb = false;
     private int mTest = 1;
+    private String mWritePhoneName = "";
+    private String mWritePhoneNum = "";
+
 
     @Override
     public int getLayout() {
@@ -412,7 +417,15 @@ public class HomeActivity extends BaseActivity implements CollectedFragmentCallB
     @Override
     public void callPhone(String phoneNum) {
         this.callPhoneNum = phoneNum;
-        RingUpUtils.permissionCheck(mContext, phoneNum, REQUEST_CODE_CALL_PHONE);
+        PhoneUtils.permissionCheck(mContext, phoneNum, REQUEST_CODE_CALL_PHONE);
+    }
+
+    @Override
+    public void saveToContact(String name, String phone) {
+        this.mWritePhoneNum = phone;
+        this.mWritePhoneName = name;
+        PhoneUtils.permissionCheck(mContext, phone, name, REQUEST_CODE_WRITE_PHONE);
+        Logger.i("home activity is called");
     }
 
     private void updateViewVisibility(int type) {
@@ -494,9 +507,16 @@ public class HomeActivity extends BaseActivity implements CollectedFragmentCallB
         switch (requestCode) {
             case REQUEST_CODE_CALL_PHONE:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    RingUpUtils.ringUp(mContext, callPhoneNum);
+                    PhoneUtils.ringUp(mContext, callPhoneNum);
                 } else {
                     ToastUtils.show(this, "请在权限管理中开启微北洋拨打电话权限");
+                }
+                break;
+            case REQUEST_CODE_WRITE_PHONE:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    PhoneUtils.insertContact(mContext, mWritePhoneName, mWritePhoneNum);
+                }else{
+                    ToastUtils.show(this, "请在权限管理中开启微北洋添加联系人权限");
                 }
                 break;
         }
