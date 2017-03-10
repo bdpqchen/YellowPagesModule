@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.bdpqchen.yellowpagesmodule.yellowpages.R;
 import com.bdpqchen.yellowpagesmodule.yellowpages.data.DataManager;
+import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.CollectedFragment;
 import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.CollectedFragmentCallBack;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.SearchResult;
 import com.bdpqchen.yellowpagesmodule.yellowpages.utils.TextFormatUtils;
@@ -128,6 +129,8 @@ public class SearchResultsListViewAdapter extends BaseAdapter {
                     }, 300);
                     DataManager.updateCollectState(results.name, results.phone, false);
                     ToastUtils.show((Activity) mContext, "收藏已取消");
+                    CollectedFragment.getCollectedData();
+
                 }
             });
             holder.ivUncollected.setOnClickListener(new View.OnClickListener() {
@@ -137,6 +140,7 @@ public class SearchResultsListViewAdapter extends BaseAdapter {
                     YoYo.with(Techniques.ZoomIn).duration(400).playOn(holder.ivCollected);
                     holder.ivUncollected.setVisibility(View.GONE);
                     DataManager.updateCollectState(results.name, results.phone, false);
+                    CollectedFragment.getCollectedData();
                 }
             });
 

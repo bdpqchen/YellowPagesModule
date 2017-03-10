@@ -158,6 +158,7 @@ public class ExpandableListViewCollectedAdapter extends BaseExpandableListAdapte
                             childViewHolder.ivUncollected.setVisibility(View.VISIBLE);
                         }
                     }, 300);
+
                     DataManager.updateCollectState(phone.getName(), phone.getPhone(), false);
                     ToastUtils.show((Activity) mContext, "收藏已取消");
                 }

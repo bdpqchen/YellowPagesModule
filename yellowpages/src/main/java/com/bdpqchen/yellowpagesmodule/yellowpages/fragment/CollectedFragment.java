@@ -37,13 +37,13 @@ import rx.Subscriber;
 public class CollectedFragment extends Fragment implements ExpandableListView.OnGroupClickListener, ExpandableListView.OnGroupCollapseListener, ExpandableListView.OnGroupExpandListener, ExpandableListView.OnChildClickListener, CollectedFragmentCallBack{
 
     public static final int REQUEST_CODE_CALL_PHONE = 11;
-    public String[] groupStrings = {"我的收藏"};
+    public static String[] groupStrings = {"我的收藏"};
 
     public String[][] childStrings1;
 
     private CollectedFragmentCallBack collectedFragmentCallBack;
-    private ExpandableListView mExpandableListView;
-    private ExpandableListViewCollectedAdapter mAdapter;
+    private static ExpandableListView mExpandableListView;
+    private static ExpandableListViewCollectedAdapter mAdapter;
     private String callPhoneNum= "";
     private Context mContext;
 
@@ -87,7 +87,7 @@ public class CollectedFragment extends Fragment implements ExpandableListView.On
         RingUpUtils.permissionCheck(mContext, phoneNum, REQUEST_CODE_CALL_PHONE);
     }
 
-    public void getCollectedData(){
+    public static void getCollectedData(){
         Subscriber subscriber = new Subscriber<List<Phone>>() {
             @Override
             public void onCompleted() {}

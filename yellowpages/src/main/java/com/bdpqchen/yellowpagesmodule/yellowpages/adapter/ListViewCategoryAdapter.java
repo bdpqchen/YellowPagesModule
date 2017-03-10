@@ -1,11 +1,17 @@
 package com.bdpqchen.yellowpagesmodule.yellowpages.adapter;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Paint;
+import android.net.Uri;
 import android.os.Handler;
+import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +21,15 @@ import android.widget.TextView;
 
 import com.bdpqchen.yellowpagesmodule.yellowpages.R;
 import com.bdpqchen.yellowpagesmodule.yellowpages.data.DataManager;
+import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.CollectedFragment;
 import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.CollectedFragmentCallBack;
+import com.bdpqchen.yellowpagesmodule.yellowpages.model.Collected;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.Phone;
 import com.bdpqchen.yellowpagesmodule.yellowpages.utils.TextFormatUtils;
 import com.bdpqchen.yellowpagesmodule.yellowpages.utils.ToastUtils;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
@@ -66,7 +75,7 @@ public class ListViewCategoryAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         final NormalViewHolder holder;
         if (phoneList.size() != 0){
             if (convertView == null){
@@ -95,12 +104,21 @@ public class ListViewCategoryAdapter extends BaseAdapter {
             holder.tvPhone.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ClipboardManager cmb = (ClipboardManager)mContext.getSystemService(Context.CLIPBOARD_SERVICE);
-                    cmb.setPrimaryClip(ClipData.newPlainText(null, phone.getPhone()));
-                    ToastUtils.show((Activity) mContext, "已复制到剪切板");
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                    builder.setItems(new String[]{"复制到剪切板", "保存到通讯录"}, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Logger.i(String.valueOf(which));
+                            if (which == 0){
+                                copyToClipboard(phone.getPhone());
+                            }else if (which == 1){
+                                saveToContact(phone.getName(), phone.getPhone());
+                            }
+                        }
+                    });
+                    builder.show();
                 }
             });
-
             holder.ivCollected.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -111,9 +129,11 @@ public class ListViewCategoryAdapter extends BaseAdapter {
                             holder.ivCollected.setVisibility(View.GONE);
                             holder.ivUncollected.setVisibility(View.VISIBLE);
                         }
+
                     }, 300);
                     DataManager.updateCollectState(phone.getName(), phone.getPhone(), false);
                     ToastUtils.show((Activity) mContext, "收藏已取消");
+                    CollectedFragment.getCollectedData();
                 }
             });
             holder.ivUncollected.setOnClickListener(new View.OnClickListener() {
@@ -123,6 +143,7 @@ public class ListViewCategoryAdapter extends BaseAdapter {
                     YoYo.with(Techniques.ZoomIn).duration(400).playOn(holder.ivCollected);
                     holder.ivUncollected.setVisibility(View.GONE);
                     DataManager.updateCollectState(phone.getName(), phone.getPhone(), false);
+                    CollectedFragment.getCollectedData();
                 }
             });
 
@@ -139,13 +160,27 @@ public class ListViewCategoryAdapter extends BaseAdapter {
         return convertView;
     }
 
+    private void saveToContact(String name, String phone) {
+        ContentValues values = new ContentValues();
+        // 首先向RawContacts.CONTENT_URI执行一个空值插入，目的是获取系统返回的rawContactId
+        Uri rawContactUri = mContext.getContentResolver().insert(
+                ContactsContract.RawContacts.CONTENT_URI, values);
+        long rawContactId = ContentUris.parseId(rawContactUri);
+
+    }
+
+    private void copyToClipboard(String phoneStr){
+        ClipboardManager cmb = (ClipboardManager)mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+        cmb.setPrimaryClip(ClipData.newPlainText(null, phoneStr));
+        ToastUtils.show((Activity) mContext, "已复制到剪切板");
+    }
+
     private class NormalViewHolder{
         TextView tvTitle, tvPhone;
         ImageView ivPhone, ivUncollected, ivCollected;
         NormalViewHolder(){
 
         }
-
     }
 
 }
