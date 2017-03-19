@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.BoolRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
@@ -12,7 +11,9 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.ViewStub;
 import android.widget.ListView;
+
 import com.bdpqchen.yellowpagesmodule.yellowpages.R;
+import com.bdpqchen.yellowpagesmodule.yellowpages.R2;
 import com.bdpqchen.yellowpagesmodule.yellowpages.adapter.ListViewCategoryAdapter;
 import com.bdpqchen.yellowpagesmodule.yellowpages.base.BaseActivity;
 import com.bdpqchen.yellowpagesmodule.yellowpages.data.DatabaseClient;
@@ -24,6 +25,7 @@ import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
+import butterknife.BindView;
 import rx.Subscriber;
 
 /**
@@ -35,8 +37,11 @@ public class DepartmentActivity extends BaseActivity implements CollectedFragmen
     private static final int REQUEST_CODE_CALL_PHONE = 22;
     private static final int REQUEST_CODE_WRITE_PHONE = 99;
     public static final String INTENT_TOOLBAR_TITLE = "toolbar_title";
-    private ListView mListView;
-    private Toolbar mToolbar;
+
+    @BindView(R2.id.toolbar)
+    Toolbar mToolbar;
+    @BindView(R2.id.lv_unit)
+    ListView mListView;
     private List<Phone> phoneList = null;
     private CollectedFragmentCallBack mFragmentCallBack;
     private Context mContext;
@@ -52,7 +57,6 @@ public class DepartmentActivity extends BaseActivity implements CollectedFragmen
 
     @Override
     protected Toolbar getToolbar() {
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbar.setTitle("");
 
         return mToolbar;
@@ -66,7 +70,6 @@ public class DepartmentActivity extends BaseActivity implements CollectedFragmen
         Intent intent = getIntent();
         String toolbarName = intent.getStringExtra(INTENT_TOOLBAR_TITLE);
         Logger.i(toolbarName);
-        mListView = (ListView) findViewById(R.id.lv_unit);
         mListView.addFooterView(new ViewStub(this));
         mAdapter = new ListViewCategoryAdapter(this, phoneList, mFragmentCallBack);
         mListView.setAdapter(mAdapter);
@@ -93,19 +96,19 @@ public class DepartmentActivity extends BaseActivity implements CollectedFragmen
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode){
+        switch (requestCode) {
             case REQUEST_CODE_CALL_PHONE:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     PhoneUtils.ringUp(mContext, callPhoneNum);
-                }else{
+                } else {
                     ToastUtils.show(this, "请在权限管理中开启微北洋拨打电话权限");
                 }
                 break;
             case REQUEST_CODE_WRITE_PHONE:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Logger.i("request the permission is successful");
                     PhoneUtils.insertContact(mContext, mWritePhoneName, mWritePhoneNum);
-                }else{
+                } else {
                     ToastUtils.show(this, "请在权限管理中开启微北洋添加联系人权限");
                 }
                 break;
@@ -115,7 +118,8 @@ public class DepartmentActivity extends BaseActivity implements CollectedFragmen
     private void getDataList(String toolbarName) {
         Subscriber subscriber = new Subscriber<List<Phone>>() {
             @Override
-            public void onCompleted() {}
+            public void onCompleted() {
+            }
 
             @Override
             public void onError(Throwable e) {
@@ -136,7 +140,7 @@ public class DepartmentActivity extends BaseActivity implements CollectedFragmen
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             finish();
         }
         return super.onOptionsItemSelected(item);

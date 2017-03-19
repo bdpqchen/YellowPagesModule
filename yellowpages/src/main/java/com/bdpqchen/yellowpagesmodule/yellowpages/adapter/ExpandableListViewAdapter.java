@@ -10,27 +10,32 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bdpqchen.yellowpagesmodule.yellowpages.R;
+import com.bdpqchen.yellowpagesmodule.yellowpages.R2;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 
 /**
  * Created by chen on 17-2-23.
  */
 
-public class ExpandableListViewAdapter extends BaseExpandableListAdapter implements ExpandableListAdapter{
+public class ExpandableListViewAdapter extends BaseExpandableListAdapter implements ExpandableListAdapter {
 
     private static String[] mGroupArray;
     private static String[][] mChildArray;
+
     private Context mContext;
 
-    public ExpandableListViewAdapter(Context context){
+    public ExpandableListViewAdapter(Context context) {
         mContext = context;
     }
 
-    public void addAllData(String[] groups, String[][] children){
-        if( groups != null){
+    public void addAllData(String[] groups, String[][] children) {
+        if (groups != null) {
             mGroupArray = groups;
         }
-        if (children != null){
+        if (children != null) {
             mChildArray = children;
         }
         notifyDataSetChanged();
@@ -38,18 +43,18 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter impleme
 
     @Override
     public int getGroupCount() {
-        if (mGroupArray != null){
+        if (mGroupArray != null) {
             return mGroupArray.length;
-        }else{
+        } else {
             return 0;
         }
     }
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        if (mChildArray != null){
+        if (mChildArray != null) {
             return mChildArray[groupPosition].length;
-        }else{
+        } else {
             return 0;
         }
     }
@@ -82,21 +87,17 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter impleme
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         GroupViewHolder groupViewHolder;
-        if (convertView == null){
+        if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.yp_item_elv_group, parent, false);
-            groupViewHolder = new GroupViewHolder();
-            groupViewHolder.tvGroupName = (TextView) convertView.findViewById(R.id.tv_group_name);
-            groupViewHolder.tvGroupLength = (TextView) convertView.findViewById(R.id.tv_group_length);
-            groupViewHolder.ivDropDown = (ImageView) convertView.findViewById(R.id.iv_drop_down);
-            groupViewHolder.ivDropRight = (ImageView) convertView.findViewById(R.id.iv_drop_right);
+            groupViewHolder = new GroupViewHolder(convertView);
             convertView.setTag(groupViewHolder);
-        }else{
+        } else {
             groupViewHolder = (GroupViewHolder) convertView.getTag();
         }
-        if (isExpanded){
+        if (isExpanded) {
             groupViewHolder.ivDropRight.setVisibility(View.GONE);
             groupViewHolder.ivDropDown.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             groupViewHolder.ivDropRight.setVisibility(View.VISIBLE);
             groupViewHolder.ivDropDown.setVisibility(View.GONE);
         }
@@ -108,12 +109,11 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter impleme
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         ChildViewHolder childViewHolder;
-        if(convertView == null){
+        if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.yp_item_elv_child_category, parent, false);
-            childViewHolder = new ChildViewHolder();
-            childViewHolder.tvChildTitle = (TextView) convertView.findViewById(R.id.tv_child_title);
+            childViewHolder = new ChildViewHolder(convertView);
             convertView.setTag(childViewHolder);
-        }else{
+        } else {
             childViewHolder = (ChildViewHolder) convertView.getTag();
         }
         childViewHolder.tvChildTitle.setText(mChildArray[groupPosition][childPosition]);
@@ -125,13 +125,26 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter impleme
         return true;
     }
 
-    private static class GroupViewHolder{
-        TextView tvGroupName, tvGroupLength;
-        ImageView ivDropRight, ivDropDown;
+    public static class GroupViewHolder {
+        @BindView(R2.id.iv_drop_right)
+        ImageView ivDropRight;
+        @BindView(R2.id.iv_drop_down)
+        ImageView ivDropDown;
+        @BindView(R2.id.tv_group_name)
+        TextView tvGroupName;
+        @BindView(R2.id.tv_group_length)
+        TextView tvGroupLength;
+        public GroupViewHolder(View view){
+            ButterKnife.bind(this, view);
+        }
     }
 
-    private static class ChildViewHolder{
+    public static class ChildViewHolder {
+        @BindView(R2.id.tv_child_title)
         TextView tvChildTitle;
+        public ChildViewHolder(View view){
+            ButterKnife.bind(this, view);
+        }
     }
 
 }

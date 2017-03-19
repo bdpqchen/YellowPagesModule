@@ -1,5 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'org.greenrobot.greendao'
+apply plugin: 'com.jakewharton.butterknife'
+
 
 android {
     compileSdkVersion 25
@@ -28,7 +30,7 @@ android {
         targetGenDir'src/main/java'
     }
 
-    resourcePrefix 'yp'
+//    resourcePrefix 'yp'
 
 }
 
@@ -37,10 +39,11 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.2.0'
+    compile 'com.android.support:appcompat-v7:25.3.0'
     testCompile 'junit:junit:4.12'
     compile project(':commons')
-    compile 'com.github.kayvannj:PermissionUtils:1.0.3'
+//    compile 'com.github.kayvannj:PermissionUtils:1.0.3'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
 
     compile 'org.greenrobot:greendao:3.2.0'
 

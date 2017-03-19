@@ -30,7 +30,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayout());
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         mToolbar = getToolbar();
         initToolbar();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -58,6 +58,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ButterKnife.reset(this);
+
+//        ButterKnife.(this);
     }
 }

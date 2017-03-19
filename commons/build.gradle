@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-//apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'com.jakewharton.butterknife'
 
 
 android {
@@ -30,17 +30,17 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.2.0'
+    compile 'com.android.support:appcompat-v7:25.3.0'
     testCompile 'junit:junit:4.12'
 
 
     compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
 
     //注解
-    compile 'com.jakewharton:butterknife:5.1.1'
+//    compile 'com.jakewharton:butterknife:5.1.1'
 
-//    compile 'com.jakewharton:butterknife:8.5.1'
-//    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+    compile 'com.jakewharton:butterknife:8.5.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
 
     //动画
     compile 'com.daimajia.easing:library:2.0@aar'

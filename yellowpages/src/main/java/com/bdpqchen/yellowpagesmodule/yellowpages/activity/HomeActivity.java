@@ -31,6 +31,7 @@ import com.arlib.floatingsearchview.FloatingSearchView;
 import com.arlib.floatingsearchview.suggestions.SearchSuggestionsAdapter;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.bdpqchen.yellowpagesmodule.yellowpages.R;
+import com.bdpqchen.yellowpagesmodule.yellowpages.R2;
 import com.bdpqchen.yellowpagesmodule.yellowpages.adapter.SearchResultsListViewAdapter;
 import com.bdpqchen.yellowpagesmodule.yellowpages.base.BaseActivity;
 import com.bdpqchen.yellowpagesmodule.yellowpages.data.DataManager;
@@ -53,36 +54,37 @@ import com.daimajia.androidanimations.library.YoYo;
 import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
-import java.util.IllegalFormatCodePointException;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import rx.Subscriber;
 
 
 public class HomeActivity extends BaseActivity implements CollectedFragmentCallBack {
 
     private static final int REQUEST_CODE_WRITE_PHONE = 98;
-    public int mDatabaseVersionCode = 1;
     private static final int REQUEST_CODE_CALL_PHONE = 33;
     private static final String TAG = "HomeActivity";
-    //    @InjectView(R.id.search_results_list)
-    private ListView mSearchResultsList;
-    //    @InjectView(R.id.parent_view)
-    private RelativeLayout mParentView;
-    //    @InjectView(R.id.toolbar)
-    private Toolbar mToolbar;
-    private Context mContext;
-    private static ProgressBar mProgressBar;
-    private FloatingSearchView mSearchView;
+    @BindView(R2.id.search_results_list)
+    ListView mSearchResultsList;
 
+    @BindView(R2.id.parent_view)
+    RelativeLayout mParentView;
+    @BindView(R2.id.toolbar)
+    Toolbar mToolbar;
+    @BindView(R2.id.floating_search_view)
+    FloatingSearchView mSearchView;
+    private static ProgressBar mProgressBar;
+    private Context mContext;
     private SearchResultsListViewAdapter mSearchResultsAdapter;
     private ProgressDialog mProgressDialog;
     private String mLastQuery = "";
-    private static int loadFragmentTimes = 0;
     private CollectedFragmentCallBack mRingUpCallBack;
-    private String callPhoneNum = "";
+    public int mDatabaseVersionCode = 1;
+    private static int loadFragmentTimes = 0;
     private boolean isUpdatingDb = false;
-    private int mTest = 1;
+    private String callPhoneNum = "";
     private String mWritePhoneName = "";
     private String mWritePhoneNum = "";
 
@@ -94,7 +96,6 @@ public class HomeActivity extends BaseActivity implements CollectedFragmentCallB
 
     @Override
     protected Toolbar getToolbar() {
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbar.setTitle(getResources().getString(R.string.yp_app_name));
         return mToolbar;
     }
@@ -102,11 +103,10 @@ public class HomeActivity extends BaseActivity implements CollectedFragmentCallB
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ButterKnife.bind(this);
+
         this.mContext = this;
         this.mRingUpCallBack = this;
-        mSearchView = (FloatingSearchView) findViewById(R.id.floating_search_view);
-        mParentView = (RelativeLayout) findViewById(R.id.parent_view);
-        mSearchResultsList = (ListView) findViewById(R.id.search_results_list);
         mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
         DepartmentFragment departmentFragment = new DepartmentFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();

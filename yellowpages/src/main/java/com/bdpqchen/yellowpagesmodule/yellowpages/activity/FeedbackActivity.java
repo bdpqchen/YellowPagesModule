@@ -7,12 +7,14 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.bdpqchen.yellowpagesmodule.yellowpages.R;
+import com.bdpqchen.yellowpagesmodule.yellowpages.R2;
 import com.bdpqchen.yellowpagesmodule.yellowpages.base.BaseActivity;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.Feedback;
 import com.bdpqchen.yellowpagesmodule.yellowpages.network.NetworkClient;
@@ -20,6 +22,8 @@ import com.bdpqchen.yellowpagesmodule.yellowpages.utils.AppActivityManager;
 import com.bdpqchen.yellowpagesmodule.yellowpages.utils.ToastUtils;
 import com.orhanobut.logger.Logger;
 
+import butterknife.BindView;
+import butterknife.OnClick;
 import rx.Subscriber;
 
 /**
@@ -30,15 +34,20 @@ public class FeedbackActivity extends BaseActivity {
     public static final String INTENT_FEEDBACK_PHONE_NAME = "phone_name";
     public static final String INTENT_FEEDBACK_PHONE_NUM = "phone_num";
 
-    public Toolbar mToolbar;
+    @BindView(R2.id.toolbar)
+    Toolbar mToolbar;
+    @BindView(R2.id.et_name)
+    EditText mEtName;
+    @BindView(R2.id.et_phone)
+    EditText mEtPhone;
+    @BindView(R2.id.spinner)
+    AppCompatSpinner mSpinner;
+    @BindView(R2.id.btn_submit)
+    Button mSubmit;
 
     private String mName;
     private String mPhone;
     private int mFeedbackType = 1;
-
-    private EditText mEtName, mEtPhone;
-    private Button mSubmit;
-    private AppCompatSpinner mSpinner;
     private Context mContext;
 
 
@@ -49,7 +58,6 @@ public class FeedbackActivity extends BaseActivity {
 
     @Override
     protected Toolbar getToolbar() {
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbar.setTitle("号码反馈");
         return mToolbar;
     }
@@ -61,25 +69,23 @@ public class FeedbackActivity extends BaseActivity {
         Bundle bundle = getIntent().getExtras();
         mName = bundle.getString(INTENT_FEEDBACK_PHONE_NAME);
         mPhone = bundle.getString(INTENT_FEEDBACK_PHONE_NUM);
-        mEtName = (EditText) findViewById(R.id.et_name);
         mEtName.setText(mName);
-        mEtPhone = (EditText) findViewById(R.id.et_phone);
         mEtPhone.setText(mPhone);
-        mSubmit = (Button) findViewById(R.id.btn_submit);
-        mSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ToastUtils.show((Activity) mContext, "感谢您的反馈，我们会尽快核实信息的有效性");
-                submitFeedback();
-                new Handler().postDelayed(new Runnable() {
+        mSubmit.setOnClickListener(
+                new View.OnClickListener() {
                     @Override
-                    public void run() {
-                        AppActivityManager.getActivityManager().finishCurrentActivity();
+                    public void onClick(View v) {
+                        ToastUtils.show((Activity) mContext, "感谢您的反馈，我们会尽快核实信息的有效性");
+                        submitFeedback();
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                AppActivityManager.getActivityManager().finishCurrentActivity();
+                            }
+                        }, 400);
                     }
-                }, 400);
-            }
-        });
-        mSpinner = (AppCompatSpinner) findViewById(R.id.spinner);
+                }
+        );
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -116,4 +122,15 @@ public class FeedbackActivity extends BaseActivity {
         };
         NetworkClient.getInstance().submitFeedback(subscriber, mFeedbackType, mPhone, mName);
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+
+    }
+
+
 }

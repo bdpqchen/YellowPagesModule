@@ -2,8 +2,6 @@ package com.bdpqchen.yellowpagesmodule.yellowpages.adapter;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Paint;
@@ -13,9 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bdpqchen.yellowpagesmodule.yellowpages.R;
+import com.bdpqchen.yellowpagesmodule.yellowpages.R2;
 import com.bdpqchen.yellowpagesmodule.yellowpages.data.DataManager;
 import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.CollectedFragmentCallBack;
 import com.bdpqchen.yellowpagesmodule.yellowpages.model.Phone;
@@ -28,6 +28,9 @@ import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 
 /**
  * Created by bdpqchen on 17-3-1.
@@ -36,19 +39,20 @@ import java.util.List;
 public class ExpandableListViewCollectedAdapter extends BaseExpandableListAdapter {
     private static String[] mGroupArray;
     private static List<Phone> mChildList;
+
     private Context mContext;
     private CollectedFragmentCallBack mFragmentCallBack;
 
-    public ExpandableListViewCollectedAdapter(Context context, CollectedFragmentCallBack callBack){
+    public ExpandableListViewCollectedAdapter(Context context, CollectedFragmentCallBack callBack) {
         mContext = context;
         mFragmentCallBack = callBack;
     }
 
-    public void addAllData(String[] groups, List<Phone> phoneList){
-        if( groups != null){
+    public void addAllData(String[] groups, List<Phone> phoneList) {
+        if (groups != null) {
             mGroupArray = groups;
         }
-        if (phoneList != null){
+        if (phoneList != null) {
             mChildList = phoneList;
         }
         notifyDataSetChanged();
@@ -56,18 +60,18 @@ public class ExpandableListViewCollectedAdapter extends BaseExpandableListAdapte
 
     @Override
     public int getGroupCount() {
-        if (mGroupArray != null){
+        if (mGroupArray != null) {
             return mGroupArray.length;
-        }else{
+        } else {
             return 0;
         }
     }
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        if (mChildList != null){
+        if (mChildList != null) {
             return mChildList.size();
-        }else{
+        } else {
             return 0;
         }
     }
@@ -99,22 +103,22 @@ public class ExpandableListViewCollectedAdapter extends BaseExpandableListAdapte
 
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-        ExpandableListViewCollectedAdapter.GroupViewHolder groupViewHolder;
-        if (convertView == null){
+        GroupViewHolder groupViewHolder;
+        if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.yp_item_elv_group, parent, false);
-            groupViewHolder = new ExpandableListViewCollectedAdapter.GroupViewHolder();
+            groupViewHolder = new GroupViewHolder();
             groupViewHolder.tvGroupName = (TextView) convertView.findViewById(R.id.tv_group_name);
             groupViewHolder.tvGroupLength = (TextView) convertView.findViewById(R.id.tv_group_length);
             groupViewHolder.ivDropDown = (ImageView) convertView.findViewById(R.id.iv_drop_down);
             groupViewHolder.ivDropRight = (ImageView) convertView.findViewById(R.id.iv_drop_right);
             convertView.setTag(groupViewHolder);
-        }else{
-            groupViewHolder = (ExpandableListViewCollectedAdapter.GroupViewHolder) convertView.getTag();
+        } else {
+            groupViewHolder = (GroupViewHolder) convertView.getTag();
         }
-        if (isExpanded){
+        if (isExpanded) {
             groupViewHolder.ivDropRight.setVisibility(View.GONE);
             groupViewHolder.ivDropDown.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             groupViewHolder.ivDropRight.setVisibility(View.VISIBLE);
             groupViewHolder.ivDropDown.setVisibility(View.GONE);
         }
@@ -123,22 +127,39 @@ public class ExpandableListViewCollectedAdapter extends BaseExpandableListAdapte
         return convertView;
     }
 
+    public static class ChildViewHolder {
+        @BindView(R2.id.tv_item_collected_name)
+        TextView tvChildTitle;
+        @BindView(R2.id.iv_item_children_icon_phone)
+        ImageView ivCallPhone;
+        @BindView(R2.id.tv_item_collected_phone)
+        TextView tvChildPhone;
+        @BindView(R2.id.iv_item_children_icon_collected)
+        ImageView ivCollected;
+        @BindView(R2.id.iv_item_children_icon_uncollected)
+        ImageView ivUncollected;
+       public ChildViewHolder(View view){
+           ButterKnife.bind(this, view);
+       }
+
+    }
+
     @Override
     public View getChildView(int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         if (mChildList.size() != 0) {
             final Phone phone = mChildList.get(childPosition);
-            final ExpandableListViewCollectedAdapter.ChildViewHolder childViewHolder;
+            final ChildViewHolder childViewHolder;
             if (convertView == null) {
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.yp_item_elv_child_collected, parent, false);
-                childViewHolder = new ExpandableListViewCollectedAdapter.ChildViewHolder();
-                childViewHolder.tvChildTitle = (TextView) convertView.findViewById(R.id.tv_item_collected_name);
-                childViewHolder.tvChildPhone = (TextView) convertView.findViewById(R.id.tv_item_collected_phone);
-                childViewHolder.ivCallPhone = (ImageView) convertView.findViewById(R.id.iv_item_children_icon_phone);
-                childViewHolder.ivCollected = (ImageView) convertView.findViewById(R.id.iv_item_children_icon_collected);
-                childViewHolder.ivUncollected = (ImageView) convertView.findViewById(R.id.iv_item_children_icon_uncollected);
+                childViewHolder = new ChildViewHolder();
+//                childViewHolder.tvChildTitle = (TextView) convertView.findViewById(R.id.tv_item_collected_name);
+//                childViewHolder.tvChildPhone = (TextView) convertView.findViewById(R.id.tv_item_collected_phone);
+//                childViewHolder.ivCallPhone = (ImageView) convertView.findViewById(R.id.iv_item_children_icon_phone);
+//                childViewHolder.ivCollected = (ImageView) convertView.findViewById(R.id.iv_item_children_icon_collected);
+//                childViewHolder.ivUncollected = (ImageView) convertView.findViewById(R.id.iv_item_children_icon_uncollected);
                 convertView.setTag(childViewHolder);
             } else {
-                childViewHolder = (ExpandableListViewCollectedAdapter.ChildViewHolder) convertView.getTag();
+                childViewHolder = (ChildViewHolder) convertView.getTag();
             }
             childViewHolder.tvChildTitle.setText(phone.getName());
             childViewHolder.tvChildPhone.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
@@ -151,11 +172,11 @@ public class ExpandableListViewCollectedAdapter extends BaseExpandableListAdapte
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             Logger.i(String.valueOf(which));
-                            if (which == 0){
+                            if (which == 0) {
                                 PhoneUtils.copyToClipboard(mContext, phone.getPhone());
-                            }else if (which == 1){
+                            } else if (which == 1) {
                                 mFragmentCallBack.saveToContact(phone.getName(), phone.getPhone());
-                            }else if (which == 2){
+                            } else if (which == 2) {
                                 PhoneUtils.feedbackPhone(mContext, phone.getName(), phone.getPhone());
                             }
                         }
@@ -202,23 +223,18 @@ public class ExpandableListViewCollectedAdapter extends BaseExpandableListAdapte
 
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
-        if (mChildList.size() == 0){
+        if (mChildList.size() == 0) {
             return false;
         }
         return true;
     }
-
-    private static class GroupViewHolder{
+    private static class GroupViewHolder {
         TextView tvGroupName, tvGroupLength;
+
+
         ImageView ivDropRight, ivDropDown;
-    }
-
-    private static class ChildViewHolder{
-        TextView tvChildTitle, tvChildPhone;
-        ImageView ivCallPhone, ivCollected, ivUncollected;
 
     }
-
 
 
 }
