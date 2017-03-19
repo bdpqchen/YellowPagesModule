@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bdpqchen.yellowpagesmodule.yellowpages.R;
@@ -106,11 +105,7 @@ public class ExpandableListViewCollectedAdapter extends BaseExpandableListAdapte
         GroupViewHolder groupViewHolder;
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.yp_item_elv_group, parent, false);
-            groupViewHolder = new GroupViewHolder();
-            groupViewHolder.tvGroupName = (TextView) convertView.findViewById(R.id.tv_group_name);
-            groupViewHolder.tvGroupLength = (TextView) convertView.findViewById(R.id.tv_group_length);
-            groupViewHolder.ivDropDown = (ImageView) convertView.findViewById(R.id.iv_drop_down);
-            groupViewHolder.ivDropRight = (ImageView) convertView.findViewById(R.id.iv_drop_right);
+            groupViewHolder = new GroupViewHolder(convertView);
             convertView.setTag(groupViewHolder);
         } else {
             groupViewHolder = (GroupViewHolder) convertView.getTag();
@@ -127,23 +122,6 @@ public class ExpandableListViewCollectedAdapter extends BaseExpandableListAdapte
         return convertView;
     }
 
-    public static class ChildViewHolder {
-        @BindView(R2.id.tv_item_collected_name)
-        TextView tvChildTitle;
-        @BindView(R2.id.iv_item_children_icon_phone)
-        ImageView ivCallPhone;
-        @BindView(R2.id.tv_item_collected_phone)
-        TextView tvChildPhone;
-        @BindView(R2.id.iv_item_children_icon_collected)
-        ImageView ivCollected;
-        @BindView(R2.id.iv_item_children_icon_uncollected)
-        ImageView ivUncollected;
-       public ChildViewHolder(View view){
-           ButterKnife.bind(this, view);
-       }
-
-    }
-
     @Override
     public View getChildView(int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         if (mChildList.size() != 0) {
@@ -151,12 +129,7 @@ public class ExpandableListViewCollectedAdapter extends BaseExpandableListAdapte
             final ChildViewHolder childViewHolder;
             if (convertView == null) {
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.yp_item_elv_child_collected, parent, false);
-                childViewHolder = new ChildViewHolder();
-//                childViewHolder.tvChildTitle = (TextView) convertView.findViewById(R.id.tv_item_collected_name);
-//                childViewHolder.tvChildPhone = (TextView) convertView.findViewById(R.id.tv_item_collected_phone);
-//                childViewHolder.ivCallPhone = (ImageView) convertView.findViewById(R.id.iv_item_children_icon_phone);
-//                childViewHolder.ivCollected = (ImageView) convertView.findViewById(R.id.iv_item_children_icon_collected);
-//                childViewHolder.ivUncollected = (ImageView) convertView.findViewById(R.id.iv_item_children_icon_uncollected);
+                childViewHolder = new ChildViewHolder(convertView);
                 convertView.setTag(childViewHolder);
             } else {
                 childViewHolder = (ChildViewHolder) convertView.getTag();
@@ -228,12 +201,36 @@ public class ExpandableListViewCollectedAdapter extends BaseExpandableListAdapte
         }
         return true;
     }
-    private static class GroupViewHolder {
-        TextView tvGroupName, tvGroupLength;
 
+    public static class ChildViewHolder {
+        @BindView(R2.id.tv_item_collected_name)
+        TextView tvChildTitle;
+        @BindView(R2.id.iv_item_children_icon_phone)
+        ImageView ivCallPhone;
+        @BindView(R2.id.tv_item_collected_phone)
+        TextView tvChildPhone;
+        @BindView(R2.id.iv_item_children_icon_collected)
+        ImageView ivCollected;
+        @BindView(R2.id.iv_item_children_icon_uncollected)
+        ImageView ivUncollected;
+        public ChildViewHolder(View view) {
+            ButterKnife.bind(this, view);
+        }
 
-        ImageView ivDropRight, ivDropDown;
+    }
 
+    public static class GroupViewHolder {
+        @BindView(R2.id.iv_drop_right)
+        ImageView ivDropRight;
+        @BindView(R2.id.iv_drop_down)
+        ImageView ivDropDown;
+        @BindView(R2.id.tv_group_name)
+        TextView tvGroupName;
+        @BindView(R2.id.tv_group_length)
+        TextView tvGroupLength;
+        public GroupViewHolder(View view) {
+            ButterKnife.bind(this, view);
+        }
     }
 
 

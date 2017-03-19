@@ -2,13 +2,9 @@ package com.bdpqchen.yellowpagesmodule.yellowpages.adapter;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Paint;
-import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bdpqchen.yellowpagesmodule.yellowpages.R;
-import com.bdpqchen.yellowpagesmodule.yellowpages.activity.FeedbackActivity;
+import com.bdpqchen.yellowpagesmodule.yellowpages.R2;
 import com.bdpqchen.yellowpagesmodule.yellowpages.data.DataManager;
 import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.CollectedFragment;
 import com.bdpqchen.yellowpagesmodule.yellowpages.fragment.CollectedFragmentCallBack;
@@ -33,8 +29,8 @@ import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
-import static com.bdpqchen.yellowpagesmodule.yellowpages.activity.FeedbackActivity.INTENT_FEEDBACK_PHONE_NAME;
-import static com.bdpqchen.yellowpagesmodule.yellowpages.activity.FeedbackActivity.INTENT_FEEDBACK_PHONE_NUM;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class SearchResultsListViewAdapter extends BaseAdapter {
 
@@ -44,28 +40,28 @@ public class SearchResultsListViewAdapter extends BaseAdapter {
     private CollectedFragmentCallBack mFragmentCallBack;
     private OnItemClickListener mItemsOnClickListener;
 
-    public interface OnItemClickListener{
+    public interface OnItemClickListener {
         void onClick(SearchResult searchResult);
     }
 
-    public SearchResultsListViewAdapter(Context context, List<SearchResult> resultList, CollectedFragmentCallBack callBack){
+    public SearchResultsListViewAdapter(Context context, List<SearchResult> resultList, CollectedFragmentCallBack callBack) {
         this.mContext = context;
         searchResultList = resultList;
         mFragmentCallBack = callBack;
     }
 
-    public void setItemsOnClickListener(OnItemClickListener onClickListener){
+    public void setItemsOnClickListener(OnItemClickListener onClickListener) {
         this.mItemsOnClickListener = onClickListener;
     }
 
-    public void swapData(List<SearchResult> resultList){
+    public void swapData(List<SearchResult> resultList) {
         searchResultList = resultList;
         notifyDataSetChanged();
     }
 
     @Override
     public int getCount() {
-        if (null == searchResultList){
+        if (null == searchResultList) {
             return 0;
         }
         return searchResultList.size();
@@ -80,27 +76,37 @@ public class SearchResultsListViewAdapter extends BaseAdapter {
     public long getItemId(int position) {
         return position;
     }
+    public class NormalViewHolder {
+        @BindView(R2.id.tv_item_collected_name)
+        TextView tvTitle;
+        @BindView(R2.id.iv_item_children_icon_phone)
+        ImageView ivPhone;
+        @BindView(R2.id.tv_item_collected_phone)
+        TextView tvPhone;
+        @BindView(R2.id.iv_item_children_icon_collected)
+        ImageView ivCollected;
+        @BindView(R2.id.iv_item_children_icon_uncollected)
+        ImageView ivUncollected;
+        @BindView(R2.id.rl_item_search_result)
+        RelativeLayout rlItem;
+        public NormalViewHolder(View view) {
+            ButterKnife.bind(this, view);
+        }
 
+    }
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        final SearchResultsListViewAdapter.NormalViewHolder holder;
-        if (searchResultList.size() != 0){
-            if (convertView == null){
+        final NormalViewHolder holder;
+        if (searchResultList.size() != 0) {
+            if (convertView == null) {
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.yp_item_elv_child_collected, parent, false);
-                holder = new SearchResultsListViewAdapter.NormalViewHolder();
-                holder.ivCollected = (ImageView) convertView.findViewById(R.id.iv_item_children_icon_collected);
-                holder.ivUncollected = (ImageView) convertView.findViewById(R.id.iv_item_children_icon_uncollected);
-                holder.ivPhone = (ImageView) convertView.findViewById(R.id.iv_item_children_icon_phone);
-                holder.tvPhone = (TextView) convertView.findViewById(R.id.tv_item_collected_phone);
-                holder.tvTitle = (TextView) convertView.findViewById(R.id.tv_item_collected_name);
-                holder.rlItem  = (RelativeLayout) convertView.findViewById(R.id.rl_item_search_result);
-
+                holder = new NormalViewHolder(convertView);
                 convertView.setTag(holder);
-            }else {
-                holder = (SearchResultsListViewAdapter.NormalViewHolder) convertView.getTag();
+            } else {
+                holder = (NormalViewHolder) convertView.getTag();
             }
             final SearchResult results = searchResultList.get(position);
-            if (mItemsOnClickListener != null){
+            if (mItemsOnClickListener != null) {
                 holder.rlItem.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -108,10 +114,10 @@ public class SearchResultsListViewAdapter extends BaseAdapter {
                     }
                 });
             }
-            if (results.isCollected == 0){
+            if (results.isCollected == 0) {
                 holder.ivUncollected.setVisibility(View.VISIBLE);
                 holder.ivCollected.setVisibility(View.INVISIBLE);
-            }else{
+            } else {
                 holder.ivUncollected.setVisibility(View.INVISIBLE);
                 holder.ivCollected.setVisibility(View.VISIBLE);
             }
@@ -126,11 +132,11 @@ public class SearchResultsListViewAdapter extends BaseAdapter {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             Logger.i(String.valueOf(which));
-                            if (which == 0){
+                            if (which == 0) {
                                 PhoneUtils.copyToClipboard(mContext, results.phone);
-                            }else if (which == 1){
+                            } else if (which == 1) {
                                 mFragmentCallBack.saveToContact(results.name, results.phone);
-                            }else if (which == 2){
+                            } else if (which == 2) {
                                 PhoneUtils.feedbackPhone(mContext, results.name, results.phone);
                             }
                         }
@@ -180,12 +186,6 @@ public class SearchResultsListViewAdapter extends BaseAdapter {
         return convertView;
     }
 
-    private class NormalViewHolder{
-        TextView tvTitle, tvPhone;
-        ImageView ivPhone, ivUncollected, ivCollected;
-        RelativeLayout rlItem;
-        NormalViewHolder(){
-        }
 
-    }
+
 }
