@@ -1,7 +1,6 @@
 package com.bdpqchen.yellowpagesmodule.yellowpages.network;
 
 
-import com.bdpqchen.yellowpagesmodule.yellowpages.model.DataBean;
 
 import java.util.concurrent.TimeUnit;
 
@@ -10,7 +9,6 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
-import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 
@@ -33,7 +31,8 @@ public class NetworkClient {
                 .build();
 
         Retrofit mRetrofit = new Retrofit.Builder()
-                .baseUrl("https://raw.githubusercontent.com/bdpqchen/YellowPagesModule/master/data/")
+//                .baseUrl("https://raw.githubusercontent.com/bdpqchen/YellowPagesModule/master/data/")
+                .baseUrl("https://open.twtstudio.com/api/v1/yellowpage/")
                 .client(client)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())

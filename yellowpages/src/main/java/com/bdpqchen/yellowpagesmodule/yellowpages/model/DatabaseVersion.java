@@ -6,5 +6,5 @@ package com.bdpqchen.yellowpagesmodule.yellowpages.model;
 
 public class DatabaseVersion  {
     public int version_code;
-    public String version_name;
+    public String version_string;
 }

@@ -64,11 +64,6 @@ public class DataManager {
         }
     }
 
-    public static void insertPhone(Phone phone) {
-        getPhoneDao().insert(phone);
-
-    }
-
     public static void insertBatch(List<Phone> phoneList) {
         getPhoneDao().insertInTx(phoneList);
     }
@@ -87,7 +82,7 @@ public class DataManager {
         collect.setName(name);
         collect.setPhone(phone);
         Collected collection = getCollectedDao().queryBuilder()
-                .whereOr(CollectedDao.Properties.Name.eq(name), CollectedDao.Properties.Phone.eq(phone))
+                .where(CollectedDao.Properties.Name.eq(name), CollectedDao.Properties.Phone.eq(phone))
                 .unique();
         if (collection == null){
             getCollectedDao().insert(collect);
@@ -135,6 +130,13 @@ public class DataManager {
     }
 
     public static List<Phone> getUnitListByDepartment(String department) {
+
+        if (department.equals("智能自行车")){
+            return getPhoneDao().queryBuilder()
+                    .where(PhoneDao.Properties.Name.like("%" + department + "%"))
+                    .build().list();
+        }
+
         return getPhoneDao().queryBuilder()
                 .where(PhoneDao.Properties.Department.eq(department))
                 .build()
@@ -143,7 +145,7 @@ public class DataManager {
 
     public static void updateCollectState(String name, String phone, boolean isInitData) {
         List<Phone> results = getPhoneDao().queryBuilder()
-                .whereOr(PhoneDao.Properties.Name.eq(name), PhoneDao.Properties.Phone.eq(phone))
+                .where(PhoneDao.Properties.Name.eq(name), PhoneDao.Properties.Phone.eq(phone))
                 .build().list();
         if (null != results && results.size() != 0){
             for (int i = 0; i < results.size(); i++) {

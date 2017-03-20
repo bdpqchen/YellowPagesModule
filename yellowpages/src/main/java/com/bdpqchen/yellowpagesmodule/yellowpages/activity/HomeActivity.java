@@ -470,7 +470,7 @@ public class HomeActivity extends BaseActivity implements CollectedFragmentCallB
             public void run() {
                 NetworkClient.getInstance().getDatabaseVersion(subscriber);
             }
-        }, 2000);
+        }, 3000);
     }
 
     @Override

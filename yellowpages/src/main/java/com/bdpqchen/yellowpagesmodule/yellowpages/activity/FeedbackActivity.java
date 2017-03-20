@@ -116,7 +116,7 @@ public class FeedbackActivity extends BaseActivity {
 
             @Override
             public void onNext(Feedback f) {
-                Logger.i("onNext---->submit");
+                Logger.i("onNext---->submitted");
 
             }
         };
