@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="名称:"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/yp_colorAccent"
             android:textSize="@dimen/yp_department_font_size" />
 
         <EditText
@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="号码:"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/yp_colorAccent"
             android:textSize="@dimen/yp_department_font_size" />
 
         <EditText
@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="错误原因:"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/yp_colorAccent"
             android:textSize="@dimen/yp_department_font_size" />
 
         <android.support.v7.widget.AppCompatSpinner
